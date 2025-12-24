@@ -1,0 +1,43 @@
+<resources>
+    <string name="app_name">MoodMate</string>
+    <string name="hos_geldiniz_baslik">Hoş Geldiniz</string>
+    <string name="giris_alt_baslik">Devam etmek için giriş yapınız.</string>
+    <string name="eposta_etiket">E-mail</string>
+    <string name="sifre_etiket">Şifre</string>
+    <string name="giris_yap_butonu">Giriş Yap</string>
+    <string name="hesap_olustur_butonu">Hesap Oluştur</string>
+    <string name="isim_etiket">İsim</string>
+    <string name="soyisim_etiket">Soyisim</string>
+    <string name="nav_home">Ana Sayfa</string>
+    <string name="nav_add">Ekle</string>
+    <string name="nav_history">Geçmiş</string>
+    <string name="nav_profile">Profil</string>
+    <string name="title_home">Ana Sayfa</string>
+    <string name="title_add_mood">Ruh Hali Ekleme</string>
+    <string name="title_mood_history">Ruh Hali Geçmişi</string>
+    <string name="title_mood_details">Ruh Hali Detayı</string>
+    <string name="title_profile">Profil</string>
+    <string name="home_greeting_question">Bugün nasıl hissediyorsun?</string>
+    <string name="home_hope_message">Umarım günün güzel geçiyordur.</string>
+    <string name="home_reminder_message">Günün nasıl geçtiğini not almayı unutma!</string>
+    <string name="mood_select_label">Ruh Hali Seç :</string>
+    <string name="rating_label">Puanla :</string>
+    <string name="note_label">Not Ekle :</string>
+    <string name="note_placeholder">Notunuzu buraya yazın...</string>
+    <string name="save_button">Kaydet</string>
+    <string name="user_information">Kullanıcı Bilgileri</string>
+    <string name="username">Kullanıcı Adı</string>
+
+    <string-array name="mood_list">
+        <item>😊-Mutlu</item>
+        <item>😔-Üzgün</item>
+        <item>🤩-Heyecanlı</item>
+        <item>😡-Kızgın</item>
+        <item>😴-Yorgun</item>
+        <item>🤔-Kararsız</item>
+        <item>😎-Havalı</item>
+        <item>😰-Endişeli</item>
+        <item>🥳-Enerjik</item>
+        <item>😌-Huzurlu</item>
+    </string-array>
+</resources>

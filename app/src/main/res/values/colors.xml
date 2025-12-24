@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="blue_screen">#FFBBDEFB</color>
+    <color name="background_blue">#FFE2F2FB</color>
+    <color name="gradient_middle">#FFE3F2FD</color>
+    <color name="acik_mavi">#FF529BE4</color>
+</resources>
