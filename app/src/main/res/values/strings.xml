@@ -27,6 +27,7 @@
     <string name="save_button">Kaydet</string>
     <string name="user_information">Kullanıcı Bilgileri</string>
     <string name="username">Kullanıcı Adı</string>
+    <string name="kayit_basarili_mesaj">Kayıt başarılı! Giriş yapabilirsiniz.</string>
 
     <string-array name="mood_list">
         <item>😊-Mutlu</item>
@@ -40,4 +41,25 @@
         <item>🥳-Enerjik</item>
         <item>😌-Huzurlu</item>
     </string-array>
+
+    <string name="hata_gecersiz_istek">Geçersiz istek</string>
+    <string name="hata_kullanici_bulunamadi">Kullanıcı bulunamadı veya şifre hatalı</string>
+    <string name="hata_email_kayitli">Bu email zaten kayıtlı</string>
+    <string name="hata_sunucu">Sunucu hatası</string>
+    <string name="hata_bilinmeyen">Bilinmeyen hata oluştu</string>
+    <string name="hata_yanit_bos">Yanıt boş</string>
+    <string name="hata_bilinmeyen_kod">Bilinmeyen hata: %d</string>
+    <string name="error_email_empty">Email alanı boş bırakılamaz</string>
+    <string name="error_email_invalid">Geçerli bir email adresi girin</string>
+    <string name="error_password_empty">Şifre alanı boş bırakılamaz</string>
+    <string name="error_password_min_length">Şifre en az 6 karakter olmalıdır</string>
+    <string name="error_user_not_found">Bu email ile kayıtlı kullanıcı bulunamadı</string>
+    <string name="error_wrong_password">Şifre hatalı</string>
+    <string name="error_invalid_credential">Email veya şifre hatalı</string>
+    <string name="error_network_request_failed">Bağlantı hatası. İnternet bağlantınızı kontrol edin</string>
+    <string name="error_sign_in_failed">Giriş başarısız. Lütfen tekrar deneyin</string>
+    <string name="error_firstname_empty">İsim alanı boş bırakılamaz</string>
+    <string name="error_lastname_empty">Soyisim alanı boş bırakılamaz</string>
+    <string name="error_email_already_exists">Bu email adresi zaten kayıtlı</string>
+    <string name="error_sign_up_failed">Kayıt başarısız. Lütfen tekrar deneyin</string>
 </resources>

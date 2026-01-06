@@ -1,5 +1,6 @@
 package com.example.moodmate.screens
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
@@ -11,6 +12,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -20,25 +22,40 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.moodmate.R
 import com.example.moodmate.components.EditButton
 import com.example.moodmate.components.EditOutlinedTextField
 import com.example.moodmate.components.EditTextButton
+import com.example.moodmate.components.ValidationErrorText
 import com.example.moodmate.navigation.MoodMateScreens
 import androidx.compose.foundation.text.KeyboardOptions
+import com.example.moodmate.viewmodel.SignUpViewModel
 
 @Composable
 fun SignUpScreen(
     navController: NavController,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: SignUpViewModel = hiltViewModel()
 ) {
-    var firstName by remember { mutableStateOf("") }
-    var lastName by remember { mutableStateOf("") }
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    var isPasswordVisible by remember { mutableStateOf(false) }
+    val uiState by viewModel.uiState.collectAsState()
+    val actionState by viewModel.actionState.collectAsState()
+    val context = LocalContext.current
+
+    LaunchedEffect(actionState.isSuccess) {
+        if (actionState.isSuccess) {
+            Toast.makeText(
+                context,
+                context.getString(R.string.kayit_basarili_mesaj),
+                Toast.LENGTH_SHORT
+            ).show()
+            navController.navigate(MoodMateScreens.SignInScreen.route) {
+                popUpTo(MoodMateScreens.SignUpScreen.route) { inclusive = true }
+            }
+        }
+    }
 
     Column(
         modifier = modifier
@@ -58,67 +75,85 @@ fun SignUpScreen(
             modifier = modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            EditOutlinedTextField(
-                value = firstName,
-                onValueChange = { firstName = it },
-                label = stringResource(id = R.string.isim_etiket),
-                leadingIcon = Icons.Default.Person,
-                modifier = modifier.weight(1f),
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Text,
-                    imeAction = ImeAction.Next
+            Column(modifier = modifier.weight(1f)) {
+                EditOutlinedTextField(
+                    value = uiState.firstName,
+                    onValueChange = viewModel::onFirstNameChange,
+                    label = stringResource(id = R.string.isim_etiket),
+                    leadingIcon = Icons.Default.Person,
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Text,
+                        imeAction = ImeAction.Next
+                    )
                 )
-            )
+                uiState.validationErrors.firstNameError?.let {
+                    ValidationErrorText(error = it)
+                }
+            }
 
-            EditOutlinedTextField(
-                value = lastName,
-                onValueChange = { lastName = it },
-                label = stringResource(id = R.string.soyisim_etiket),
-                leadingIcon = Icons.Default.Person,
-                modifier = modifier.weight(1f),
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Text,
-                    imeAction = ImeAction.Next
+            Column(modifier = modifier.weight(1f)) {
+                EditOutlinedTextField(
+                    value = uiState.lastName,
+                    onValueChange = viewModel::onLastNameChange,
+                    label = stringResource(id = R.string.soyisim_etiket),
+                    leadingIcon = Icons.Default.Person,
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Text,
+                        imeAction = ImeAction.Next
+                    )
                 )
-            )
+                uiState.validationErrors.lastNameError?.let {
+                    ValidationErrorText(error = it)
+                }
+            }
         }
 
-        EditOutlinedTextField(
-            value = email,
-            onValueChange = { email = it },
-            label = stringResource(id = R.string.eposta_etiket),
-            leadingIcon = Icons.Default.Email,
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Email,
-                imeAction = ImeAction.Next
+        Column(modifier = modifier.fillMaxWidth()) {
+            EditOutlinedTextField(
+                value = uiState.email,
+                onValueChange = viewModel::onEmailChange,
+                label = stringResource(id = R.string.eposta_etiket),
+                leadingIcon = Icons.Default.Email,
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Email,
+                    imeAction = ImeAction.Next
+                )
             )
-        )
+            uiState.validationErrors.emailError?.let {
+                ValidationErrorText(error = it)
+            }
+        }
 
-        EditOutlinedTextField(
-            value = password,
-            onValueChange = { password = it },
-            label = stringResource(id = R.string.sifre_etiket),
-            leadingIcon = Icons.Default.Lock,
-            trailingIcon = {
-                IconButton(onClick = { isPasswordVisible = !isPasswordVisible }) {
-                    Icon(
-                        imageVector = if (isPasswordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
-                        contentDescription = null
-                    )
-                }
-            },
-            visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-            modifier = modifier.padding(bottom = 16.dp),
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Password,
-                imeAction = ImeAction.Done
+        Column(modifier = modifier.fillMaxWidth()) {
+            EditOutlinedTextField(
+                value = uiState.password,
+                onValueChange = viewModel::onPasswordChange,
+                label = stringResource(id = R.string.sifre_etiket),
+                leadingIcon = Icons.Default.Lock,
+                trailingIcon = {
+                    IconButton(onClick = viewModel::togglePasswordVisibility) {
+                        Icon(
+                            imageVector = if (uiState.isPasswordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
+                            contentDescription = null
+                        )
+                    }
+                },
+                visualTransformation = if (uiState.isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Password,
+                    imeAction = ImeAction.Done
+                )
             )
-        )
+            uiState.validationErrors.passwordError?.let {
+                ValidationErrorText(error = it)
+            }
+        }
 
         EditButton(
             text = stringResource(id = R.string.hesap_olustur_butonu),
-            onClick = { },
-            containerColor = colorResource(id = R.color.acik_mavi)
+            onClick = { viewModel.register() },
+            containerColor = colorResource(id = R.color.acik_mavi),
+            modifier = modifier.padding(top = 8.dp)
         )
 
         EditTextButton(

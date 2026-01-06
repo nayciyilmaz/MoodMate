@@ -19,23 +19,34 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.moodmate.R
 import com.example.moodmate.components.EditButton
 import com.example.moodmate.components.EditOutlinedTextField
 import com.example.moodmate.components.EditTextButton
+import com.example.moodmate.components.ValidationErrorText
 import com.example.moodmate.navigation.MoodMateScreens
 import androidx.compose.foundation.text.KeyboardOptions
+import com.example.moodmate.viewmodel.SignInViewModel
 
 @Composable
 fun SignInScreen(
     navController: NavController,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: SignInViewModel = hiltViewModel()
 ) {
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    var isPasswordVisible by remember { mutableStateOf(false) }
+    val uiState by viewModel.uiState.collectAsState()
+    val actionState by viewModel.actionState.collectAsState()
+
+    LaunchedEffect(actionState.isSuccess) {
+        if (actionState.isSuccess) {
+            navController.navigate(MoodMateScreens.HomeScreen.route) {
+                popUpTo(MoodMateScreens.SignInScreen.route) { inclusive = true }
+            }
+        }
+    }
 
     Column(
         modifier = modifier
@@ -56,42 +67,52 @@ fun SignInScreen(
             modifier = modifier.padding(bottom = 4.dp)
         )
 
-        EditOutlinedTextField(
-            value = email,
-            onValueChange = { email = it },
-            label = stringResource(id = R.string.eposta_etiket),
-            leadingIcon = Icons.Default.Email,
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Email,
-                imeAction = ImeAction.Next
+        Column(modifier = modifier.fillMaxWidth()) {
+            EditOutlinedTextField(
+                value = uiState.email,
+                onValueChange = viewModel::onEmailChange,
+                label = stringResource(id = R.string.eposta_etiket),
+                leadingIcon = Icons.Default.Email,
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Email,
+                    imeAction = ImeAction.Next
+                )
             )
-        )
+            uiState.validationErrors.emailError?.let {
+                ValidationErrorText(error = it)
+            }
+        }
 
-        EditOutlinedTextField(
-            value = password,
-            onValueChange = { password = it },
-            label = stringResource(id = R.string.sifre_etiket),
-            leadingIcon = Icons.Default.Lock,
-            trailingIcon = {
-                IconButton(onClick = { isPasswordVisible = !isPasswordVisible }) {
-                    Icon(
-                        imageVector = if (isPasswordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
-                        contentDescription = null
-                    )
-                }
-            },
-            visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-            modifier = modifier.padding(bottom = 16.dp),
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Password,
-                imeAction = ImeAction.Done
+        Column(modifier = modifier.fillMaxWidth()) {
+            EditOutlinedTextField(
+                value = uiState.password,
+                onValueChange = viewModel::onPasswordChange,
+                label = stringResource(id = R.string.sifre_etiket),
+                leadingIcon = Icons.Default.Lock,
+                trailingIcon = {
+                    IconButton(onClick = viewModel::togglePasswordVisibility) {
+                        Icon(
+                            imageVector = if (uiState.isPasswordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
+                            contentDescription = null
+                        )
+                    }
+                },
+                visualTransformation = if (uiState.isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Password,
+                    imeAction = ImeAction.Done
+                )
             )
-        )
+            uiState.validationErrors.passwordError?.let {
+                ValidationErrorText(error = it)
+            }
+        }
 
         EditButton(
             text = stringResource(id = R.string.giris_yap_butonu),
-            onClick = { },
-            containerColor = colorResource(id = R.color.acik_mavi)
+            onClick = { viewModel.login() },
+            containerColor = colorResource(id = R.color.acik_mavi),
+            modifier = modifier.padding(top = 8.dp)
         )
 
         EditTextButton(

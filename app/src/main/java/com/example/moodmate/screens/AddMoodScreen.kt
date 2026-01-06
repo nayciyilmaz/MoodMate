@@ -23,8 +23,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -46,7 +44,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.moodmate.R
 import com.example.moodmate.components.EditScaffold
-import androidx.compose.foundation.text.KeyboardOptions
+import com.example.moodmate.components.EditTextField
 import androidx.compose.material.icons.filled.CheckCircle
 import com.example.moodmate.components.EditDetailsButton
 
@@ -260,27 +258,19 @@ fun NoteSection(
             fontWeight = FontWeight.Bold
         )
 
-        TextField(
+        EditTextField(
             value = noteText,
             onValueChange = onNoteChanged,
             modifier = modifier
                 .fillMaxWidth()
                 .padding(top = 16.dp),
-            placeholder = {
-                Text(stringResource(id = R.string.note_placeholder))
-            },
-            colors = TextFieldDefaults.colors(
-                focusedContainerColor = Color.White,
-                unfocusedContainerColor = Color.White,
-                focusedIndicatorColor = colorResource(id = R.color.blue_screen),
-                unfocusedIndicatorColor = colorResource(id = R.color.blue_screen)
-            ),
-            shape = RoundedCornerShape(12.dp),
+            placeholder = stringResource(id = R.string.note_placeholder),
+            singleLine = false,
             minLines = 5,
             maxLines = 5,
-            keyboardOptions = KeyboardOptions(
-                imeAction = ImeAction.Done
-            )
+            imeAction = ImeAction.Done,
+            focusedIndicatorColor = colorResource(id = R.color.blue_screen),
+            unfocusedIndicatorColor = colorResource(id = R.color.blue_screen)
         )
     }
 }
