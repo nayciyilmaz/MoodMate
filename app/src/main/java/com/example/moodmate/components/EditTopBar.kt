@@ -3,8 +3,6 @@ package com.example.moodmate.components
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -32,12 +30,10 @@ fun EditTopBar(
         title = { Text(title) },
         navigationIcon = {
             if (currentRoute == MoodMateScreens.MoodDetailsScreen.route) {
-                IconButton(onClick = { navController.popBackStack() }) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = null,
-                    )
-                }
+                EditIconButton(
+                    icon = Icons.AutoMirrored.Filled.ArrowBack,
+                    onClick = { navController.popBackStack() }
+                )
             }
         }
     )

@@ -23,6 +23,7 @@ import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.moodmate.R
 import com.example.moodmate.navigation.MoodMateScreens
+import com.example.moodmate.util.navigateAndClearBackStack
 import kotlinx.coroutines.delay
 
 @Composable
@@ -44,11 +45,11 @@ fun SplashScreen(
             delay(200)
         }
         delay(1000)
-        navController.navigate(MoodMateScreens.SignInScreen.route) {
-            popUpTo(MoodMateScreens.SplashScreen.route) {
-                inclusive = true
-            }
-        }
+        navigateAndClearBackStack(
+            navController = navController,
+            destination = MoodMateScreens.SignInScreen.route,
+            popUpToRoute = MoodMateScreens.SplashScreen.route
+        )
     }
 
     Column(

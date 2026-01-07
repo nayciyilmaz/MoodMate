@@ -29,6 +29,8 @@ import com.example.moodmate.components.EditTextButton
 import com.example.moodmate.components.ValidationErrorText
 import com.example.moodmate.navigation.MoodMateScreens
 import androidx.compose.foundation.text.KeyboardOptions
+import com.example.moodmate.components.EditIconButton
+import com.example.moodmate.util.navigateAndClearBackStack
 import com.example.moodmate.viewmodel.SignInViewModel
 
 @Composable
@@ -42,9 +44,11 @@ fun SignInScreen(
 
     LaunchedEffect(actionState.isSuccess) {
         if (actionState.isSuccess) {
-            navController.navigate(MoodMateScreens.HomeScreen.route) {
-                popUpTo(MoodMateScreens.SignInScreen.route) { inclusive = true }
-            }
+            navigateAndClearBackStack(
+                navController = navController,
+                destination = MoodMateScreens.HomeScreen.route,
+                popUpToRoute = MoodMateScreens.SignInScreen.route
+            )
         }
     }
 
@@ -90,12 +94,10 @@ fun SignInScreen(
                 label = stringResource(id = R.string.sifre_etiket),
                 leadingIcon = Icons.Default.Lock,
                 trailingIcon = {
-                    IconButton(onClick = viewModel::togglePasswordVisibility) {
-                        Icon(
-                            imageVector = if (uiState.isPasswordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
-                            contentDescription = null
-                        )
-                    }
+                    EditIconButton(
+                        icon = if (uiState.isPasswordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
+                        onClick = viewModel::togglePasswordVisibility
+                    )
                 },
                 visualTransformation = if (uiState.isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions(
