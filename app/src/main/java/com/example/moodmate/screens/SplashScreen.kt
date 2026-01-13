@@ -15,6 +15,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.airbnb.lottie.compose.LottieAnimation
@@ -24,14 +25,15 @@ import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.moodmate.R
 import com.example.moodmate.navigation.MoodMateScreens
 import com.example.moodmate.util.navigateAndClearBackStack
+import com.example.moodmate.viewmodel.SplashViewModel
 import kotlinx.coroutines.delay
 
 @Composable
 fun SplashScreen(
     navController: NavController,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: SplashViewModel = hiltViewModel()
 ) {
-
     val fullText = stringResource(R.string.app_name)
     var animatedText by remember { mutableStateOf("") }
     val composition by rememberLottieComposition(
@@ -45,9 +47,17 @@ fun SplashScreen(
             delay(200)
         }
         delay(1000)
+
+        val isLoggedIn = viewModel.isUserLoggedIn()
+        val destination = if (isLoggedIn) {
+            MoodMateScreens.HomeScreen.route
+        } else {
+            MoodMateScreens.SignInScreen.route
+        }
+
         navigateAndClearBackStack(
             navController = navController,
-            destination = MoodMateScreens.SignInScreen.route,
+            destination = destination,
             popUpToRoute = MoodMateScreens.SplashScreen.route
         )
     }

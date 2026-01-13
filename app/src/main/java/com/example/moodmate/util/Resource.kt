@@ -2,9 +2,10 @@ package com.example.moodmate.util
 
 sealed class Resource<T>(
     val data: T? = null,
-    val message: String? = null
+    val message: String? = null,
+    val fieldErrors: Map<String, String>? = null
 ) {
     class Success<T>(data: T) : Resource<T>(data)
-    class Error<T>(message: String, data: T? = null) : Resource<T>(data, message)
+    class Error<T>(message: String, data: T? = null, fieldErrors: Map<String, String>? = null) : Resource<T>(data, message, fieldErrors)
     class Loading<T> : Resource<T>()
 }

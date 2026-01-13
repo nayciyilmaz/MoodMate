@@ -1,5 +1,6 @@
 package com.example.moodmate.di
 
+import com.example.moodmate.local.TokenManager
 import com.example.moodmate.network.ApiService
 import dagger.Module
 import dagger.Provides
@@ -16,15 +17,23 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object AppModule {
 
-    private const val BASE_URL = "http://10.0.2.2:3000"
+    private const val BASE_URL = "http://10.0.2.2:3000/"
+
     @Provides
     @Singleton
-    fun provideOkHttpClient(): OkHttpClient {
+    fun provideAuthInterceptor(tokenManager: TokenManager): AuthInterceptor {
+        return AuthInterceptor(tokenManager)
+    }
+
+    @Provides
+    @Singleton
+    fun provideOkHttpClient(authInterceptor: AuthInterceptor): OkHttpClient {
         val loggingInterceptor = HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY
         }
 
         return OkHttpClient.Builder()
+            .addInterceptor(authInterceptor)
             .addInterceptor(loggingInterceptor)
             .connectTimeout(30, TimeUnit.SECONDS)
             .readTimeout(30, TimeUnit.SECONDS)

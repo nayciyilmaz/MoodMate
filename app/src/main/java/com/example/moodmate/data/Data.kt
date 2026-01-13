@@ -9,6 +9,22 @@ data class NavigationItem(
     val labelResId: Int
 )
 
+data class UserData(
+    val id: Long = 0L,
+    val firstName: String = "",
+    val lastName: String = "",
+    val email: String = ""
+) {
+    val fullName: String
+        get() = "$firstName $lastName"
+}
+
+data class UserUiState(
+    val isLoading: Boolean = true,
+    val userData: UserData? = null,
+    val error: String? = null
+)
+
 data class RegisterRequest(
     @SerializedName("first_name")
     val firstName: String,
@@ -18,19 +34,21 @@ data class RegisterRequest(
     val password: String
 )
 
-data class RegisterResponse(
-    val message: String
-)
-
 data class LoginRequest(
     val email: String,
     val password: String
 )
 
-data class LoginResponse(
-    val message: String,
-    @SerializedName("userId")
-    val userId: Int
+data class AuthResponse(
+    val id: Long,
+    @SerializedName("first_name")
+    val firstName: String,
+    @SerializedName("last_name")
+    val lastName: String,
+    val email: String,
+    val token: String,
+    val createdAt: String,
+    val updatedAt: String
 )
 
 data class SignInUiState(
@@ -81,3 +99,9 @@ data class SignUpValidationErrors(
                 emailError != null || passwordError != null
     }
 }
+
+data class ErrorResponse(
+    val code: Int?,
+    val message: String?,
+    val timestamp: String?
+)

@@ -30,6 +30,8 @@ import com.example.moodmate.components.EditScaffold
 @Composable
 fun ProfileScreen(
     navController: NavController,
+    fullName: String,
+    email: String,
     modifier: Modifier = Modifier
 ) {
     EditScaffold(navController = navController) {
@@ -41,8 +43,8 @@ fun ProfileScreen(
         ) {
             UserInfoCard(
                 title = stringResource(id = R.string.user_information),
-                userName = "Yılmaz Naycı",
-                userEmail = "yilmaznayci@gmail.com"
+                userName = fullName,
+                userEmail = email
             )
         }
     }
@@ -130,5 +132,9 @@ fun ProfileInfoRow(
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun ProfileScreenPreview() {
-    ProfileScreen(navController = rememberNavController())
+    ProfileScreen(
+        navController = rememberNavController(),
+        fullName = "Yılmaz Naycı",
+        email = "yilmaznayci@gmail.com"
+    )
 }

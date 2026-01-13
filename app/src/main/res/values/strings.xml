@@ -32,6 +32,8 @@
     <string name="mood_history_date_placeholder">Tarih seçin…</string>
     <string name="mood_history_cancel">İptal</string>
     <string name="mood_history_ok">Tamam</string>
+    <string name="last_mood_entries">Son Ruh Hali Kayıtları</string>
+    <string name="past_moods">Geçmiş Ruh Halleri</string>
 
     <string-array name="week_days_short">
         <item>Pzt</item>

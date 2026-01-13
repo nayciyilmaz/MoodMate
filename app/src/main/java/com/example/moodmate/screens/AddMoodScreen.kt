@@ -1,6 +1,7 @@
 package com.example.moodmate.screens
 
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
@@ -11,23 +12,22 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.State
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -40,18 +40,20 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.moodmate.R
+import com.example.moodmate.components.EditDetailsButton
 import com.example.moodmate.components.EditScaffold
 import com.example.moodmate.components.EditTextField
-import androidx.compose.material.icons.filled.CheckCircle
-import com.example.moodmate.components.EditDetailsButton
+import com.example.moodmate.viewmodel.AddMoodViewModel
 
 @Composable
 fun AddMoodScreen(
     navController: NavController,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: AddMoodViewModel = hiltViewModel()
 ) {
     val moodArray = stringArrayResource(id = R.array.mood_list)
     val moods = remember {
@@ -60,10 +62,6 @@ fun AddMoodScreen(
             parts[0] to parts[1]
         }
     }
-
-    var selectedMoodIndex by remember { mutableStateOf(-1) }
-    var selectedRating by remember { mutableStateOf(-1) }
-    var noteText by remember { mutableStateOf("") }
 
     EditScaffold(navController = navController) {
         Column(
@@ -79,18 +77,18 @@ fun AddMoodScreen(
             ) {
                 MoodSelector(
                     moods = moods,
-                    selectedMoodIndex = selectedMoodIndex,
-                    onMoodSelected = { selectedMoodIndex = it }
+                    selectedMoodIndex = viewModel.selectedMoodIndex,
+                    onMoodSelected = viewModel::onMoodSelected
                 )
 
                 RatingSelector(
-                    selectedRating = selectedRating,
-                    onRatingSelected = { selectedRating = it }
+                    selectedRating = viewModel.selectedRating,
+                    onRatingSelected = viewModel::onRatingSelected
                 )
 
                 NoteSection(
-                    noteText = noteText,
-                    onNoteChanged = { noteText = it },
+                    noteText = viewModel.noteText,
+                    onNoteChanged = viewModel::onNoteTextChange
                 )
             }
 
@@ -125,25 +123,14 @@ fun MoodSelector(
             items(moods.size) { index ->
                 val (emoji, label) = moods[index]
                 val isSelected = selectedMoodIndex == index
-
-                val scale by animateFloatAsState(
-                    targetValue = if (isSelected) 1.05f else 1f,
-                    animationSpec = spring(dampingRatio = 0.6f),
-                    label = "scale"
-                )
-
-                val backgroundColor by animateColorAsState(
-                    targetValue = if (isSelected) colorResource(id = R.color.acik_mavi) else Color.White,
-                    animationSpec = tween(300),
-                    label = "backgroundColor"
-                )
+                val (scale, backgroundColor) = getSelectionAnimation(isSelected)
 
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = modifier
-                        .scale(scale)
+                        .scale(scale.value)
                         .clip(RoundedCornerShape(12.dp))
-                        .background(backgroundColor)
+                        .background(backgroundColor.value)
                         .border(
                             width = if (isSelected) 0.dp else 2.dp,
                             color = if (isSelected) Color.Transparent else colorResource(id = R.color.blue_screen),
@@ -203,27 +190,16 @@ fun RatingSelector(
             ) {
                 for (i in 1..10) {
                     val isSelected = selectedRating == i
-
-                    val scale by animateFloatAsState(
-                        targetValue = if (isSelected) 1.3f else 1f,
-                        animationSpec = spring(dampingRatio = 0.6f),
-                        label = "ratingScale"
-                    )
-
-                    val color by animateColorAsState(
-                        targetValue = if (isSelected) colorResource(id = R.color.acik_mavi) else Color.White,
-                        animationSpec = tween(300),
-                        label = "ratingColor"
-                    )
+                    val (scale, color) = getSelectionAnimation(isSelected)
 
                     Box(
                         modifier = modifier
                             .weight(1f)
                             .aspectRatio(1f)
                             .padding(horizontal = 2.dp)
-                            .scale(scale)
+                            .scale(scale.value)
                             .clip(CircleShape)
-                            .background(color)
+                            .background(color.value)
                             .border(
                                 width = 2.dp,
                                 color = colorResource(id = R.color.blue_screen),
@@ -273,6 +249,23 @@ fun NoteSection(
             unfocusedIndicatorColor = colorResource(id = R.color.blue_screen)
         )
     }
+}
+
+@Composable
+private fun getSelectionAnimation(isSelected: Boolean): Pair<State<Float>, State<Color>> {
+    val scale = animateFloatAsState(
+        targetValue = if (isSelected) 1.05f else 1f,
+        animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy),
+        label = "scale"
+    )
+
+    val color = animateColorAsState(
+        targetValue = if (isSelected) colorResource(id = R.color.acik_mavi) else Color.White,
+        animationSpec = tween(300),
+        label = "color"
+    )
+
+    return scale to color
 }
 
 @Preview(showBackground = true, showSystemUi = true)

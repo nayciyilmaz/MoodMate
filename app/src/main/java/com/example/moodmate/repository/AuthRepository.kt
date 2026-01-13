@@ -1,11 +1,13 @@
 package com.example.moodmate.repository
 
+import com.example.moodmate.data.AuthResponse
+import com.example.moodmate.data.ErrorResponse
 import com.example.moodmate.data.LoginRequest
-import com.example.moodmate.data.LoginResponse
 import com.example.moodmate.data.RegisterRequest
-import com.example.moodmate.data.RegisterResponse
 import com.example.moodmate.network.ApiService
 import com.example.moodmate.util.Resource
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.Response
@@ -16,12 +18,14 @@ import javax.inject.Singleton
 class AuthRepository @Inject constructor(
     private val apiService: ApiService
 ) {
+    private val gson = Gson()
+
     suspend fun register(
         firstName: String,
         lastName: String,
         email: String,
         password: String
-    ): Resource<RegisterResponse> {
+    ): Resource<AuthResponse> {
         return withContext(Dispatchers.IO) {
             try {
                 val request = RegisterRequest(firstName, lastName, email, password)
@@ -36,7 +40,7 @@ class AuthRepository @Inject constructor(
     suspend fun login(
         email: String,
         password: String
-    ): Resource<LoginResponse> {
+    ): Resource<AuthResponse> {
         return withContext(Dispatchers.IO) {
             try {
                 val request = LoginRequest(email, password)
@@ -57,14 +61,20 @@ class AuthRepository @Inject constructor(
                 Resource.Error("Yanıt boş")
             }
         } else {
-            val errorMsg = when (response.code()) {
-                400 -> "Geçersiz istek"
-                401 -> "Kullanıcı bulunamadı veya şifre hatalı"
-                409 -> "Bu email zaten kayıtlı"
-                500 -> "Sunucu hatası"
-                else -> "Bilinmeyen hata: ${response.code()}"
+            val errorBody = response.errorBody()?.string()
+            val (errorMessage, fieldErrors) = try {
+                if (response.code() == 400) {
+                    val type = object : TypeToken<Map<String, String>>() {}.type
+                    val validationErrors: Map<String, String> = gson.fromJson(errorBody, type)
+                    Pair(null, validationErrors)
+                } else {
+                    val errorResponse = gson.fromJson(errorBody, ErrorResponse::class.java)
+                    Pair(errorResponse.message, null)
+                }
+            } catch (e: Exception) {
+                Pair("Sunucu hatası", null)
             }
-            Resource.Error(errorMsg)
+            Resource.Error(errorMessage ?: "Bilinmeyen hata", fieldErrors = fieldErrors)
         }
     }
 }

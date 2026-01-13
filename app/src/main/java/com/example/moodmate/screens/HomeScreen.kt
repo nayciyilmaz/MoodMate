@@ -29,6 +29,7 @@ import com.example.moodmate.components.EditScaffold
 @Composable
 fun HomeScreen(
     navController: NavController,
+    firstName: String,
     modifier: Modifier = Modifier
 ) {
     EditScaffold(navController = navController) {
@@ -39,7 +40,7 @@ fun HomeScreen(
                 .verticalScroll(rememberScrollState()),
         ) {
             Text(
-                text = "Merhaba, Yılmaz!",
+                text = "Merhaba, $firstName!",
                 style = MaterialTheme.typography.headlineMedium,
                 fontWeight = FontWeight.Bold
             )
@@ -51,6 +52,13 @@ fun HomeScreen(
             )
 
             HomeInfoCard(modifier = modifier)
+
+            Text(
+                text = stringResource(id = R.string.last_mood_entries),
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold,
+                modifier = modifier.padding(vertical = 20.dp)
+            )
         }
     }
 }
@@ -96,5 +104,8 @@ fun HomeInfoCard(modifier: Modifier = Modifier) {
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun HomeScreenPreview() {
-    HomeScreen(navController = rememberNavController())
+    HomeScreen(
+        navController = rememberNavController(),
+        firstName = "Yılmaz"
+    )
 }

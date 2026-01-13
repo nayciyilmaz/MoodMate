@@ -52,12 +52,6 @@ class SignInViewModel @Inject constructor(
     }
 
     fun login() {
-        val validationErrors = validateInputs()
-        if (validationErrors.hasErrors()) {
-            _uiState.value = _uiState.value.copy(validationErrors = validationErrors)
-            return
-        }
-
         viewModelScope.launch {
             _actionState.value = SignInActionState(isLoading = true)
             _uiState.value = _uiState.value.copy(validationErrors = SignInValidationErrors())
@@ -67,12 +61,18 @@ class SignInViewModel @Inject constructor(
             when (result) {
                 is Resource.Success -> {
                     result.data?.let { response ->
-                        tokenManager.saveUser(response.userId, _uiState.value.email)
+                        tokenManager.saveUser(
+                            token = response.token,
+                            userId = response.id,
+                            email = response.email,
+                            firstName = response.firstName,
+                            lastName = response.lastName
+                        )
                         _actionState.value = SignInActionState(isSuccess = true)
                     }
                 }
                 is Resource.Error -> {
-                    val validationErrors = mapApiErrorToValidation(result.message)
+                    val validationErrors = mapErrorToValidation(result.message, result.fieldErrors)
                     _uiState.value = _uiState.value.copy(validationErrors = validationErrors)
                     _actionState.value = SignInActionState(isLoading = false)
                 }
@@ -83,63 +83,19 @@ class SignInViewModel @Inject constructor(
         }
     }
 
-    private fun mapApiErrorToValidation(errorMessage: String?): SignInValidationErrors {
-        return when {
-            errorMessage?.contains("kullanıcı bulunamadı", ignoreCase = true) == true ||
-                    errorMessage?.contains("user not found", ignoreCase = true) == true -> {
-                SignInValidationErrors(
-                    emailError = context.getString(R.string.error_user_not_found)
-                )
-            }
-
-            errorMessage?.contains("şifre hatalı", ignoreCase = true) == true ||
-                    errorMessage?.contains("wrong password", ignoreCase = true) == true ||
-                    errorMessage?.contains("password", ignoreCase = true) == true -> {
-                SignInValidationErrors(
-                    passwordError = context.getString(R.string.error_wrong_password)
-                )
-            }
-
-            errorMessage?.contains("email", ignoreCase = true) == true ||
-                    errorMessage?.contains("şifre", ignoreCase = true) == true ||
-                    errorMessage?.contains("401", ignoreCase = true) == true -> {
-                SignInValidationErrors(
-                    emailError = context.getString(R.string.error_invalid_credential),
-                    passwordError = context.getString(R.string.error_invalid_credential)
-                )
-            }
-
-            errorMessage?.contains("network", ignoreCase = true) == true ||
-                    errorMessage?.contains("connection", ignoreCase = true) == true ||
-                    errorMessage?.contains("bağlantı", ignoreCase = true) == true -> {
-                SignInValidationErrors(
-                    emailError = context.getString(R.string.error_network_request_failed)
-                )
-            }
-
-            else -> {
-                SignInValidationErrors(
-                    emailError = context.getString(R.string.error_sign_in_failed)
-                )
-            }
+    private fun mapErrorToValidation(
+        message: String?,
+        fieldErrors: Map<String, String>?
+    ): SignInValidationErrors {
+        return if (fieldErrors != null) {
+            SignInValidationErrors(
+                emailError = fieldErrors["email"],
+                passwordError = fieldErrors["password"]
+            )
+        } else {
+            SignInValidationErrors(
+                emailError = message ?: context.getString(R.string.error_sign_in_failed)
+            )
         }
-    }
-
-    private fun validateInputs(): SignInValidationErrors {
-        var errors = SignInValidationErrors()
-
-        if (_uiState.value.email.trim().isEmpty()) {
-            errors = errors.copy(emailError = context.getString(R.string.error_email_empty))
-        } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(_uiState.value.email.trim()).matches()) {
-            errors = errors.copy(emailError = context.getString(R.string.error_email_invalid))
-        }
-
-        if (_uiState.value.password.isEmpty()) {
-            errors = errors.copy(passwordError = context.getString(R.string.error_password_empty))
-        } else if (_uiState.value.password.length < 6) {
-            errors = errors.copy(passwordError = context.getString(R.string.error_password_min_length))
-        }
-
-        return errors
     }
 }
