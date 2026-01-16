@@ -1,31 +1,107 @@
 package com.example.moodmate.viewmodel
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
+import android.content.Context
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.moodmate.R
+import com.example.moodmate.data.AddMoodActionState
+import com.example.moodmate.data.AddMoodUiState
+import com.example.moodmate.data.MoodItem
+import com.example.moodmate.repository.MoodRepository
+import com.example.moodmate.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 @HiltViewModel
-class AddMoodViewModel @Inject constructor() : ViewModel() {
+class AddMoodViewModel @Inject constructor(
+    private val moodRepository: MoodRepository,
+    @ApplicationContext private val context: Context
+) : ViewModel() {
 
-    var selectedMoodIndex by mutableIntStateOf(-1)
-    var selectedRating by mutableIntStateOf(-1)
+    private val _uiState = MutableStateFlow(AddMoodUiState())
+    val uiState: StateFlow<AddMoodUiState> = _uiState.asStateFlow()
 
-    var noteText by mutableStateOf("")
-        private set
+    private val _actionState = MutableStateFlow(AddMoodActionState())
+    val actionState: StateFlow<AddMoodActionState> = _actionState.asStateFlow()
+
+    val moods: List<MoodItem> = context.resources.getStringArray(R.array.mood_list).map {
+        val parts = it.split("-")
+        MoodItem(emoji = parts[0], label = parts[1])
+    }
 
     fun onNoteTextChange(newText: String) {
-        noteText = newText
+        _uiState.value = _uiState.value.copy(
+            noteText = newText,
+            validationError = null
+        )
     }
 
     fun onMoodSelected(index: Int) {
-        selectedMoodIndex = index
+        _uiState.value = _uiState.value.copy(
+            selectedMoodIndex = index,
+            validationError = null
+        )
     }
 
     fun onRatingSelected(rating: Int) {
-        selectedRating = rating
+        _uiState.value = _uiState.value.copy(
+            selectedRating = rating,
+            validationError = null
+        )
+    }
+
+    fun saveMood() {
+        if (!_uiState.value.isValid()) {
+            _uiState.value = _uiState.value.copy(
+                validationError = context.getString(R.string.error_fields_required)
+            )
+            return
+        }
+
+        viewModelScope.launch {
+            _actionState.value = AddMoodActionState(isLoading = true)
+
+            val selectedEmoji = moods[_uiState.value.selectedMoodIndex].emoji
+            val currentDateTime = LocalDateTime.now()
+            val formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME
+            val entryDate = currentDateTime.format(formatter)
+
+            val result = moodRepository.addMood(
+                emoji = selectedEmoji,
+                score = _uiState.value.selectedRating,
+                note = _uiState.value.noteText.trim(),
+                entryDate = entryDate
+            )
+
+            when (result) {
+                is Resource.Success -> {
+                    _actionState.value = AddMoodActionState(isSuccess = true)
+                    resetForm()
+                }
+                is Resource.Error -> {
+                    _actionState.value = AddMoodActionState(
+                        error = result.message ?: context.getString(R.string.error_save_mood_failed)
+                    )
+                }
+                is Resource.Loading -> {
+                    _actionState.value = AddMoodActionState(isLoading = true)
+                }
+            }
+        }
+    }
+
+    private fun resetForm() {
+        _uiState.value = AddMoodUiState()
+    }
+
+    fun resetActionState() {
+        _actionState.value = AddMoodActionState()
     }
 }

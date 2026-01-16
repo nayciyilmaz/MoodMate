@@ -105,3 +105,43 @@ data class ErrorResponse(
     val message: String?,
     val timestamp: String?
 )
+
+data class MoodRequest(
+    val emoji: String,
+    val score: Int,
+    val note: String,
+    val entryDate: String
+)
+
+data class MoodResponse(
+    val id: Long,
+    val emoji: String,
+    val score: Int,
+    val note: String,
+    val entryDate: String,
+    val createdAt: String
+)
+
+data class MoodItem(
+    val emoji: String,
+    val label: String
+)
+
+data class AddMoodUiState(
+    val selectedMoodIndex: Int = -1,
+    val selectedRating: Int = -1,
+    val noteText: String = "",
+    val validationError: String? = null
+) {
+    fun isValid(): Boolean {
+        return selectedMoodIndex >= 0 &&
+                selectedRating > 0 &&
+                noteText.isNotBlank()
+    }
+}
+
+data class AddMoodActionState(
+    val isLoading: Boolean = false,
+    val isSuccess: Boolean = false,
+    val error: String? = null
+)

@@ -34,6 +34,11 @@
     <string name="mood_history_ok">Tamam</string>
     <string name="last_mood_entries">Son Ruh Hali Kayıtları</string>
     <string name="past_moods">Geçmiş Ruh Halleri</string>
+    <string name="mood_save_success">Ruh haliniz başarıyla kaydedildi!</string>
+    <string name="error_save_mood_failed">Ruh hali kaydedilemedi. Lütfen tekrar deneyin.</string>
+    <string name="error_fields_required">Yukarıdaki boşlukları doldurmak zorunludur.</string>
+    <string name="error_sign_in_failed">Giriş başarısız. Lütfen tekrar deneyin</string>
+    <string name="error_sign_up_failed">Kayıt başarısız. Lütfen tekrar deneyin</string>
 
     <string-array name="week_days_short">
         <item>Pzt</item>
@@ -58,24 +63,4 @@
         <item>😌-Huzurlu</item>
     </string-array>
 
-    <string name="hata_gecersiz_istek">Geçersiz istek</string>
-    <string name="hata_kullanici_bulunamadi">Kullanıcı bulunamadı veya şifre hatalı</string>
-    <string name="hata_email_kayitli">Bu email zaten kayıtlı</string>
-    <string name="hata_sunucu">Sunucu hatası</string>
-    <string name="hata_bilinmeyen">Bilinmeyen hata oluştu</string>
-    <string name="hata_yanit_bos">Yanıt boş</string>
-    <string name="hata_bilinmeyen_kod">Bilinmeyen hata: %d</string>
-    <string name="error_email_empty">Email alanı boş bırakılamaz</string>
-    <string name="error_email_invalid">Geçerli bir email adresi girin</string>
-    <string name="error_password_empty">Şifre alanı boş bırakılamaz</string>
-    <string name="error_password_min_length">Şifre en az 6 karakter olmalıdır</string>
-    <string name="error_user_not_found">Bu email ile kayıtlı kullanıcı bulunamadı</string>
-    <string name="error_wrong_password">Şifre hatalı</string>
-    <string name="error_invalid_credential">Email veya şifre hatalı</string>
-    <string name="error_network_request_failed">Bağlantı hatası. İnternet bağlantınızı kontrol edin</string>
-    <string name="error_sign_in_failed">Giriş başarısız. Lütfen tekrar deneyin</string>
-    <string name="error_firstname_empty">İsim alanı boş bırakılamaz</string>
-    <string name="error_lastname_empty">Soyisim alanı boş bırakılamaz</string>
-    <string name="error_email_already_exists">Bu email adresi zaten kayıtlı</string>
-    <string name="error_sign_up_failed">Kayıt başarısız. Lütfen tekrar deneyin</string>
 </resources>

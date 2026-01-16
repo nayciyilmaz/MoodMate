@@ -26,15 +26,16 @@ import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -47,6 +48,9 @@ import com.example.moodmate.R
 import com.example.moodmate.components.EditDetailsButton
 import com.example.moodmate.components.EditScaffold
 import com.example.moodmate.components.EditTextField
+import com.example.moodmate.components.ValidationErrorText
+import com.example.moodmate.navigation.MoodMateScreens
+import com.example.moodmate.util.navigateAndClearBackStack
 import com.example.moodmate.viewmodel.AddMoodViewModel
 
 @Composable
@@ -55,11 +59,16 @@ fun AddMoodScreen(
     modifier: Modifier = Modifier,
     viewModel: AddMoodViewModel = hiltViewModel()
 ) {
-    val moodArray = stringArrayResource(id = R.array.mood_list)
-    val moods = remember {
-        moodArray.map {
-            val parts = it.split("-")
-            parts[0] to parts[1]
+    val uiState by viewModel.uiState.collectAsState()
+    val actionState by viewModel.actionState.collectAsState()
+
+    LaunchedEffect(key1 = actionState.isSuccess) {
+        if (actionState.isSuccess) {
+            navigateAndClearBackStack(
+                navController = navController,
+                destination = MoodMateScreens.HomeScreen.route,
+                popUpToRoute = MoodMateScreens.AddMoodScreen.route
+            )
         }
     }
 
@@ -76,27 +85,32 @@ fun AddMoodScreen(
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 MoodSelector(
-                    moods = moods,
-                    selectedMoodIndex = viewModel.selectedMoodIndex,
+                    moods = viewModel.moods,
+                    selectedMoodIndex = uiState.selectedMoodIndex,
                     onMoodSelected = viewModel::onMoodSelected
                 )
 
                 RatingSelector(
-                    selectedRating = viewModel.selectedRating,
+                    selectedRating = uiState.selectedRating,
                     onRatingSelected = viewModel::onRatingSelected
                 )
 
                 NoteSection(
-                    noteText = viewModel.noteText,
+                    noteText = uiState.noteText,
                     onNoteChanged = viewModel::onNoteTextChange
                 )
+
+                uiState.validationError?.let { error ->
+                    ValidationErrorText(error = error)
+                }
             }
 
             EditDetailsButton(
                 text = stringResource(id = R.string.save_button),
                 icon = Icons.Default.CheckCircle,
-                onClick = { },
-                containerColor = colorResource(id = R.color.acik_mavi)
+                onClick = viewModel::saveMood,
+                containerColor = colorResource(id = R.color.acik_mavi),
+                modifier = modifier.fillMaxWidth()
             )
         }
     }
@@ -104,7 +118,7 @@ fun AddMoodScreen(
 
 @Composable
 fun MoodSelector(
-    moods: List<Pair<String, String>>,
+    moods: List<com.example.moodmate.data.MoodItem>,
     selectedMoodIndex: Int,
     onMoodSelected: (Int) -> Unit,
     modifier: Modifier = Modifier
@@ -121,7 +135,7 @@ fun MoodSelector(
             modifier = modifier.padding(vertical = 16.dp)
         ) {
             items(moods.size) { index ->
-                val (emoji, label) = moods[index]
+                val mood = moods[index]
                 val isSelected = selectedMoodIndex == index
                 val (scale, backgroundColor) = getSelectionAnimation(isSelected)
 
@@ -140,12 +154,12 @@ fun MoodSelector(
                         .padding(horizontal = 16.dp, vertical = 12.dp)
                 ) {
                     Text(
-                        text = emoji,
+                        text = mood.emoji,
                         style = MaterialTheme.typography.headlineLarge,
                         modifier = modifier.padding(bottom = 4.dp)
                     )
                     Text(
-                        text = label,
+                        text = mood.label,
                         style = MaterialTheme.typography.labelMedium,
                         fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal,
                         color = if (isSelected) Color.White else Color.Black
