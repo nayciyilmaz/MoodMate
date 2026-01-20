@@ -22,6 +22,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -40,6 +42,7 @@ import com.example.moodmate.R
 import com.example.moodmate.components.EditScaffold
 import com.example.moodmate.components.EditTextButton
 import com.example.moodmate.components.EditTextField
+import com.example.moodmate.components.MoodList
 import com.example.moodmate.viewmodel.MoodHistoryViewModel
 import java.time.LocalDate
 import java.time.YearMonth
@@ -52,6 +55,8 @@ fun MoodHistoryScreen(
     modifier: Modifier = Modifier,
     viewModel: MoodHistoryViewModel = hiltViewModel()
 ) {
+    val uiState by viewModel.uiState.collectAsState()
+
     EditScaffold(navController = navController) {
         Column(
             modifier = modifier
@@ -112,6 +117,12 @@ fun MoodHistoryScreen(
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
                 modifier = modifier.padding(bottom = 20.dp)
+            )
+
+            MoodList(
+                isLoading = uiState.isLoading,
+                moods = uiState.moods,
+                modifier = modifier
             )
         }
     }

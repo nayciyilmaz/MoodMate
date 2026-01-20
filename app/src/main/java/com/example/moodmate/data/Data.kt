@@ -145,3 +145,15 @@ data class AddMoodActionState(
     val isSuccess: Boolean = false,
     val error: String? = null
 )
+
+data class HomeUiState(
+    val isLoading: Boolean = false,
+    val moods: List<MoodResponse> = emptyList(),
+    val error: String? = null
+)
+
+data class MoodHistoryUiState(
+    val isLoading: Boolean = false,
+    val moods: List<MoodResponse> = emptyList(),
+    val error: String? = null
+)

@@ -5,6 +5,7 @@
     <string name="eposta_etiket">E-mail</string>
     <string name="sifre_etiket">Şifre</string>
     <string name="giris_yap_butonu">Giriş Yap</string>
+    <string name="welcome_message">Merhaba, %1$s!</string>
     <string name="hesap_olustur_butonu">Hesap Oluştur</string>
     <string name="isim_etiket">İsim</string>
     <string name="soyisim_etiket">Soyisim</string>
@@ -17,6 +18,10 @@
     <string name="title_mood_history">Ruh Hali Geçmişi</string>
     <string name="title_mood_details">Ruh Hali Detayı</string>
     <string name="title_profile">Profil</string>
+    <string name="detailed_note">Detaylı Not</string>
+    <string name="edit">Düzenle</string>
+    <string name="delete">Sil</string>
+    <string name="ask_ai">Yapay Zekaya Danış</string>
     <string name="home_greeting_question">Bugün nasıl hissediyorsun?</string>
     <string name="home_hope_message">Umarım günün güzel geçiyordur.</string>
     <string name="home_reminder_message">Günün nasıl geçtiğini not almayı unutma!</string>
@@ -37,8 +42,10 @@
     <string name="mood_save_success">Ruh haliniz başarıyla kaydedildi!</string>
     <string name="error_save_mood_failed">Ruh hali kaydedilemedi. Lütfen tekrar deneyin.</string>
     <string name="error_fields_required">Yukarıdaki boşlukları doldurmak zorunludur.</string>
-    <string name="error_sign_in_failed">Giriş başarısız. Lütfen tekrar deneyin</string>
-    <string name="error_sign_up_failed">Kayıt başarısız. Lütfen tekrar deneyin</string>
+    <string name="error_sign_in_failed">Giriş başarısız. Lütfen tekrar deneyin.</string>
+    <string name="error_sign_up_failed">Kayıt başarısız. Lütfen tekrar deneyin.</string>
+    <string name="no_mood_yet">( Henüz ruh hali kaydı yok. )</string>
+    <string name="loading_moods">Ruh Hali Kayıtları Yükleniyor...</string>
 
     <string-array name="week_days_short">
         <item>Pzt</item>
