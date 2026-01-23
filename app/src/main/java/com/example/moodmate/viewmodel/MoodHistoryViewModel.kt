@@ -77,6 +77,11 @@ class MoodHistoryViewModel @Inject constructor(
         filterMoods()
     }
 
+    fun onClearSearch() {
+        searchText = ""
+        filterMoods()
+    }
+
     fun onShowDatePicker() {
         showDatePicker = true
     }
@@ -100,6 +105,12 @@ class MoodHistoryViewModel @Inject constructor(
             showDatePicker = false
             filterMoods()
         }
+    }
+
+    fun onClearDate() {
+        selectedDate = null
+        tempSelectedDate = null
+        filterMoods()
     }
 
     private fun filterMoods() {

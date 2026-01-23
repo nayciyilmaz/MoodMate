@@ -96,7 +96,8 @@ fun SignInScreen(
                 trailingIcon = {
                     EditIconButton(
                         icon = if (uiState.isPasswordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
-                        onClick = viewModel::togglePasswordVisibility
+                        onClick = viewModel::togglePasswordVisibility,
+                        contentDescription = null
                     )
                 },
                 visualTransformation = if (uiState.isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),

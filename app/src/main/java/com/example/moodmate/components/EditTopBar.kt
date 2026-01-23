@@ -32,6 +32,7 @@ fun EditTopBar(
             if (currentRoute == MoodMateScreens.MoodDetailsScreen.route) {
                 EditIconButton(
                     icon = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = null,
                     onClick = { navController.popBackStack() }
                 )
             }

@@ -13,14 +13,14 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.outlined.CalendarToday
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -29,62 +29,79 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.moodmate.R
 import com.example.moodmate.components.EditDetailsButton
 import com.example.moodmate.components.EditScaffold
+import com.example.moodmate.util.formatDate
+import com.example.moodmate.viewmodel.MoodDetailsViewModel
 
 @Composable
 fun MoodDetailsScreen(
     navController: NavController,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: MoodDetailsViewModel = hiltViewModel()
 ) {
-    EditScaffold(navController = navController) {
-        Column(
-            modifier = modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .padding(20.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            MoodEmojiCard(
-                emoji = "😊",
-                dateTime = "20.01.2026 14:30",
+    val moodDetails by viewModel.moodDetails.collectAsState()
+
+    EditScaffold(navController = navController) { innerPadding ->
+        moodDetails?.let { mood ->
+            Column(
                 modifier = modifier
-            )
+                    .padding(innerPadding)
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+                    .padding(20.dp),
+                verticalArrangement = Arrangement.SpaceBetween,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    MoodEmojiCard(
+                        emoji = mood.emoji,
+                        dateTime = formatDate(mood.entryDate),
+                        score = mood.score,
+                        modifier = modifier
+                    )
 
-            DetailedNoteCard(
-                note = "Bugün genel olarak oldukça verimli bir gündü. Sabah erken kalkıp rutinlerimi tamamlamak beni güne çok iyi hazırladı. " +
-                        "İş yerindeki projelerde beklediğimden daha hızlı ilerleme kaydettim. Öğle yemeğinde biraz dinlenme fırsatı buldum. " +
-                        "Akşamüzeri arkadaşlarımla kahve içmek günün tüm yorgunluğunu üzerimden attı. " +
-                        "Kendimi zihinsel olarak çok berrak ve huzurlu hissediyorum. " +
-                        "Yarınki planlarımı şimdiden hazırladım ve motivasyonum oldukça yüksek. " +
-                        "Küçük şeylerden mutlu olmayı başardığım bir gün daha geride kalıyor.",
-                modifier = modifier
-            )
+                    DetailedNoteCard(
+                        note = mood.note,
+                        modifier = modifier
+                    )
+                }
 
-            EditDetailsButton(
-                text = stringResource(id = R.string.edit),
-                icon = Icons.Default.Edit,
-                onClick = { },
-                containerColor = colorResource(id = R.color.acik_mavi)
-            )
+                Column(
+                    modifier = modifier
+                        .fillMaxWidth()
+                        .padding(top = 20.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    EditDetailsButton(
+                        text = stringResource(id = R.string.edit),
+                        icon = Icons.Default.Edit,
+                        onClick = { },
+                        containerColor = colorResource(id = R.color.acik_mavi)
+                    )
 
-            EditDetailsButton(
-                text = stringResource(id = R.string.delete),
-                icon = Icons.Default.Delete,
-                onClick = { },
-                containerColor = Color.Red
-            )
+                    EditDetailsButton(
+                        text = stringResource(id = R.string.delete),
+                        icon = Icons.Default.Delete,
+                        onClick = { },
+                        containerColor = Color.Red
+                    )
 
-            EditDetailsButton(
-                text = stringResource(id = R.string.ask_ai),
-                icon = Icons.Default.AutoAwesome,
-                onClick = { },
-                containerColor = colorResource(id = R.color.ai_purple)
-            )
+                    EditDetailsButton(
+                        text = stringResource(id = R.string.ask_ai),
+                        icon = Icons.Default.AutoAwesome,
+                        onClick = { },
+                        containerColor = colorResource(id = R.color.ai_purple)
+                    )
+                }
+            }
         }
     }
 }
@@ -93,6 +110,7 @@ fun MoodDetailsScreen(
 fun MoodEmojiCard(
     emoji: String,
     dateTime: String,
+    score: Int,
     modifier: Modifier = Modifier
 ) {
     Card(
@@ -110,9 +128,27 @@ fun MoodEmojiCard(
         ) {
             Text(
                 text = emoji,
-                style = MaterialTheme.typography.displayLarge,
-                modifier = modifier.padding(bottom = 24.dp)
+                style = MaterialTheme.typography.displayLarge
             )
+
+            Surface(
+                color = colorResource(id = R.color.light_gray_background),
+                shape = RoundedCornerShape(12.dp),
+                modifier = modifier.padding(vertical = 16.dp)
+            ) {
+                Row(
+                    modifier = modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = "$score / 10",
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontWeight = FontWeight.SemiBold,
+                        color = colorResource(id = R.color.date_time_color)
+                    )
+                }
+            }
 
             Surface(
                 color = colorResource(id = R.color.light_gray_background),
@@ -123,18 +159,11 @@ fun MoodEmojiCard(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Center
                 ) {
-                    Icon(
-                        imageVector = Icons.Outlined.CalendarToday,
-                        contentDescription = null,
-                        tint = colorResource(id = R.color.date_time_color)
-                    )
-
                     Text(
                         text = dateTime,
                         style = MaterialTheme.typography.bodyLarge,
                         fontWeight = FontWeight.SemiBold,
-                        color = colorResource(id = R.color.date_time_color),
-                        modifier = modifier.padding(start = 8.dp)
+                        color = colorResource(id = R.color.date_time_color)
                     )
                 }
             }
@@ -183,7 +212,8 @@ fun DetailedNoteCard(
 
             Text(
                 text = note,
-                style = MaterialTheme.typography.bodyMedium
+                style = MaterialTheme.typography.bodyMedium,
+                lineHeight = MaterialTheme.typography.bodyMedium.lineHeight
             )
         }
     }

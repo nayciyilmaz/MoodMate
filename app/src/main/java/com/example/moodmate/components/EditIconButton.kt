@@ -4,14 +4,16 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 
 @Composable
 fun EditIconButton(
     icon: ImageVector,
+    contentDescription: String?,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    contentDescription: String? = null
+    tint: Color = Color.Unspecified
 ) {
     IconButton(
         onClick = onClick,
@@ -19,7 +21,8 @@ fun EditIconButton(
     ) {
         Icon(
             imageVector = icon,
-            contentDescription = contentDescription
+            contentDescription = contentDescription,
+            tint = tint
         )
     }
 }

@@ -7,6 +7,12 @@ enum class MoodMateScreens(val route: String) {
     HomeScreen("home_screen"),
     AddMoodScreen("add_mood_screen"),
     MoodHistoryScreen("mood_history_screen"),
-    MoodDetailsScreen("mood_details_screen"),
-    ProfileScreen("profile_screen")
+    MoodDetailsScreen("mood_details_screen/{moodJson}"),
+    ProfileScreen("profile_screen");
+
+    companion object {
+        fun createMoodDetailsRoute(moodJson: String): String {
+            return "mood_details_screen/$moodJson"
+        }
+    }
 }

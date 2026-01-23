@@ -30,7 +30,11 @@ import androidx.navigation.compose.rememberNavController
 import com.example.moodmate.R
 import com.example.moodmate.components.EditScaffold
 import com.example.moodmate.components.MoodList
+import com.example.moodmate.navigation.MoodMateScreens
 import com.example.moodmate.viewmodel.HomeViewModel
+import com.google.gson.Gson
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 
 @Composable
 fun HomeScreen(
@@ -76,6 +80,13 @@ fun HomeScreen(
             MoodList(
                 isLoading = uiState.isLoading,
                 moods = uiState.moods,
+                onMoodClick = { mood ->
+                    val gson = Gson()
+                    val moodJson = gson.toJson(mood)
+                    val encodedMoodJson = URLEncoder.encode(moodJson, StandardCharsets.UTF_8.toString())
+                        .replace("+", "%20")
+                    navController.navigate(MoodMateScreens.createMoodDetailsRoute(encodedMoodJson))
+                },
                 modifier = modifier
             )
         }

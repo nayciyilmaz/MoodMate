@@ -4,9 +4,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.moodmate.screens.AddMoodScreen
 import com.example.moodmate.screens.HomeScreen
 import com.example.moodmate.screens.MoodDetailsScreen
@@ -45,7 +47,14 @@ fun MoodMateNavigation(){
         composable(route = MoodMateScreens.MoodHistoryScreen.route){
             MoodHistoryScreen(navController = navController)
         }
-        composable(route = MoodMateScreens.MoodDetailsScreen.route){
+        composable(
+            route = MoodMateScreens.MoodDetailsScreen.route,
+            arguments = listOf(
+                navArgument("moodJson") {
+                    type = NavType.StringType
+                }
+            )
+        ){
             MoodDetailsScreen(navController = navController)
         }
         composable(route = MoodMateScreens.ProfileScreen.route){

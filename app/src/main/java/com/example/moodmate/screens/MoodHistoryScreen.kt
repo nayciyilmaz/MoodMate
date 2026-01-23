@@ -16,6 +16,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarToday
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -39,11 +40,16 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.moodmate.R
+import com.example.moodmate.components.EditIconButton
 import com.example.moodmate.components.EditScaffold
 import com.example.moodmate.components.EditTextButton
 import com.example.moodmate.components.EditTextField
 import com.example.moodmate.components.MoodList
+import com.example.moodmate.navigation.MoodMateScreens
 import com.example.moodmate.viewmodel.MoodHistoryViewModel
+import com.google.gson.Gson
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 import java.time.LocalDate
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
@@ -75,6 +81,15 @@ fun MoodHistoryScreen(
                         imageVector = Icons.Default.Search,
                         contentDescription = null
                     )
+                },
+                trailingIcon = {
+                    if (viewModel.searchText.isNotEmpty()) {
+                        EditIconButton(
+                            icon = Icons.Default.Clear,
+                            contentDescription = null,
+                            onClick = { viewModel.onClearSearch() }
+                        )
+                    }
                 }
             )
 
@@ -96,6 +111,15 @@ fun MoodHistoryScreen(
                         imageVector = Icons.Default.CalendarToday,
                         contentDescription = null
                     )
+                },
+                trailingIcon = {
+                    if (viewModel.selectedDate != null) {
+                        EditIconButton(
+                            icon = Icons.Default.Clear,
+                            contentDescription = null,
+                            onClick = { viewModel.onClearDate() }
+                        )
+                    }
                 },
                 enabled = false
             )
@@ -122,6 +146,13 @@ fun MoodHistoryScreen(
             MoodList(
                 isLoading = uiState.isLoading,
                 moods = uiState.moods,
+                onMoodClick = { mood ->
+                    val gson = Gson()
+                    val moodJson = gson.toJson(mood)
+                    val encodedMoodJson = URLEncoder.encode(moodJson, StandardCharsets.UTF_8.toString())
+                        .replace("+", "%20")
+                    navController.navigate(MoodMateScreens.createMoodDetailsRoute(encodedMoodJson))
+                },
                 modifier = modifier
             )
         }

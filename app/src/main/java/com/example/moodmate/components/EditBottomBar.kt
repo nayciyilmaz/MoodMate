@@ -18,7 +18,7 @@ import androidx.navigation.NavController
 import com.example.moodmate.R
 import com.example.moodmate.data.NavigationItem
 import com.example.moodmate.navigation.MoodMateScreens
-
+import com.example.moodmate.util.navigateAndClearBackStack
 
 @Composable
 fun EditBottomBar(
@@ -55,11 +55,12 @@ fun EditBottomBar(
             NavigationBarItem(
                 selected = currentRoute == item.route,
                 onClick = {
-                    navController.navigate(item.route) {
-                        popUpTo(MoodMateScreens.HomeScreen.route) {
-                            inclusive = item.route == MoodMateScreens.HomeScreen.route
-                        }
-                    }
+                    navigateAndClearBackStack(
+                        navController = navController,
+                        destination = item.route,
+                        popUpToRoute = MoodMateScreens.HomeScreen.route,
+                        inclusive = item.route == MoodMateScreens.HomeScreen.route
+                    )
                 },
                 icon = {
                     Icon(

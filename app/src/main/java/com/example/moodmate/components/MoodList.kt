@@ -1,6 +1,7 @@
 package com.example.moodmate.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,14 +26,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.moodmate.R
 import com.example.moodmate.data.MoodResponse
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
-import java.util.Locale
+import com.example.moodmate.util.formatDate
 
 @Composable
 fun MoodList(
     isLoading: Boolean,
     moods: List<MoodResponse>,
+    onMoodClick: (MoodResponse) -> Unit,
     modifier: Modifier = Modifier
 ) {
     when {
@@ -58,7 +58,8 @@ fun MoodList(
                     emoji = mood.emoji,
                     score = mood.score.toString(),
                     date = formatDate(mood.entryDate),
-                    description = mood.note
+                    description = mood.note,
+                    onClick = { onMoodClick(mood) }
                 )
             }
         }
@@ -98,12 +99,14 @@ fun MoodCard(
     score: String,
     date: String,
     description: String,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .padding(bottom = 12.dp),
+            .padding(bottom = 12.dp)
+            .clickable { onClick() },
         colors = CardDefaults.cardColors(containerColor = Color.White),
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
@@ -151,16 +154,5 @@ fun MoodCard(
                 overflow = TextOverflow.Ellipsis
             )
         }
-    }
-}
-
-fun formatDate(isoDate: String): String {
-    return try {
-        val dateTime = LocalDateTime.parse(isoDate, DateTimeFormatter.ISO_LOCAL_DATE_TIME)
-        dateTime.format(
-            DateTimeFormatter.ofPattern("dd MMMM yyyy, HH:mm", Locale("tr"))
-        )
-    } catch (e: Exception) {
-        isoDate
     }
 }
