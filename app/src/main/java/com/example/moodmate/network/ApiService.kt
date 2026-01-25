@@ -9,6 +9,8 @@ import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.PUT
+import retrofit2.http.Path
 
 interface ApiService {
 
@@ -20,6 +22,12 @@ interface ApiService {
 
     @POST("api/moods")
     suspend fun addMood(@Body request: MoodRequest): Response<MoodResponse>
+
+    @PUT("api/moods/{id}")
+    suspend fun updateMood(
+        @Path("id") id: Long,
+        @Body request: MoodRequest
+    ): Response<MoodResponse>
 
     @GET("api/moods")
     suspend fun getUserMoods(): Response<List<MoodResponse>>

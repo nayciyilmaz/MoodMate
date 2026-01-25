@@ -23,6 +23,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -62,6 +63,15 @@ fun MoodHistoryScreen(
     viewModel: MoodHistoryViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
+
+    LaunchedEffect(Unit) {
+        navController.currentBackStackEntry?.savedStateHandle?.getLiveData<Boolean>("shouldRefresh")?.observeForever { shouldRefresh ->
+            if (shouldRefresh == true) {
+                viewModel.loadMoods()
+                navController.currentBackStackEntry?.savedStateHandle?.set("shouldRefresh", false)
+            }
+        }
+    }
 
     EditScaffold(navController = navController) {
         Column(

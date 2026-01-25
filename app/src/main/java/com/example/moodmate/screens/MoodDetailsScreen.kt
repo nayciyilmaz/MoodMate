@@ -19,6 +19,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -35,6 +36,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.moodmate.R
 import com.example.moodmate.components.EditDetailsButton
 import com.example.moodmate.components.EditScaffold
+import com.example.moodmate.navigation.MoodMateScreens
 import com.example.moodmate.util.formatDate
 import com.example.moodmate.viewmodel.MoodDetailsViewModel
 
@@ -45,6 +47,25 @@ fun MoodDetailsScreen(
     viewModel: MoodDetailsViewModel = hiltViewModel()
 ) {
     val moodDetails by viewModel.moodDetails.collectAsState()
+
+    LaunchedEffect(Unit) {
+        navController.currentBackStackEntry?.savedStateHandle?.getLiveData<Boolean>("shouldRefresh")?.observeForever { shouldRefresh ->
+            if (shouldRefresh == true) {
+                viewModel.refreshMoodDetails()
+                navController.currentBackStackEntry?.savedStateHandle?.set("shouldRefresh", false)
+
+                try {
+                    navController.getBackStackEntry(MoodMateScreens.HomeScreen.route)
+                        .savedStateHandle.set("shouldRefresh", true)
+                } catch (e: Exception) { }
+
+                try {
+                    navController.getBackStackEntry(MoodMateScreens.MoodHistoryScreen.route)
+                        .savedStateHandle.set("shouldRefresh", true)
+                } catch (e: Exception) { }
+            }
+        }
+    }
 
     EditScaffold(navController = navController) { innerPadding ->
         moodDetails?.let { mood ->
@@ -83,7 +104,12 @@ fun MoodDetailsScreen(
                     EditDetailsButton(
                         text = stringResource(id = R.string.edit),
                         icon = Icons.Default.Edit,
-                        onClick = { },
+                        onClick = {
+                            navController.currentBackStackEntry?.savedStateHandle?.set("emoji", mood.emoji)
+                            navController.currentBackStackEntry?.savedStateHandle?.set("score", mood.score)
+                            navController.currentBackStackEntry?.savedStateHandle?.set("note", mood.note)
+                            navController.navigate(MoodMateScreens.createAddMoodRoute(mood.id))
+                        },
                         containerColor = colorResource(id = R.color.acik_mavi)
                     )
 

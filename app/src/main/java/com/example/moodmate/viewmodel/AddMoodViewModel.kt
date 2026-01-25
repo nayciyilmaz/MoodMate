@@ -1,6 +1,7 @@
 package com.example.moodmate.viewmodel
 
 import android.content.Context
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.moodmate.R
@@ -22,7 +23,8 @@ import javax.inject.Inject
 @HiltViewModel
 class AddMoodViewModel @Inject constructor(
     private val moodRepository: MoodRepository,
-    @ApplicationContext private val context: Context
+    @ApplicationContext private val context: Context,
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(AddMoodUiState())
@@ -34,6 +36,21 @@ class AddMoodViewModel @Inject constructor(
     val moods: List<MoodItem> = context.resources.getStringArray(R.array.mood_list).map {
         val parts = it.split("-")
         MoodItem(emoji = parts[0], label = parts[1])
+    }
+
+    private val moodIdString: String? = savedStateHandle.get<String>("moodId")
+    val isEditMode = !moodIdString.isNullOrEmpty()
+    private val moodId: Long = moodIdString?.toLongOrNull() ?: 0L
+
+    fun setInitialData(emoji: String, score: Int, note: String) {
+        if (isEditMode) {
+            val moodIndex = moods.indexOfFirst { it.emoji == emoji }
+            _uiState.value = _uiState.value.copy(
+                selectedMoodIndex = moodIndex,
+                selectedRating = score,
+                noteText = note
+            )
+        }
     }
 
     fun onNoteTextChange(newText: String) {
@@ -73,17 +90,29 @@ class AddMoodViewModel @Inject constructor(
             val formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME
             val entryDate = currentDateTime.format(formatter)
 
-            val result = moodRepository.addMood(
-                emoji = selectedEmoji,
-                score = _uiState.value.selectedRating,
-                note = _uiState.value.noteText.trim(),
-                entryDate = entryDate
-            )
+            val result = if (isEditMode) {
+                moodRepository.updateMood(
+                    moodId = moodId,
+                    emoji = selectedEmoji,
+                    score = _uiState.value.selectedRating,
+                    note = _uiState.value.noteText.trim(),
+                    entryDate = entryDate
+                )
+            } else {
+                moodRepository.addMood(
+                    emoji = selectedEmoji,
+                    score = _uiState.value.selectedRating,
+                    note = _uiState.value.noteText.trim(),
+                    entryDate = entryDate
+                )
+            }
 
             when (result) {
                 is Resource.Success -> {
                     _actionState.value = AddMoodActionState(isSuccess = true)
-                    resetForm()
+                    if (!isEditMode) {
+                        resetForm()
+                    }
                 }
                 is Resource.Error -> {
                     _actionState.value = AddMoodActionState(

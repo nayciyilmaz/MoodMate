@@ -34,7 +34,7 @@ fun EditBottomBar(
             labelResId = R.string.nav_home
         ),
         NavigationItem(
-            route = MoodMateScreens.AddMoodScreen.route,
+            route = MoodMateScreens.createAddMoodRoute(),
             icon = Icons.Default.Add,
             labelResId = R.string.nav_add
         ),

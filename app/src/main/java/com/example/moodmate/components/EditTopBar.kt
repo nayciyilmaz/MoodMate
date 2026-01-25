@@ -6,8 +6,10 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.moodmate.R
 import com.example.moodmate.navigation.MoodMateScreens
 
@@ -17,12 +19,17 @@ fun EditTopBar(
     navController: NavController,
     currentRoute: String?
 ) {
-    val title = when (currentRoute) {
-        MoodMateScreens.HomeScreen.route -> stringResource(R.string.title_home)
-        MoodMateScreens.AddMoodScreen.route -> stringResource(R.string.title_add_mood)
-        MoodMateScreens.MoodHistoryScreen.route -> stringResource(R.string.title_mood_history)
-        MoodMateScreens.MoodDetailsScreen.route -> stringResource(R.string.title_mood_details)
-        MoodMateScreens.ProfileScreen.route -> stringResource(R.string.title_profile)
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val moodId = navBackStackEntry?.arguments?.getString("moodId")
+    val isEditMode = currentRoute?.startsWith("add_mood_screen") == true && moodId != null
+
+    val title = when {
+        isEditMode -> stringResource(R.string.title_edit_mood)
+        currentRoute?.startsWith("add_mood_screen") == true -> stringResource(R.string.title_add_mood)
+        currentRoute == MoodMateScreens.HomeScreen.route -> stringResource(R.string.title_home)
+        currentRoute == MoodMateScreens.MoodHistoryScreen.route -> stringResource(R.string.title_mood_history)
+        currentRoute == MoodMateScreens.MoodDetailsScreen.route -> stringResource(R.string.title_mood_details)
+        currentRoute == MoodMateScreens.ProfileScreen.route -> stringResource(R.string.title_profile)
         else -> ""
     }
 

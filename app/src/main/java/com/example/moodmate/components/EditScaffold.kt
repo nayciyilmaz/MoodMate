@@ -22,11 +22,14 @@ fun EditScaffold(
 ) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
+    val moodId = navBackStackEntry?.arguments?.getString("moodId")
+    val isEditMode = currentRoute?.startsWith("add_mood_screen") == true && moodId != null
 
     val showBottomBar = currentRoute != MoodMateScreens.MoodDetailsScreen.route &&
             currentRoute != MoodMateScreens.SplashScreen.route &&
             currentRoute != MoodMateScreens.SignInScreen.route &&
-            currentRoute != MoodMateScreens.SignUpScreen.route
+            currentRoute != MoodMateScreens.SignUpScreen.route &&
+            !isEditMode
 
     val showTopBar = currentRoute != MoodMateScreens.SplashScreen.route &&
             currentRoute != MoodMateScreens.SignInScreen.route &&

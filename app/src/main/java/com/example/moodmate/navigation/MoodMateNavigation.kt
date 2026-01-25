@@ -41,7 +41,16 @@ fun MoodMateNavigation(){
                 firstName = uiState.userData?.firstName ?: ""
             )
         }
-        composable(route = MoodMateScreens.AddMoodScreen.route){
+        composable(
+            route = MoodMateScreens.AddMoodScreen.route,
+            arguments = listOf(
+                navArgument("moodId") {
+                    type = NavType.StringType
+                    nullable = true
+                    defaultValue = null
+                }
+            )
+        ){
             AddMoodScreen(navController = navController)
         }
         composable(route = MoodMateScreens.MoodHistoryScreen.route){

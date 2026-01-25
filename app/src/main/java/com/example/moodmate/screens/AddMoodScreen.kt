@@ -22,6 +22,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -61,14 +62,43 @@ fun AddMoodScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val actionState by viewModel.actionState.collectAsState()
+    val backStackEntry = navController.previousBackStackEntry
+    val emoji = backStackEntry?.savedStateHandle?.get<String>("emoji")
+    val score = backStackEntry?.savedStateHandle?.get<Int>("score")
+    val note = backStackEntry?.savedStateHandle?.get<String>("note")
+
+    LaunchedEffect(emoji, score, note) {
+        if (emoji != null && score != null && note != null) {
+            viewModel.setInitialData(emoji, score, note)
+        }
+    }
 
     LaunchedEffect(key1 = actionState.isSuccess) {
         if (actionState.isSuccess) {
-            navigateAndClearBackStack(
-                navController = navController,
-                destination = MoodMateScreens.HomeScreen.route,
-                popUpToRoute = MoodMateScreens.AddMoodScreen.route
-            )
+            if (viewModel.isEditMode) {
+                try {
+                    navController.getBackStackEntry(MoodMateScreens.MoodDetailsScreen.route)
+                        .savedStateHandle.set("shouldRefresh", true)
+                } catch (e: Exception) { }
+
+                try {
+                    navController.getBackStackEntry(MoodMateScreens.HomeScreen.route)
+                        .savedStateHandle.set("shouldRefresh", true)
+                } catch (e: Exception) { }
+
+                try {
+                    navController.getBackStackEntry(MoodMateScreens.MoodHistoryScreen.route)
+                        .savedStateHandle.set("shouldRefresh", true)
+                } catch (e: Exception) { }
+
+                navController.popBackStack()
+            } else {
+                navigateAndClearBackStack(
+                    navController = navController,
+                    destination = MoodMateScreens.HomeScreen.route,
+                    popUpToRoute = MoodMateScreens.AddMoodScreen.route
+                )
+            }
         }
     }
 
@@ -105,13 +135,36 @@ fun AddMoodScreen(
                 }
             }
 
-            EditDetailsButton(
-                text = stringResource(id = R.string.save_button),
-                icon = Icons.Default.CheckCircle,
-                onClick = viewModel::saveMood,
-                containerColor = colorResource(id = R.color.acik_mavi),
-                modifier = modifier.fillMaxWidth()
-            )
+            if (viewModel.isEditMode) {
+                Column(
+                    modifier = modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    EditDetailsButton(
+                        text = stringResource(id = R.string.back_button),
+                        icon = Icons.AutoMirrored.Filled.ArrowBack,
+                        onClick = { navController.popBackStack() },
+                        containerColor = Color.LightGray,
+                        modifier = modifier.fillMaxWidth()
+                    )
+
+                    EditDetailsButton(
+                        text = stringResource(id = R.string.save_button),
+                        icon = Icons.Default.CheckCircle,
+                        onClick = viewModel::saveMood,
+                        containerColor = colorResource(id = R.color.acik_mavi),
+                        modifier = modifier.fillMaxWidth()
+                    )
+                }
+            } else {
+                EditDetailsButton(
+                    text = stringResource(id = R.string.save_button),
+                    icon = Icons.Default.CheckCircle,
+                    onClick = viewModel::saveMood,
+                    containerColor = colorResource(id = R.color.acik_mavi),
+                    modifier = modifier.fillMaxWidth()
+                )
+            }
         }
     }
 }

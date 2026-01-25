@@ -36,6 +36,24 @@ class MoodRepository @Inject constructor(
         }
     }
 
+    suspend fun updateMood(
+        moodId: Long,
+        emoji: String,
+        score: Int,
+        note: String,
+        entryDate: String
+    ): Resource<MoodResponse> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val request = MoodRequest(emoji, score, note, entryDate)
+                val response = apiService.updateMood(moodId, request)
+                handleResponse(response)
+            } catch (e: Exception) {
+                Resource.Error(e.localizedMessage ?: "Bilinmeyen bir hata oluştu")
+            }
+        }
+    }
+
     suspend fun getUserMoods(): Resource<List<MoodResponse>> {
         return withContext(Dispatchers.IO) {
             try {

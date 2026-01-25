@@ -47,6 +47,12 @@ fun HomeScreen(
 
     LaunchedEffect(Unit) {
         viewModel.loadRecentMoods()
+        navController.currentBackStackEntry?.savedStateHandle?.getLiveData<Boolean>("shouldRefresh")?.observeForever { shouldRefresh ->
+            if (shouldRefresh == true) {
+                viewModel.loadRecentMoods()
+                navController.currentBackStackEntry?.savedStateHandle?.set("shouldRefresh", false)
+            }
+        }
     }
 
     EditScaffold(navController = navController) {
