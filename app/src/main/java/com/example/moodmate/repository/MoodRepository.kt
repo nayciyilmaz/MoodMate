@@ -54,6 +54,21 @@ class MoodRepository @Inject constructor(
         }
     }
 
+    suspend fun deleteMood(moodId: Long): Resource<Unit> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val response = apiService.deleteMood(moodId)
+                if (response.isSuccessful) {
+                    Resource.Success(Unit)
+                } else {
+                    Resource.Error("Silme işlemi başarısız")
+                }
+            } catch (e: Exception) {
+                Resource.Error(e.localizedMessage ?: "Bilinmeyen bir hata oluştu")
+            }
+        }
+    }
+
     suspend fun getUserMoods(): Resource<List<MoodResponse>> {
         return withContext(Dispatchers.IO) {
             try {

@@ -7,6 +7,7 @@ import com.example.moodmate.data.MoodResponse
 import com.example.moodmate.data.RegisterRequest
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.PUT
@@ -28,6 +29,9 @@ interface ApiService {
         @Path("id") id: Long,
         @Body request: MoodRequest
     ): Response<MoodResponse>
+
+    @DELETE("api/moods/{id}")
+    suspend fun deleteMood(@Path("id") id: Long): Response<Void>
 
     @GET("api/moods")
     suspend fun getUserMoods(): Response<List<MoodResponse>>

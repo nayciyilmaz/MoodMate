@@ -25,6 +25,12 @@ class MoodDetailsViewModel @Inject constructor(
     private val _moodDetails = MutableStateFlow<MoodResponse?>(null)
     val moodDetails: StateFlow<MoodResponse?> = _moodDetails.asStateFlow()
 
+    private val _showDeleteDialog = MutableStateFlow(false)
+    val showDeleteDialog: StateFlow<Boolean> = _showDeleteDialog.asStateFlow()
+
+    private val _deleteSuccess = MutableStateFlow(false)
+    val deleteSuccess: StateFlow<Boolean> = _deleteSuccess.asStateFlow()
+
     private var currentMoodId: Long = 0L
 
     init {
@@ -44,6 +50,29 @@ class MoodDetailsViewModel @Inject constructor(
                 is Resource.Success -> {
                     val updatedMood = result.data?.find { it.id == currentMoodId }
                     _moodDetails.value = updatedMood
+                }
+                else -> { }
+            }
+        }
+    }
+
+    fun showDeleteDialog() {
+        _showDeleteDialog.value = true
+    }
+
+    fun dismissDeleteDialog() {
+        _showDeleteDialog.value = false
+    }
+
+    fun deleteMood() {
+        viewModelScope.launch {
+            when (moodRepository.deleteMood(currentMoodId)) {
+                is Resource.Success -> {
+                    _deleteSuccess.value = true
+                    _showDeleteDialog.value = false
+                }
+                is Resource.Error -> {
+                    _showDeleteDialog.value = false
                 }
                 else -> { }
             }

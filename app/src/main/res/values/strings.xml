@@ -48,6 +48,11 @@
     <string name="error_sign_up_failed">Kayıt başarısız. Lütfen tekrar deneyin.</string>
     <string name="no_mood_yet">( Henüz ruh hali kaydı yok. )</string>
     <string name="loading_moods">Ruh Hali Kayıtları Yükleniyor...</string>
+    <string name="delete_confirmation_title">Silme Onayı</string>
+    <string name="delete_confirmation_message">Bu Mood\'u silmek istediğinize emin misiniz?</string>
+    <string name="confirm">Onayla</string>
+    <string name="cancel">İptal</string>
+    <string name="logout">Çıkış Yap</string>
     <string name="theme_selection">Tema Seçimi</string>
     <string name="light_theme">Açık Tema</string>
     <string name="dark_theme">Koyu Tema</string>
@@ -59,7 +64,6 @@
     <string name="english">İngilizce</string>
     <string name="spanish">İspanyolca</string>
     <string name="italian">İtalyanca</string>
-    <string name="logout">Çıkış Yap</string>
 
     <string-array name="week_days_short">
         <item>Pzt</item>

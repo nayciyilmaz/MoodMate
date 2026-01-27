@@ -13,6 +13,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -28,14 +29,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.example.moodmate.R
 import com.example.moodmate.components.EditDetailsButton
 import com.example.moodmate.components.EditScaffold
+import com.example.moodmate.components.EditTextButton
 import com.example.moodmate.navigation.MoodMateScreens
 import com.example.moodmate.util.formatDate
 import com.example.moodmate.viewmodel.MoodDetailsViewModel
@@ -47,8 +47,10 @@ fun MoodDetailsScreen(
     viewModel: MoodDetailsViewModel = hiltViewModel()
 ) {
     val moodDetails by viewModel.moodDetails.collectAsState()
+    val showDeleteDialog by viewModel.showDeleteDialog.collectAsState()
+    val deleteSuccess by viewModel.deleteSuccess.collectAsState()
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(Unit, deleteSuccess) {
         navController.currentBackStackEntry?.savedStateHandle?.getLiveData<Boolean>("shouldRefresh")?.observeForever { shouldRefresh ->
             if (shouldRefresh == true) {
                 viewModel.refreshMoodDetails()
@@ -65,6 +67,27 @@ fun MoodDetailsScreen(
                 } catch (e: Exception) { }
             }
         }
+
+        if (deleteSuccess) {
+            try {
+                navController.getBackStackEntry(MoodMateScreens.HomeScreen.route)
+                    .savedStateHandle.set("shouldRefresh", true)
+            } catch (e: Exception) { }
+
+            try {
+                navController.getBackStackEntry(MoodMateScreens.MoodHistoryScreen.route)
+                    .savedStateHandle.set("shouldRefresh", true)
+            } catch (e: Exception) { }
+
+            navController.popBackStack()
+        }
+    }
+
+    if (showDeleteDialog) {
+        DeleteConfirmDialog(
+            onDismiss = { viewModel.dismissDeleteDialog() },
+            onConfirm = { viewModel.deleteMood() }
+        )
     }
 
     EditScaffold(navController = navController) { innerPadding ->
@@ -116,7 +139,7 @@ fun MoodDetailsScreen(
                     EditDetailsButton(
                         text = stringResource(id = R.string.delete),
                         icon = Icons.Default.Delete,
-                        onClick = { },
+                        onClick = { viewModel.showDeleteDialog() },
                         containerColor = Color.Red
                     )
 
@@ -130,6 +153,44 @@ fun MoodDetailsScreen(
             }
         }
     }
+}
+
+@Composable
+fun DeleteConfirmDialog(
+    onDismiss: () -> Unit,
+    onConfirm: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text(
+                text = stringResource(id = R.string.delete_confirmation_title),
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold
+            )
+        },
+        text = {
+            Text(
+                text = stringResource(id = R.string.delete_confirmation_message),
+                style = MaterialTheme.typography.bodyLarge
+            )
+        },
+        confirmButton = {
+            EditTextButton(
+                text = stringResource(id = R.string.confirm),
+                onClick = onConfirm
+            )
+        },
+        dismissButton = {
+            EditTextButton(
+                text = stringResource(id = R.string.cancel),
+                onClick = onDismiss
+            )
+        },
+        containerColor = Color.White,
+        shape = RoundedCornerShape(16.dp)
+    )
 }
 
 @Composable
@@ -157,42 +218,37 @@ fun MoodEmojiCard(
                 style = MaterialTheme.typography.displayLarge
             )
 
-            Surface(
-                color = colorResource(id = R.color.light_gray_background),
-                shape = RoundedCornerShape(12.dp),
-                modifier = modifier.padding(vertical = 16.dp)
-            ) {
-                Row(
-                    modifier = modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Text(
-                        text = "$score / 10",
-                        style = MaterialTheme.typography.bodyLarge,
-                        fontWeight = FontWeight.SemiBold,
-                        color = colorResource(id = R.color.date_time_color)
-                    )
-                }
-            }
+            InfoChip(
+                text = "$score / 10",
+                modifier = modifier.padding(vertical = 8.dp)
+            )
 
-            Surface(
-                color = colorResource(id = R.color.light_gray_background),
-                shape = RoundedCornerShape(12.dp)
-            ) {
-                Row(
-                    modifier = modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Text(
-                        text = dateTime,
-                        style = MaterialTheme.typography.bodyLarge,
-                        fontWeight = FontWeight.SemiBold,
-                        color = colorResource(id = R.color.date_time_color)
-                    )
-                }
-            }
+            InfoChip(text = dateTime)
+        }
+    }
+}
+
+@Composable
+private fun InfoChip(
+    text: String,
+    modifier: Modifier = Modifier
+) {
+    Surface(
+        color = colorResource(id = R.color.light_gray_background),
+        shape = RoundedCornerShape(12.dp),
+        modifier = modifier
+    ) {
+        Row(
+            modifier = modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Text(
+                text = text,
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.SemiBold,
+                color = colorResource(id = R.color.date_time_color)
+            )
         }
     }
 }
@@ -243,10 +299,4 @@ fun DetailedNoteCard(
             )
         }
     }
-}
-
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun MoodDetailsScreenPreview() {
-    MoodDetailsScreen(navController = rememberNavController())
 }
