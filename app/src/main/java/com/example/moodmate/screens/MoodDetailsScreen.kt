@@ -10,7 +10,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.AlertDialog
@@ -143,13 +142,6 @@ fun MoodDetailsScreen(
                         icon = Icons.Default.Delete,
                         onClick = { viewModel.showDeleteDialog() },
                         containerColor = Color.Red
-                    )
-
-                    EditDetailsButton(
-                        text = stringResource(id = R.string.ask_ai),
-                        icon = Icons.Default.AutoAwesome,
-                        onClick = { },
-                        containerColor = colorResource(id = R.color.ai_purple)
                     )
                 }
             }

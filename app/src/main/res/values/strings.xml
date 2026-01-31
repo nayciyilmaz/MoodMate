@@ -22,8 +22,9 @@
     <string name="detailed_note">Detaylı Not</string>
     <string name="edit">Düzenle</string>
     <string name="delete">Sil</string>
-    <string name="ask_ai">Yapay Zekaya Danış</string>
     <string name="home_greeting_question">Bugün nasıl hissediyorsun?</string>
+    <string name="ai_assistant_title">Yapay Zeka Asistanı</string>
+    <string name="ai_assistant_subtitle">Ruh hali analizi için tıkla</string>
     <string name="home_hope_message">Umarım günün güzel geçiyordur.</string>
     <string name="home_reminder_message">Günün nasıl geçtiğini not almayı unutma!</string>
     <string name="mood_select_label">Ruh Hali Seç :</string>
@@ -59,6 +60,8 @@
     <string name="notification_permission">Bildirim İzni</string>
     <string name="on">Açık</string>
     <string name="off">Kapalı</string>
+    <string name="button_retry">Tekrar</string>
+    <string name="button_close">Kapat</string>
     <string name="language_selection">Dil Seçimi</string>
     <string name="turkish">Türkçe</string>
     <string name="english">İngilizce</string>
