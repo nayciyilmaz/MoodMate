@@ -24,7 +24,8 @@
     <string name="delete">Sil</string>
     <string name="home_greeting_question">Bugün nasıl hissediyorsun?</string>
     <string name="ai_assistant_title">Yapay Zeka Asistanı</string>
-    <string name="ai_assistant_subtitle">Ruh hali analizi için tıkla</string>
+    <string name="ai_assistant_subtitle">Günlük ruh haliniz analizi</string>
+    <string name="ai_no_advice_yet">Henüz bir tavsiye oluşturulmamış. Aşağıdaki oluştur butonuna basın.</string>
     <string name="home_hope_message">Umarım günün güzel geçiyordur.</string>
     <string name="home_reminder_message">Günün nasıl geçtiğini not almayı unutma!</string>
     <string name="mood_select_label">Ruh Hali Seç :</string>
@@ -51,6 +52,7 @@
     <string name="loading_moods">Ruh Hali Kayıtları Yükleniyor...</string>
     <string name="delete_confirmation_title">Silme Onayı</string>
     <string name="delete_confirmation_message">Bu Mood\'u silmek istediğinize emin misiniz?</string>
+    <string name="ai_generating_advice">Yapay zeka tavsiyenizi oluşturuyor…</string>
     <string name="confirm">Onayla</string>
     <string name="cancel">İptal</string>
     <string name="logout">Çıkış Yap</string>
@@ -60,13 +62,14 @@
     <string name="notification_permission">Bildirim İzni</string>
     <string name="on">Açık</string>
     <string name="off">Kapalı</string>
-    <string name="button_retry">Tekrar</string>
-    <string name="button_close">Kapat</string>
     <string name="language_selection">Dil Seçimi</string>
     <string name="turkish">Türkçe</string>
     <string name="english">İngilizce</string>
     <string name="spanish">İspanyolca</string>
     <string name="italian">İtalyanca</string>
+    <string name="button_close">Kapat</string>
+    <string name="button_retry">Tekrar</string>
+    <string name="button_create">Oluştur</string>
 
     <string-array name="week_days_short">
         <item>Pzt</item>

@@ -1,5 +1,6 @@
 package com.example.moodmate.network
 
+import com.example.moodmate.data.AdviceResponse
 import com.example.moodmate.data.AuthResponse
 import com.example.moodmate.data.LoginRequest
 import com.example.moodmate.data.MoodRequest
@@ -35,4 +36,10 @@ interface ApiService {
 
     @GET("api/moods")
     suspend fun getUserMoods(): Response<List<MoodResponse>>
+
+    @POST("api/advice/generate")
+    suspend fun generateAdvice(): Response<AdviceResponse>
+
+    @GET("api/advice/latest")
+    suspend fun getLatestAdvice(): Response<AdviceResponse>
 }

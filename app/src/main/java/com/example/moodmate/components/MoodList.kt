@@ -74,7 +74,7 @@ fun LoadingIndicator(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .padding(vertical = 32.dp),
+            .padding(vertical = 16.dp),
         contentAlignment = Alignment.Center
     ) {
         Row(

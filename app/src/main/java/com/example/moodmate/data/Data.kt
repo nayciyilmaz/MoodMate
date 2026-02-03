@@ -157,3 +157,16 @@ data class MoodHistoryUiState(
     val moods: List<MoodResponse> = emptyList(),
     val error: String? = null
 )
+
+data class AdviceResponse(
+    val id: Long,
+    val advice: String,
+    val createdAt: String
+)
+
+data class AdviceUiState(
+    val advice: String? = null,
+    val createdAt: String? = null,
+    val isLoading: Boolean = false,
+    val error: String? = null
+)

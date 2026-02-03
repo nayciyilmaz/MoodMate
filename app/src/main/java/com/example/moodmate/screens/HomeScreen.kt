@@ -43,8 +43,11 @@ import androidx.navigation.compose.rememberNavController
 import com.example.moodmate.R
 import com.example.moodmate.components.EditScaffold
 import com.example.moodmate.components.EditTextButton
+import com.example.moodmate.components.LoadingIndicator
 import com.example.moodmate.components.MoodList
+import com.example.moodmate.components.ValidationErrorText
 import com.example.moodmate.navigation.MoodMateScreens
+import com.example.moodmate.util.formatDate
 import com.example.moodmate.viewmodel.HomeViewModel
 import com.google.gson.Gson
 import java.net.URLEncoder
@@ -58,6 +61,7 @@ fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val adviceState by viewModel.adviceState.collectAsState()
 
     LaunchedEffect(Unit) {
         viewModel.loadRecentMoods()
@@ -94,7 +98,11 @@ fun HomeScreen(
 
             HomeInfoCard(modifier = modifier)
 
-            AIAdviceCard(modifier = modifier)
+            AIAdviceCard(
+                adviceState = adviceState,
+                onGenerate = viewModel::generateAdvice,
+                modifier = modifier
+            )
 
             Text(
                 text = stringResource(id = R.string.last_mood_entries),
@@ -161,8 +169,13 @@ fun HomeInfoCard(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun AIAdviceCard(modifier: Modifier = Modifier) {
+fun AIAdviceCard(
+    adviceState: com.example.moodmate.data.AdviceUiState,
+    onGenerate: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     var isExpanded by remember { mutableStateOf(false) }
+    val hasAdvice = adviceState.advice != null
 
     Card(
         modifier = modifier.fillMaxWidth(),
@@ -223,41 +236,59 @@ fun AIAdviceCard(modifier: Modifier = Modifier) {
                         color = colorResource(id = R.color.acik_mavi).copy(alpha = 0.4f)
                     )
 
-                    Text(
-                        text = "Buraya yapay zekanın yorumu gelecek.",
-                        style = MaterialTheme.typography.bodyMedium,
-                        modifier = modifier.padding(vertical = 12.dp)
-                    )
-
-                    HorizontalDivider(
-                        thickness = 2.dp,
-                        color = colorResource(id = R.color.acik_mavi).copy(alpha = 0.4f)
-                    )
-
-                    Row(
-                        modifier = modifier
-                            .fillMaxWidth()
-                            .padding(top = 4.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
+                    if (adviceState.isLoading) {
+                        LoadingIndicator(
+                            message = stringResource(id = R.string.ai_generating_advice),
+                            modifier = modifier
+                        )
+                    } else {
                         Text(
-                            text = "( 15 Ocak 2025, 14:30 )",
-                            style = MaterialTheme.typography.titleSmall,
-                            color = Color.DarkGray
+                            text = if (hasAdvice) adviceState.advice!! else stringResource(R.string.ai_no_advice_yet),
+                            style = MaterialTheme.typography.bodyMedium,
+                            modifier = modifier.padding(vertical = 12.dp)
+                        )
+
+                        HorizontalDivider(
+                            thickness = 2.dp,
+                            color = colorResource(id = R.color.acik_mavi).copy(alpha = 0.4f)
                         )
 
                         Row(
-                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            modifier = modifier
+                                .fillMaxWidth()
+                                .padding(top = 4.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
-                            EditTextButton(
-                                text = stringResource(id = R.string.button_close),
-                                onClick = { isExpanded = false }
-                            )
+                            if (hasAdvice && adviceState.createdAt != null) {
+                                Text(
+                                    text = "( ${formatDate(adviceState.createdAt!!)} )",
+                                    style = MaterialTheme.typography.titleSmall,
+                                    color = Color.DarkGray
+                                )
+                            } else {
+                                Text(text = "")
+                            }
 
-                            EditTextButton(
-                                text = stringResource(id = R.string.button_retry),
-                                onClick = { }
+                            Row(
+                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                EditTextButton(
+                                    text = stringResource(id = R.string.button_close),
+                                    onClick = { isExpanded = false }
+                                )
+
+                                EditTextButton(
+                                    text = if (hasAdvice) stringResource(id = R.string.button_retry) else stringResource(id = R.string.button_create),
+                                    onClick = onGenerate
+                                )
+                            }
+                        }
+
+                        if (adviceState.error != null) {
+                            ValidationErrorText(
+                                error = adviceState.error,
+                                modifier = modifier.padding(top = 8.dp)
                             )
                         }
                     }
