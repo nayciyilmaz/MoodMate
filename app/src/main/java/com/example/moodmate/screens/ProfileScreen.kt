@@ -18,8 +18,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.ui.res.colorResource
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -29,26 +30,39 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.moodmate.R
 import com.example.moodmate.components.EditButton
 import com.example.moodmate.components.EditScaffold
+import com.example.moodmate.navigation.MoodMateScreens
+import com.example.moodmate.util.navigateAndClearBackStack
+import com.example.moodmate.viewmodel.ProfileViewModel
 
 @Composable
 fun ProfileScreen(
     navController: NavController,
     fullName: String,
     email: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: ProfileViewModel = hiltViewModel()
 ) {
-    val lightTheme = stringResource(id = R.string.light_theme)
-    val onText = stringResource(id = R.string.on)
-    val turkish = stringResource(id = R.string.turkish)
+    val shouldNavigateToLogin by viewModel.shouldNavigateToLogin.collectAsState()
+    val selectedTheme by viewModel.selectedTheme.collectAsState()
+    val notificationEnabled by viewModel.notificationEnabled.collectAsState()
+    val selectedLanguage by viewModel.selectedLanguage.collectAsState()
 
-    val selectedTheme = remember { mutableStateOf(lightTheme) }
-    val notificationEnabled = remember { mutableStateOf(onText) }
-    val selectedLanguage = remember { mutableStateOf(turkish) }
+    LaunchedEffect(shouldNavigateToLogin) {
+        if (shouldNavigateToLogin) {
+            navigateAndClearBackStack(
+                navController = navController,
+                destination = MoodMateScreens.SignInScreen.route,
+                popUpToRoute = MoodMateScreens.ProfileScreen.route
+            )
+            viewModel.resetNavigationFlag()
+        }
+    }
 
     EditScaffold(navController = navController) {
         Column(
@@ -70,8 +84,8 @@ fun ProfileScreen(
                     stringResource(id = R.string.light_theme),
                     stringResource(id = R.string.dark_theme)
                 ),
-                selectedOption = selectedTheme.value,
-                onOptionSelected = { selectedTheme.value = it }
+                selectedOption = selectedTheme,
+                onOptionSelected = viewModel::setTheme
             )
 
             SettingCard(
@@ -80,8 +94,8 @@ fun ProfileScreen(
                     stringResource(id = R.string.on),
                     stringResource(id = R.string.off)
                 ),
-                selectedOption = notificationEnabled.value,
-                onOptionSelected = { notificationEnabled.value = it }
+                selectedOption = notificationEnabled,
+                onOptionSelected = viewModel::setNotification
             )
 
             SettingCard(
@@ -92,13 +106,13 @@ fun ProfileScreen(
                     stringResource(id = R.string.spanish),
                     stringResource(id = R.string.italian)
                 ),
-                selectedOption = selectedLanguage.value,
-                onOptionSelected = { selectedLanguage.value = it }
+                selectedOption = selectedLanguage,
+                onOptionSelected = viewModel::setLanguage
             )
 
             EditButton(
                 text = stringResource(id = R.string.logout),
-                onClick = { },
+                onClick = { viewModel.logout() },
                 containerColor = Color.Red
             )
         }

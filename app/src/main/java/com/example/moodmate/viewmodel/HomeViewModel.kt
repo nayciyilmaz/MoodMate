@@ -26,6 +26,9 @@ class HomeViewModel @Inject constructor(
     private val _adviceState = MutableStateFlow(AdviceUiState())
     val adviceState: StateFlow<AdviceUiState> = _adviceState.asStateFlow()
 
+    private val _shouldNavigateToLogin = MutableStateFlow(false)
+    val shouldNavigateToLogin: StateFlow<Boolean> = _shouldNavigateToLogin.asStateFlow()
+
     init {
         loadRecentMoods()
         loadLatestAdvice()
@@ -44,6 +47,9 @@ class HomeViewModel @Inject constructor(
                     )
                 }
                 is Resource.Error -> {
+                    if (result.isUnauthorized) {
+                        _shouldNavigateToLogin.value = true
+                    }
                     _uiState.value = HomeUiState(
                         isLoading = false,
                         error = result.message
@@ -68,6 +74,9 @@ class HomeViewModel @Inject constructor(
                     }
                 }
                 is Resource.Error -> {
+                    if (result.isUnauthorized) {
+                        _shouldNavigateToLogin.value = true
+                    }
                     _adviceState.value = AdviceUiState()
                 }
                 is Resource.Loading -> {}
@@ -90,6 +99,9 @@ class HomeViewModel @Inject constructor(
                     }
                 }
                 is Resource.Error -> {
+                    if (result.isUnauthorized) {
+                        _shouldNavigateToLogin.value = true
+                    }
                     _adviceState.value = _adviceState.value.copy(
                         isLoading = false,
                         error = result.message ?: "Yapay zeka hizmeti şu an kullanılamıyor."
@@ -100,5 +112,9 @@ class HomeViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun resetNavigationFlag() {
+        _shouldNavigateToLogin.value = false
     }
 }

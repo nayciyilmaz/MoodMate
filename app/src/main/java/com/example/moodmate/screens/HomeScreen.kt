@@ -48,6 +48,7 @@ import com.example.moodmate.components.MoodList
 import com.example.moodmate.components.ValidationErrorText
 import com.example.moodmate.navigation.MoodMateScreens
 import com.example.moodmate.util.formatDate
+import com.example.moodmate.util.navigateAndClearBackStack
 import com.example.moodmate.viewmodel.HomeViewModel
 import com.google.gson.Gson
 import java.net.URLEncoder
@@ -62,9 +63,20 @@ fun HomeScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val adviceState by viewModel.adviceState.collectAsState()
+    val shouldNavigateToLogin by viewModel.shouldNavigateToLogin.collectAsState()
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(Unit, shouldNavigateToLogin) {
+        if (shouldNavigateToLogin) {
+            navigateAndClearBackStack(
+                navController = navController,
+                destination = MoodMateScreens.SignInScreen.route,
+                popUpToRoute = MoodMateScreens.HomeScreen.route
+            )
+            viewModel.resetNavigationFlag()
+        }
+
         viewModel.loadRecentMoods()
+
         navController.currentBackStackEntry?.savedStateHandle?.getLiveData<Boolean>("shouldRefresh")
             ?.observeForever { shouldRefresh ->
                 if (shouldRefresh == true) {

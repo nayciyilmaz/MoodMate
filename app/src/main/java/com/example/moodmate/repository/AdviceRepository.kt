@@ -2,6 +2,7 @@ package com.example.moodmate.repository
 
 import com.example.moodmate.data.AdviceResponse
 import com.example.moodmate.data.ErrorResponse
+import com.example.moodmate.local.TokenManager
 import com.example.moodmate.network.ApiService
 import com.example.moodmate.util.Resource
 import com.google.gson.Gson
@@ -13,7 +14,8 @@ import javax.inject.Singleton
 
 @Singleton
 class AdviceRepository @Inject constructor(
-    private val apiService: ApiService
+    private val apiService: ApiService,
+    private val tokenManager: TokenManager
 ) {
     private val gson = Gson()
 
@@ -39,7 +41,7 @@ class AdviceRepository @Inject constructor(
         }
     }
 
-    private fun <T> handleResponse(response: Response<T>): Resource<T> {
+    private suspend fun <T> handleResponse(response: Response<T>): Resource<T> {
         return if (response.isSuccessful) {
             val body = response.body()
             if (body != null) {
@@ -47,6 +49,9 @@ class AdviceRepository @Inject constructor(
             } else {
                 Resource.Error("Yanıt boş")
             }
+        } else if (response.code() == 401) {
+            tokenManager.clearUser()
+            Resource.Error("Oturum süreniz doldu. Lütfen tekrar giriş yapın.", isUnauthorized = true)
         } else {
             val errorBody = response.errorBody()?.string()
             val errorMessage = try {

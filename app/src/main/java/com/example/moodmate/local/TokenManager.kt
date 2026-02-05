@@ -68,13 +68,13 @@ class TokenManager @Inject constructor(
         preferences[LAST_NAME_KEY]
     }
 
-//    val isLoggedIn: Flow<Boolean> = dataStore.data.map { preferences ->
-//        preferences[IS_LOGGED_IN_KEY] ?: false
-//    }
-//
-//    suspend fun clearUser() {
-//        dataStore.edit { preferences ->
-//            preferences.clear()
-//        }
-//    }
+    val isLoggedIn: Flow<Boolean> = dataStore.data.map { preferences ->
+        preferences[IS_LOGGED_IN_KEY] ?: false
+    }
+
+    suspend fun clearUser() {
+        dataStore.edit { preferences ->
+            preferences.clear()
+        }
+    }
 }
