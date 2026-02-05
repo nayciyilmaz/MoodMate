@@ -1,5 +1,7 @@
 package com.example.moodmate.repository
 
+import android.content.Context
+import com.example.moodmate.R
 import com.example.moodmate.data.AuthResponse
 import com.example.moodmate.data.ErrorResponse
 import com.example.moodmate.data.LoginRequest
@@ -8,6 +10,7 @@ import com.example.moodmate.network.ApiService
 import com.example.moodmate.util.Resource
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.Response
@@ -16,7 +19,8 @@ import javax.inject.Singleton
 
 @Singleton
 class AuthRepository @Inject constructor(
-    private val apiService: ApiService
+    private val apiService: ApiService,
+    @ApplicationContext private val context: Context
 ) {
     private val gson = Gson()
 
@@ -32,7 +36,7 @@ class AuthRepository @Inject constructor(
                 val response = apiService.register(request)
                 handleResponse(response)
             } catch (e: Exception) {
-                Resource.Error(e.localizedMessage ?: "Bilinmeyen bir hata oluştu")
+                Resource.Error(e.localizedMessage ?: context.getString(R.string.error_unknown))
             }
         }
     }
@@ -47,7 +51,7 @@ class AuthRepository @Inject constructor(
                 val response = apiService.login(request)
                 handleResponse(response)
             } catch (e: Exception) {
-                Resource.Error(e.localizedMessage ?: "Bilinmeyen bir hata oluştu")
+                Resource.Error(e.localizedMessage ?: context.getString(R.string.error_unknown))
             }
         }
     }
@@ -58,7 +62,7 @@ class AuthRepository @Inject constructor(
             if (body != null) {
                 Resource.Success(body)
             } else {
-                Resource.Error("Yanıt boş")
+                Resource.Error(context.getString(R.string.error_empty_response))
             }
         } else {
             val errorBody = response.errorBody()?.string()
@@ -72,9 +76,9 @@ class AuthRepository @Inject constructor(
                     Pair(errorResponse.message, null)
                 }
             } catch (e: Exception) {
-                Pair("Sunucu hatası", null)
+                Pair(context.getString(R.string.error_server), null)
             }
-            Resource.Error(errorMessage ?: "Bilinmeyen hata", fieldErrors = fieldErrors)
+            Resource.Error(errorMessage ?: context.getString(R.string.error_unknown), fieldErrors = fieldErrors)
         }
     }
 }

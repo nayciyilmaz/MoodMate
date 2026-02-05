@@ -70,6 +70,11 @@
     <string name="button_close">Kapat</string>
     <string name="button_retry">Tekrar</string>
     <string name="button_create">Oluştur</string>
+    <string name="error_unknown">Bilinmeyen bir hata oluştu</string>
+    <string name="error_empty_response">Yanıt boş</string>
+    <string name="error_session_expired">Oturum süreniz doldu. Lütfen tekrar giriş yapın.</string>
+    <string name="error_server">Sunucu hatası</string>
+    <string name="error_delete_failed">Silme işlemi başarısız</string>
 
     <string-array name="week_days_short">
         <item>Pzt</item>

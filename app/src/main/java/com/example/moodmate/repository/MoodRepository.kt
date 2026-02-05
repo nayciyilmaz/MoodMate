@@ -1,5 +1,7 @@
 package com.example.moodmate.repository
 
+import android.content.Context
+import com.example.moodmate.R
 import com.example.moodmate.data.ErrorResponse
 import com.example.moodmate.data.MoodRequest
 import com.example.moodmate.data.MoodResponse
@@ -8,6 +10,7 @@ import com.example.moodmate.network.ApiService
 import com.example.moodmate.util.Resource
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.Response
@@ -17,7 +20,8 @@ import javax.inject.Singleton
 @Singleton
 class MoodRepository @Inject constructor(
     private val apiService: ApiService,
-    private val tokenManager: TokenManager
+    private val tokenManager: TokenManager,
+    @ApplicationContext private val context: Context
 ) {
     private val gson = Gson()
 
@@ -33,7 +37,7 @@ class MoodRepository @Inject constructor(
                 val response = apiService.addMood(request)
                 handleResponse(response)
             } catch (e: Exception) {
-                Resource.Error(e.localizedMessage ?: "Bilinmeyen bir hata oluştu")
+                Resource.Error(e.localizedMessage ?: context.getString(R.string.error_unknown))
             }
         }
     }
@@ -51,7 +55,7 @@ class MoodRepository @Inject constructor(
                 val response = apiService.updateMood(moodId, request)
                 handleResponse(response)
             } catch (e: Exception) {
-                Resource.Error(e.localizedMessage ?: "Bilinmeyen bir hata oluştu")
+                Resource.Error(e.localizedMessage ?: context.getString(R.string.error_unknown))
             }
         }
     }
@@ -64,12 +68,15 @@ class MoodRepository @Inject constructor(
                     Resource.Success(Unit)
                 } else if (response.code() == 401) {
                     tokenManager.clearUser()
-                    Resource.Error("Oturum süreniz doldu. Lütfen tekrar giriş yapın.", isUnauthorized = true)
+                    Resource.Error(
+                        context.getString(R.string.error_session_expired),
+                        isUnauthorized = true
+                    )
                 } else {
-                    Resource.Error("Silme işlemi başarısız")
+                    Resource.Error(context.getString(R.string.error_delete_failed))
                 }
             } catch (e: Exception) {
-                Resource.Error(e.localizedMessage ?: "Bilinmeyen bir hata oluştu")
+                Resource.Error(e.localizedMessage ?: context.getString(R.string.error_unknown))
             }
         }
     }
@@ -80,7 +87,7 @@ class MoodRepository @Inject constructor(
                 val response = apiService.getUserMoods()
                 handleResponse(response)
             } catch (e: Exception) {
-                Resource.Error(e.localizedMessage ?: "Bilinmeyen bir hata oluştu")
+                Resource.Error(e.localizedMessage ?: context.getString(R.string.error_unknown))
             }
         }
     }
@@ -91,11 +98,14 @@ class MoodRepository @Inject constructor(
             if (body != null) {
                 Resource.Success(body)
             } else {
-                Resource.Error("Yanıt boş")
+                Resource.Error(context.getString(R.string.error_empty_response))
             }
         } else if (response.code() == 401) {
             tokenManager.clearUser()
-            Resource.Error("Oturum süreniz doldu. Lütfen tekrar giriş yapın.", isUnauthorized = true)
+            Resource.Error(
+                context.getString(R.string.error_session_expired),
+                isUnauthorized = true
+            )
         } else {
             val errorBody = response.errorBody()?.string()
             val (errorMessage, fieldErrors) = try {
@@ -108,9 +118,9 @@ class MoodRepository @Inject constructor(
                     Pair(errorResponse.message, null)
                 }
             } catch (e: Exception) {
-                Pair("Sunucu hatası", null)
+                Pair(context.getString(R.string.error_server), null)
             }
-            Resource.Error(errorMessage ?: "Bilinmeyen hata", fieldErrors = fieldErrors)
+            Resource.Error(errorMessage ?: context.getString(R.string.error_unknown), fieldErrors = fieldErrors)
         }
     }
 }

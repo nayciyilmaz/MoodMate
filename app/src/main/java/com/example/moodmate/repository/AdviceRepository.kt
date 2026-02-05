@@ -1,11 +1,14 @@
 package com.example.moodmate.repository
 
+import android.content.Context
+import com.example.moodmate.R
 import com.example.moodmate.data.AdviceResponse
 import com.example.moodmate.data.ErrorResponse
 import com.example.moodmate.local.TokenManager
 import com.example.moodmate.network.ApiService
 import com.example.moodmate.util.Resource
 import com.google.gson.Gson
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.Response
@@ -15,7 +18,8 @@ import javax.inject.Singleton
 @Singleton
 class AdviceRepository @Inject constructor(
     private val apiService: ApiService,
-    private val tokenManager: TokenManager
+    private val tokenManager: TokenManager,
+    @ApplicationContext private val context: Context
 ) {
     private val gson = Gson()
 
@@ -25,7 +29,7 @@ class AdviceRepository @Inject constructor(
                 val response = apiService.generateAdvice()
                 handleResponse(response)
             } catch (e: Exception) {
-                Resource.Error(e.localizedMessage ?: "Bilinmeyen bir hata oluştu")
+                Resource.Error(e.localizedMessage ?: context.getString(R.string.error_unknown))
             }
         }
     }
@@ -36,7 +40,7 @@ class AdviceRepository @Inject constructor(
                 val response = apiService.getLatestAdvice()
                 handleResponse(response)
             } catch (e: Exception) {
-                Resource.Error(e.localizedMessage ?: "Bilinmeyen bir hata oluştu")
+                Resource.Error(e.localizedMessage ?: context.getString(R.string.error_unknown))
             }
         }
     }
@@ -47,11 +51,14 @@ class AdviceRepository @Inject constructor(
             if (body != null) {
                 Resource.Success(body)
             } else {
-                Resource.Error("Yanıt boş")
+                Resource.Error(context.getString(R.string.error_empty_response))
             }
         } else if (response.code() == 401) {
             tokenManager.clearUser()
-            Resource.Error("Oturum süreniz doldu. Lütfen tekrar giriş yapın.", isUnauthorized = true)
+            Resource.Error(
+                context.getString(R.string.error_session_expired),
+                isUnauthorized = true
+            )
         } else {
             val errorBody = response.errorBody()?.string()
             val errorMessage = try {
@@ -60,7 +67,7 @@ class AdviceRepository @Inject constructor(
             } catch (e: Exception) {
                 null
             }
-            Resource.Error(errorMessage ?: "Bilinmeyen hata")
+            Resource.Error(errorMessage ?: context.getString(R.string.error_unknown))
         }
     }
 }
