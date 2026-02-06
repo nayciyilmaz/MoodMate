@@ -56,9 +56,6 @@
     <string name="confirm">Onayla</string>
     <string name="cancel">İptal</string>
     <string name="logout">Çıkış Yap</string>
-    <string name="theme_selection">Tema Seçimi</string>
-    <string name="light_theme">Açık Tema</string>
-    <string name="dark_theme">Koyu Tema</string>
     <string name="notification_permission">Bildirim İzni</string>
     <string name="on">Açık</string>
     <string name="off">Kapalı</string>

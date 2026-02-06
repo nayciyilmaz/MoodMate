@@ -47,11 +47,9 @@ fun MoodDetailsScreen(
     modifier: Modifier = Modifier,
     viewModel: MoodDetailsViewModel = hiltViewModel()
 ) {
-    val moodDetails by viewModel.moodDetails.collectAsState()
-    val showDeleteDialog by viewModel.showDeleteDialog.collectAsState()
-    val deleteSuccess by viewModel.deleteSuccess.collectAsState()
+    val uiState by viewModel.uiState.collectAsState()
 
-    LaunchedEffect(Unit, deleteSuccess) {
+    LaunchedEffect(Unit, uiState.deleteSuccess) {
         navController.currentBackStackEntry?.savedStateHandle?.getLiveData<Boolean>("shouldRefresh")?.observeForever { shouldRefresh ->
             if (shouldRefresh == true) {
                 viewModel.refreshMoodDetails()
@@ -69,7 +67,7 @@ fun MoodDetailsScreen(
             }
         }
 
-        if (deleteSuccess) {
+        if (uiState.deleteSuccess) {
             try {
                 navController.getBackStackEntry(MoodMateScreens.HomeScreen.route)
                     .savedStateHandle.set("shouldRefresh", true)
@@ -84,7 +82,7 @@ fun MoodDetailsScreen(
         }
     }
 
-    if (showDeleteDialog) {
+    if (uiState.showDeleteDialog) {
         DeleteConfirmDialog(
             onDismiss = { viewModel.dismissDeleteDialog() },
             onConfirm = { viewModel.deleteMood() }
@@ -92,7 +90,7 @@ fun MoodDetailsScreen(
     }
 
     EditScaffold(navController = navController) { innerPadding ->
-        moodDetails?.let { mood ->
+        uiState.moodDetails?.let { mood ->
             Column(
                 modifier = modifier
                     .padding(innerPadding)

@@ -2,6 +2,7 @@ package com.example.moodmate.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.moodmate.data.ProfileUiState
 import com.example.moodmate.local.TokenManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,38 +16,25 @@ class ProfileViewModel @Inject constructor(
     private val tokenManager: TokenManager
 ) : ViewModel() {
 
-    private val _shouldNavigateToLogin = MutableStateFlow(false)
-    val shouldNavigateToLogin: StateFlow<Boolean> = _shouldNavigateToLogin.asStateFlow()
-
-    private val _selectedTheme = MutableStateFlow("Açık Tema")
-    val selectedTheme: StateFlow<String> = _selectedTheme.asStateFlow()
-
-    private val _notificationEnabled = MutableStateFlow("Açık")
-    val notificationEnabled: StateFlow<String> = _notificationEnabled.asStateFlow()
-
-    private val _selectedLanguage = MutableStateFlow("Türkçe")
-    val selectedLanguage: StateFlow<String> = _selectedLanguage.asStateFlow()
-
-    fun setTheme(theme: String) {
-        _selectedTheme.value = theme
-    }
+    private val _uiState = MutableStateFlow(ProfileUiState())
+    val uiState: StateFlow<ProfileUiState> = _uiState.asStateFlow()
 
     fun setNotification(status: String) {
-        _notificationEnabled.value = status
+        _uiState.value = _uiState.value.copy(notificationEnabled = status)
     }
 
     fun setLanguage(language: String) {
-        _selectedLanguage.value = language
+        _uiState.value = _uiState.value.copy(selectedLanguage = language)
     }
 
     fun logout() {
         viewModelScope.launch {
             tokenManager.clearUser()
-            _shouldNavigateToLogin.value = true
+            _uiState.value = _uiState.value.copy(shouldNavigateToLogin = true)
         }
     }
 
     fun resetNavigationFlag() {
-        _shouldNavigateToLogin.value = false
+        _uiState.value = _uiState.value.copy(shouldNavigateToLogin = false)
     }
 }

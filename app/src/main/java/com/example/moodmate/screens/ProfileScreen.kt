@@ -48,13 +48,10 @@ fun ProfileScreen(
     modifier: Modifier = Modifier,
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
-    val shouldNavigateToLogin by viewModel.shouldNavigateToLogin.collectAsState()
-    val selectedTheme by viewModel.selectedTheme.collectAsState()
-    val notificationEnabled by viewModel.notificationEnabled.collectAsState()
-    val selectedLanguage by viewModel.selectedLanguage.collectAsState()
+    val uiState by viewModel.uiState.collectAsState()
 
-    LaunchedEffect(shouldNavigateToLogin) {
-        if (shouldNavigateToLogin) {
+    LaunchedEffect(uiState.shouldNavigateToLogin) {
+        if (uiState.shouldNavigateToLogin) {
             navigateAndClearBackStack(
                 navController = navController,
                 destination = MoodMateScreens.SignInScreen.route,
@@ -79,22 +76,12 @@ fun ProfileScreen(
             )
 
             SettingCard(
-                title = stringResource(id = R.string.theme_selection),
-                options = listOf(
-                    stringResource(id = R.string.light_theme),
-                    stringResource(id = R.string.dark_theme)
-                ),
-                selectedOption = selectedTheme,
-                onOptionSelected = viewModel::setTheme
-            )
-
-            SettingCard(
                 title = stringResource(id = R.string.notification_permission),
                 options = listOf(
                     stringResource(id = R.string.on),
                     stringResource(id = R.string.off)
                 ),
-                selectedOption = notificationEnabled,
+                selectedOption = uiState.notificationEnabled,
                 onOptionSelected = viewModel::setNotification
             )
 
@@ -106,7 +93,7 @@ fun ProfileScreen(
                     stringResource(id = R.string.spanish),
                     stringResource(id = R.string.italian)
                 ),
-                selectedOption = selectedLanguage,
+                selectedOption = uiState.selectedLanguage,
                 onOptionSelected = viewModel::setLanguage
             )
 

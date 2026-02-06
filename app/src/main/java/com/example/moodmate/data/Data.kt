@@ -67,11 +67,7 @@ data class SignInActionState(
 data class SignInValidationErrors(
     val emailError: String? = null,
     val passwordError: String? = null
-) {
-    fun hasErrors(): Boolean {
-        return emailError != null || passwordError != null
-    }
-}
+)
 
 data class SignUpUiState(
     val firstName: String = "",
@@ -93,12 +89,7 @@ data class SignUpValidationErrors(
     val lastNameError: String? = null,
     val emailError: String? = null,
     val passwordError: String? = null
-) {
-    fun hasErrors(): Boolean {
-        return firstNameError != null || lastNameError != null ||
-                emailError != null || passwordError != null
-    }
-}
+)
 
 data class ErrorResponse(
     val code: Int?,
@@ -169,4 +160,16 @@ data class AdviceUiState(
     val createdAt: String? = null,
     val isLoading: Boolean = false,
     val error: String? = null
+)
+
+data class ProfileUiState(
+    val shouldNavigateToLogin: Boolean = false,
+    val notificationEnabled: String = "Açık",
+    val selectedLanguage: String = "Türkçe"
+)
+
+data class MoodDetailsUiState(
+    val moodDetails: MoodResponse? = null,
+    val showDeleteDialog: Boolean = false,
+    val deleteSuccess: Boolean = false
 )

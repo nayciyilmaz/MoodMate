@@ -3,6 +3,7 @@ package com.example.moodmate.viewmodel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.moodmate.data.MoodDetailsUiState
 import com.example.moodmate.data.MoodResponse
 import com.example.moodmate.repository.MoodRepository
 import com.example.moodmate.util.Resource
@@ -22,14 +23,8 @@ class MoodDetailsViewModel @Inject constructor(
     private val moodRepository: MoodRepository
 ) : ViewModel() {
 
-    private val _moodDetails = MutableStateFlow<MoodResponse?>(null)
-    val moodDetails: StateFlow<MoodResponse?> = _moodDetails.asStateFlow()
-
-    private val _showDeleteDialog = MutableStateFlow(false)
-    val showDeleteDialog: StateFlow<Boolean> = _showDeleteDialog.asStateFlow()
-
-    private val _deleteSuccess = MutableStateFlow(false)
-    val deleteSuccess: StateFlow<Boolean> = _deleteSuccess.asStateFlow()
+    private val _uiState = MutableStateFlow(MoodDetailsUiState())
+    val uiState: StateFlow<MoodDetailsUiState> = _uiState.asStateFlow()
 
     private var currentMoodId: Long = 0L
 
@@ -39,7 +34,7 @@ class MoodDetailsViewModel @Inject constructor(
             val decodedJson = URLDecoder.decode(it, StandardCharsets.UTF_8.toString())
             val gson = Gson()
             val mood = gson.fromJson(decodedJson, MoodResponse::class.java)
-            _moodDetails.value = mood
+            _uiState.value = _uiState.value.copy(moodDetails = mood)
             currentMoodId = mood.id
         }
     }
@@ -49,7 +44,7 @@ class MoodDetailsViewModel @Inject constructor(
             when (val result = moodRepository.getUserMoods()) {
                 is Resource.Success -> {
                     val updatedMood = result.data?.find { it.id == currentMoodId }
-                    _moodDetails.value = updatedMood
+                    _uiState.value = _uiState.value.copy(moodDetails = updatedMood)
                 }
                 else -> { }
             }
@@ -57,22 +52,24 @@ class MoodDetailsViewModel @Inject constructor(
     }
 
     fun showDeleteDialog() {
-        _showDeleteDialog.value = true
+        _uiState.value = _uiState.value.copy(showDeleteDialog = true)
     }
 
     fun dismissDeleteDialog() {
-        _showDeleteDialog.value = false
+        _uiState.value = _uiState.value.copy(showDeleteDialog = false)
     }
 
     fun deleteMood() {
         viewModelScope.launch {
             when (moodRepository.deleteMood(currentMoodId)) {
                 is Resource.Success -> {
-                    _deleteSuccess.value = true
-                    _showDeleteDialog.value = false
+                    _uiState.value = _uiState.value.copy(
+                        deleteSuccess = true,
+                        showDeleteDialog = false
+                    )
                 }
                 is Resource.Error -> {
-                    _showDeleteDialog.value = false
+                    _uiState.value = _uiState.value.copy(showDeleteDialog = false)
                 }
                 else -> { }
             }
