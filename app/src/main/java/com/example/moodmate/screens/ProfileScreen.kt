@@ -1,5 +1,6 @@
 package com.example.moodmate.screens
 
+import android.app.Activity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -26,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -49,6 +51,15 @@ fun ProfileScreen(
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val shouldRecreateActivity by viewModel.shouldRecreateActivity.collectAsState()
+    val context = LocalContext.current
+
+    LaunchedEffect(shouldRecreateActivity) {
+        if (shouldRecreateActivity) {
+            (context as? Activity)?.recreate()
+            viewModel.resetRecreateFlag()
+        }
+    }
 
     LaunchedEffect(uiState.shouldNavigateToLogin) {
         if (uiState.shouldNavigateToLogin) {
@@ -88,10 +99,10 @@ fun ProfileScreen(
             SettingCard(
                 title = stringResource(id = R.string.language_selection),
                 options = listOf(
-                    stringResource(id = R.string.turkish),
-                    stringResource(id = R.string.english),
-                    stringResource(id = R.string.spanish),
-                    stringResource(id = R.string.italian)
+                    "Türkçe",
+                    "English",
+                    "Español",
+                    "Italiano"
                 ),
                 selectedOption = uiState.selectedLanguage,
                 onOptionSelected = viewModel::setLanguage

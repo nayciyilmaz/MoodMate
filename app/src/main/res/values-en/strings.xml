@@ -1,0 +1,99 @@
+<resources>
+    <string name="app_name">MoodMate</string>
+    <string name="hos_geldiniz_baslik">Welcome</string>
+    <string name="giris_alt_baslik">Please login to continue.</string>
+    <string name="eposta_etiket">E-mail</string>
+    <string name="sifre_etiket">Password</string>
+    <string name="giris_yap_butonu">Login</string>
+    <string name="welcome_message">Hello, %1$s!</string>
+    <string name="hesap_olustur_butonu">Create Account</string>
+    <string name="isim_etiket">First Name</string>
+    <string name="soyisim_etiket">Last Name</string>
+    <string name="nav_home">Home</string>
+    <string name="nav_add">Add</string>
+    <string name="nav_history">History</string>
+    <string name="nav_profile">Profile</string>
+    <string name="title_home">Home</string>
+    <string name="title_add_mood">Add Mood</string>
+    <string name="title_edit_mood">Edit Mood</string>
+    <string name="title_mood_history">Mood History</string>
+    <string name="title_mood_details">Mood Details</string>
+    <string name="title_profile">Profile</string>
+    <string name="detailed_note">Detailed Note</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
+    <string name="home_greeting_question">How are you feeling today?</string>
+    <string name="ai_assistant_title">AI Assistant</string>
+    <string name="ai_assistant_subtitle">Your daily mood analysis</string>
+    <string name="ai_no_advice_yet">No advice created yet. Press the create button below.</string>
+    <string name="home_hope_message">Hope you\'re having a great day.</string>
+    <string name="home_reminder_message">Don\'t forget to log how your day went!</string>
+    <string name="mood_select_label">Select Mood:</string>
+    <string name="rating_label">Rate:</string>
+    <string name="note_label">Add Note:</string>
+    <string name="note_placeholder">Write your note here...</string>
+    <string name="save_button">Save</string>
+    <string name="back_button">Go Back</string>
+    <string name="user_information">User Information</string>
+    <string name="username">Username</string>
+    <string name="kayit_basarili_mesaj">Registration successful! You can login now.</string>
+    <string name="mood_history_search_placeholder">Search in journals…</string>
+    <string name="mood_history_date_placeholder">Select date…</string>
+    <string name="mood_history_cancel">Cancel</string>
+    <string name="mood_history_ok">OK</string>
+    <string name="last_mood_entries">Recent Mood Entries</string>
+    <string name="past_moods">Past Moods</string>
+    <string name="mood_save_success">Your mood has been saved successfully!</string>
+    <string name="error_save_mood_failed">Mood could not be saved. Please try again.</string>
+    <string name="error_fields_required">All fields above are required.</string>
+    <string name="error_sign_in_failed">Login failed. Please try again.</string>
+    <string name="error_sign_up_failed">Registration failed. Please try again.</string>
+    <string name="no_mood_yet">( No mood entries yet. )</string>
+    <string name="loading_moods">Loading Mood Entries...</string>
+    <string name="delete_confirmation_title">Delete Confirmation</string>
+    <string name="delete_confirmation_message">Are you sure you want to delete this mood?</string>
+    <string name="ai_generating_advice">AI is generating your advice…</string>
+    <string name="confirm">Confirm</string>
+    <string name="cancel">Cancel</string>
+    <string name="logout">Logout</string>
+    <string name="notification_permission">Notification Permission</string>
+    <string name="on">On</string>
+    <string name="off">Off</string>
+    <string name="language_selection">Language Selection</string>
+    <string name="turkish">Turkish</string>
+    <string name="english">English</string>
+    <string name="spanish">Spanish</string>
+    <string name="italian">Italian</string>
+    <string name="button_close">Close</string>
+    <string name="button_retry">Retry</string>
+    <string name="button_create">Create</string>
+    <string name="error_unknown">An unknown error occurred</string>
+    <string name="error_empty_response">Empty response</string>
+    <string name="error_session_expired">Your session has expired. Please login again.</string>
+    <string name="error_server">Server error</string>
+    <string name="error_delete_failed">Delete operation failed</string>
+
+    <string-array name="week_days_short">
+        <item>Mon</item>
+        <item>Tue</item>
+        <item>Wed</item>
+        <item>Thu</item>
+        <item>Fri</item>
+        <item>Sat</item>
+        <item>Sun</item>
+    </string-array>
+
+    <string-array name="mood_list">
+        <item>😊-Happy</item>
+        <item>😔-Sad</item>
+        <item>🤩-Excited</item>
+        <item>😡-Angry</item>
+        <item>😴-Tired</item>
+        <item>🤔-Uncertain</item>
+        <item>😎-Cool</item>
+        <item>😰-Anxious</item>
+        <item>🥳-Energetic</item>
+        <item>😌-Peaceful</item>
+    </string-array>
+
+</resources>

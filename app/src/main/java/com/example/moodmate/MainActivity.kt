@@ -1,5 +1,6 @@
 package com.example.moodmate
 
+import android.content.Context
 import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.view.View
@@ -14,10 +15,17 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.core.view.WindowInsetsControllerCompat
 import com.example.moodmate.navigation.MoodMateNavigation
 import com.example.moodmate.ui.theme.MoodMateTheme
+import com.example.moodmate.util.LocaleHelper
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    override fun attachBaseContext(newBase: Context) {
+        val languageCode = LocaleHelper.getLanguage(newBase)
+        super.attachBaseContext(LocaleHelper.setLocale(newBase, languageCode))
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
