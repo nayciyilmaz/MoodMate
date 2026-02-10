@@ -54,14 +54,12 @@ fun ProfileScreen(
     val shouldRecreateActivity by viewModel.shouldRecreateActivity.collectAsState()
     val context = LocalContext.current
 
-    LaunchedEffect(shouldRecreateActivity) {
+    LaunchedEffect(shouldRecreateActivity, uiState.shouldNavigateToLogin) {
         if (shouldRecreateActivity) {
             (context as? Activity)?.recreate()
             viewModel.resetRecreateFlag()
         }
-    }
 
-    LaunchedEffect(uiState.shouldNavigateToLogin) {
         if (uiState.shouldNavigateToLogin) {
             navigateAndClearBackStack(
                 navController = navController,

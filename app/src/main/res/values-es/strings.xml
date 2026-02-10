@@ -1,0 +1,99 @@
+<resources>
+    <string name="app_name">MoodMate</string>
+    <string name="hos_geldiniz_baslik">Bienvenido</string>
+    <string name="giris_alt_baslik">Por favor inicia sesión para continuar.</string>
+    <string name="eposta_etiket">Correo electrónico</string>
+    <string name="sifre_etiket">Contraseña</string>
+    <string name="giris_yap_butonu">Iniciar sesión</string>
+    <string name="welcome_message">¡Hola, %1$s!</string>
+    <string name="hesap_olustur_butonu">Crear cuenta</string>
+    <string name="isim_etiket">Nombre</string>
+    <string name="soyisim_etiket">Apellido</string>
+    <string name="nav_home">Inicio</string>
+    <string name="nav_add">Agregar</string>
+    <string name="nav_history">Historial</string>
+    <string name="nav_profile">Perfil</string>
+    <string name="title_home">Inicio</string>
+    <string name="title_add_mood">Agregar estado de ánimo</string>
+    <string name="title_edit_mood">Editar estado de ánimo</string>
+    <string name="title_mood_history">Historial de estados de ánimo</string>
+    <string name="title_mood_details">Detalles del estado de ánimo</string>
+    <string name="title_profile">Perfil</string>
+    <string name="detailed_note">Nota detallada</string>
+    <string name="edit">Editar</string>
+    <string name="delete">Eliminar</string>
+    <string name="home_greeting_question">¿Cómo te sientes hoy?</string>
+    <string name="ai_assistant_title">Asistente de IA</string>
+    <string name="ai_assistant_subtitle">Análisis de tu estado de ánimo diario</string>
+    <string name="ai_no_advice_yet">Aún no se ha creado ningún consejo. Presiona el botón crear a continuación.</string>
+    <string name="home_hope_message">Espero que estés teniendo un gran día.</string>
+    <string name="home_reminder_message">¡No olvides registrar cómo fue tu día!</string>
+    <string name="mood_select_label">Seleccionar estado de ánimo:</string>
+    <string name="rating_label">Calificar:</string>
+    <string name="note_label">Agregar nota:</string>
+    <string name="note_placeholder">Escribe tu nota aquí...</string>
+    <string name="save_button">Guardar</string>
+    <string name="back_button">Volver</string>
+    <string name="user_information">Información del usuario</string>
+    <string name="username">Nombre de usuario</string>
+    <string name="kayit_basarili_mesaj">¡Registro exitoso! Ahora puedes iniciar sesión.</string>
+    <string name="mood_history_search_placeholder">Buscar en diarios…</string>
+    <string name="mood_history_date_placeholder">Seleccionar fecha…</string>
+    <string name="mood_history_cancel">Cancelar</string>
+    <string name="mood_history_ok">OK</string>
+    <string name="last_mood_entries">Registros recientes de estado de ánimo</string>
+    <string name="past_moods">Estados de ánimo pasados</string>
+    <string name="mood_save_success">¡Tu estado de ánimo se ha guardado exitosamente!</string>
+    <string name="error_save_mood_failed">No se pudo guardar el estado de ánimo. Inténtalo de nuevo.</string>
+    <string name="error_fields_required">Todos los campos anteriores son obligatorios.</string>
+    <string name="error_sign_in_failed">Inicio de sesión fallido. Inténtalo de nuevo.</string>
+    <string name="error_sign_up_failed">Registro fallido. Inténtalo de nuevo.</string>
+    <string name="no_mood_yet">( Aún no hay entradas de estado de ánimo. )</string>
+    <string name="loading_moods">Cargando registros de estado de ánimo...</string>
+    <string name="delete_confirmation_title">Confirmación de eliminación</string>
+    <string name="delete_confirmation_message">¿Estás seguro de que quieres eliminar este estado de ánimo?</string>
+    <string name="ai_generating_advice">La IA está generando tu consejo…</string>
+    <string name="confirm">Confirmar</string>
+    <string name="cancel">Cancelar</string>
+    <string name="logout">Cerrar sesión</string>
+    <string name="notification_permission">Permiso de notificación</string>
+    <string name="on">Activado</string>
+    <string name="off">Desactivado</string>
+    <string name="language_selection">Selección de idioma</string>
+    <string name="turkish">Turco</string>
+    <string name="english">Inglés</string>
+    <string name="spanish">Español</string>
+    <string name="italian">Italiano</string>
+    <string name="button_close">Cerrar</string>
+    <string name="button_retry">Reintentar</string>
+    <string name="button_create">Crear</string>
+    <string name="error_unknown">Ocurrió un error desconocido</string>
+    <string name="error_empty_response">Respuesta vacía</string>
+    <string name="error_session_expired">Tu sesión ha expirado. Por favor inicia sesión nuevamente.</string>
+    <string name="error_server">Error del servidor</string>
+    <string name="error_delete_failed">La operación de eliminación falló</string>
+
+    <string-array name="week_days_short">
+        <item>Lun</item>
+        <item>Mar</item>
+        <item>Mié</item>
+        <item>Jue</item>
+        <item>Vie</item>
+        <item>Sáb</item>
+        <item>Dom</item>
+    </string-array>
+
+    <string-array name="mood_list">
+        <item>😊-Feliz</item>
+        <item>😔-Triste</item>
+        <item>🤩-Emocionado</item>
+        <item>😡-Enojado</item>
+        <item>😴-Cansado</item>
+        <item>🤔-Indeciso</item>
+        <item>😎-Genial</item>
+        <item>😰-Ansioso</item>
+        <item>🥳-Enérgico</item>
+        <item>😌-Tranquilo</item>
+    </string-array>
+
+</resources>

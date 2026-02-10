@@ -1,0 +1,99 @@
+<resources>
+    <string name="app_name">MoodMate</string>
+    <string name="hos_geldiniz_baslik">Benvenuto</string>
+    <string name="giris_alt_baslik">Effettua il login per continuare.</string>
+    <string name="eposta_etiket">E-mail</string>
+    <string name="sifre_etiket">Password</string>
+    <string name="giris_yap_butonu">Accedi</string>
+    <string name="welcome_message">Ciao, %1$s!</string>
+    <string name="hesap_olustur_butonu">Crea account</string>
+    <string name="isim_etiket">Nome</string>
+    <string name="soyisim_etiket">Cognome</string>
+    <string name="nav_home">Home</string>
+    <string name="nav_add">Aggiungi</string>
+    <string name="nav_history">Cronologia</string>
+    <string name="nav_profile">Profilo</string>
+    <string name="title_home">Home</string>
+    <string name="title_add_mood">Aggiungi umore</string>
+    <string name="title_edit_mood">Modifica umore</string>
+    <string name="title_mood_history">Cronologia degli umori</string>
+    <string name="title_mood_details">Dettagli dell\'umore</string>
+    <string name="title_profile">Profilo</string>
+    <string name="detailed_note">Nota dettagliata</string>
+    <string name="edit">Modifica</string>
+    <string name="delete">Elimina</string>
+    <string name="home_greeting_question">Come ti senti oggi?</string>
+    <string name="ai_assistant_title">Assistente AI</string>
+    <string name="ai_assistant_subtitle">La tua analisi dell\'umore quotidiano</string>
+    <string name="ai_no_advice_yet">Nessun consiglio creato ancora. Premi il pulsante crea qui sotto.</string>
+    <string name="home_hope_message">Spero che tu stia passando una bella giornata.</string>
+    <string name="home_reminder_message">Non dimenticare di registrare com\'è andata la tua giornata!</string>
+    <string name="mood_select_label">Seleziona umore:</string>
+    <string name="rating_label">Valuta:</string>
+    <string name="note_label">Aggiungi nota:</string>
+    <string name="note_placeholder">Scrivi la tua nota qui...</string>
+    <string name="save_button">Salva</string>
+    <string name="back_button">Torna indietro</string>
+    <string name="user_information">Informazioni utente</string>
+    <string name="username">Nome utente</string>
+    <string name="kayit_basarili_mesaj">Registrazione riuscita! Ora puoi effettuare il login.</string>
+    <string name="mood_history_search_placeholder">Cerca nei diari…</string>
+    <string name="mood_history_date_placeholder">Seleziona data…</string>
+    <string name="mood_history_cancel">Annulla</string>
+    <string name="mood_history_ok">OK</string>
+    <string name="last_mood_entries">Ultime registrazioni di umore</string>
+    <string name="past_moods">Umori passati</string>
+    <string name="mood_save_success">Il tuo umore è stato salvato con successo!</string>
+    <string name="error_save_mood_failed">Impossibile salvare l\'umore. Riprova.</string>
+    <string name="error_fields_required">Tutti i campi sopra sono obbligatori.</string>
+    <string name="error_sign_in_failed">Accesso non riuscito. Riprova.</string>
+    <string name="error_sign_up_failed">Registrazione non riuscita. Riprova.</string>
+    <string name="no_mood_yet">( Nessuna registrazione di umore ancora. )</string>
+    <string name="loading_moods">Caricamento registrazioni di umore...</string>
+    <string name="delete_confirmation_title">Conferma eliminazione</string>
+    <string name="delete_confirmation_message">Sei sicuro di voler eliminare questo umore?</string>
+    <string name="ai_generating_advice">L\'IA sta generando il tuo consiglio…</string>
+    <string name="confirm">Conferma</string>
+    <string name="cancel">Annulla</string>
+    <string name="logout">Disconnetti</string>
+    <string name="notification_permission">Permesso di notifica</string>
+    <string name="on">Attivo</string>
+    <string name="off">Disattivo</string>
+    <string name="language_selection">Selezione lingua</string>
+    <string name="turkish">Turco</string>
+    <string name="english">Inglese</string>
+    <string name="spanish">Spagnolo</string>
+    <string name="italian">Italiano</string>
+    <string name="button_close">Chiudi</string>
+    <string name="button_retry">Riprova</string>
+    <string name="button_create">Crea</string>
+    <string name="error_unknown">Si è verificato un errore sconosciuto</string>
+    <string name="error_empty_response">Risposta vuota</string>
+    <string name="error_session_expired">La tua sessione è scaduta. Effettua nuovamente il login.</string>
+    <string name="error_server">Errore del server</string>
+    <string name="error_delete_failed">Operazione di eliminazione non riuscita</string>
+
+    <string-array name="week_days_short">
+        <item>Lun</item>
+        <item>Mar</item>
+        <item>Mer</item>
+        <item>Gio</item>
+        <item>Ven</item>
+        <item>Sab</item>
+        <item>Dom</item>
+    </string-array>
+
+    <string-array name="mood_list">
+        <item>😊-Felice</item>
+        <item>😔-Triste</item>
+        <item>🤩-Eccitato</item>
+        <item>😡-Arrabbiato</item>
+        <item>😴-Stanco</item>
+        <item>🤔-Incerto</item>
+        <item>😎-Figo</item>
+        <item>😰-Ansioso</item>
+        <item>🥳-Energico</item>
+        <item>😌-Pacifico</item>
+    </string-array>
+
+</resources>
