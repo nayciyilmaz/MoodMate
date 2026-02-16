@@ -72,6 +72,8 @@
     <string name="error_session_expired">Your session has expired. Please login again.</string>
     <string name="error_server">Server error</string>
     <string name="error_delete_failed">Delete operation failed</string>
+    <string name="notification_morning_message">How is your day going. Hope it\'s going well.</string>
+    <string name="notification_evening_message">Don\'t forget to log your day!</string>
 
     <string-array name="week_days_short">
         <item>Mon</item>

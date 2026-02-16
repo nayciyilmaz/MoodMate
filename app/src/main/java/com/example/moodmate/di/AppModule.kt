@@ -1,6 +1,7 @@
 package com.example.moodmate.di
 
 import android.content.Context
+import androidx.work.WorkManager
 import com.example.moodmate.local.TokenManager
 import com.example.moodmate.network.ApiService
 import dagger.Module
@@ -60,5 +61,13 @@ object AppModule {
     @Singleton
     fun provideApiService(retrofit: Retrofit): ApiService {
         return retrofit.create(ApiService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideWorkManager(
+        @ApplicationContext context: Context
+    ): WorkManager {
+        return WorkManager.getInstance(context)
     }
 }

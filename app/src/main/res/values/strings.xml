@@ -72,6 +72,8 @@
     <string name="error_session_expired">Oturum süreniz doldu. Lütfen tekrar giriş yapın.</string>
     <string name="error_server">Sunucu hatası</string>
     <string name="error_delete_failed">Silme işlemi başarısız</string>
+    <string name="notification_morning_message">Günün nasıl geçiyor. Umarım güzel geçiyordur.</string>
+    <string name="notification_evening_message">Günün notunu almayı unutma!</string>
 
     <string-array name="week_days_short">
         <item>Pzt</item>

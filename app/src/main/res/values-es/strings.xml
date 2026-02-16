@@ -72,6 +72,8 @@
     <string name="error_session_expired">Tu sesión ha expirado. Por favor inicia sesión nuevamente.</string>
     <string name="error_server">Error del servidor</string>
     <string name="error_delete_failed">La operación de eliminación falló</string>
+    <string name="notification_morning_message">¿Cómo va tu día? Espero que esté yendo bien.</string>
+    <string name="notification_evening_message">¡No olvides registrar tu día!</string>
 
     <string-array name="week_days_short">
         <item>Lun</item>

@@ -72,6 +72,8 @@
     <string name="error_session_expired">La tua sessione è scaduta. Effettua nuovamente il login.</string>
     <string name="error_server">Errore del server</string>
     <string name="error_delete_failed">Operazione di eliminazione non riuscita</string>
+    <string name="notification_morning_message">Come sta andando la tua giornata. Spero che stia andando bene.</string>
+    <string name="notification_evening_message">Non dimenticare di registrare la tua giornata!</string>
 
     <string-array name="week_days_short">
         <item>Lun</item>
