@@ -90,8 +90,11 @@ fun ProfileScreen(
                     stringResource(id = R.string.on),
                     stringResource(id = R.string.off)
                 ),
-                selectedOption = uiState.notificationEnabled,
-                onOptionSelected = viewModel::setNotification
+                selectedOption = if (uiState.notificationEnabled) stringResource(id = R.string.on) else stringResource(id = R.string.off),
+                onOptionSelected = { selected ->
+                    val enabled = selected == context.getString(R.string.on)
+                    viewModel.setNotification(enabled)
+                }
             )
 
             SettingCard(

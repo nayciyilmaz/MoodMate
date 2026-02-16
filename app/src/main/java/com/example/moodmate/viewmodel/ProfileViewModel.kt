@@ -5,7 +5,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.moodmate.data.ProfileUiState
 import com.example.moodmate.local.TokenManager
+import com.example.moodmate.notification.NotificationScheduler
 import com.example.moodmate.util.LocaleHelper
+import com.example.moodmate.util.NotificationPreferenceHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,6 +19,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
     private val tokenManager: TokenManager,
+    private val notificationScheduler: NotificationScheduler,
     @ApplicationContext private val context: Context
 ) : ViewModel() {
 
@@ -27,10 +30,10 @@ class ProfileViewModel @Inject constructor(
     val shouldRecreateActivity: StateFlow<Boolean> = _shouldRecreateActivity.asStateFlow()
 
     init {
-        loadCurrentLanguage()
+        loadSettings()
     }
 
-    private fun loadCurrentLanguage() {
+    private fun loadSettings() {
         val currentLanguageCode = LocaleHelper.getLanguage(context)
         val languageName = when (currentLanguageCode) {
             "tr" -> "Türkçe"
@@ -39,11 +42,24 @@ class ProfileViewModel @Inject constructor(
             "it" -> "Italiano"
             else -> "Türkçe"
         }
-        _uiState.value = _uiState.value.copy(selectedLanguage = languageName)
+
+        val isEnabled = NotificationPreferenceHelper.isNotificationEnabled(context)
+
+        _uiState.value = _uiState.value.copy(
+            selectedLanguage = languageName,
+            notificationEnabled = isEnabled
+        )
     }
 
-    fun setNotification(status: String) {
-        _uiState.value = _uiState.value.copy(notificationEnabled = status)
+    fun setNotification(enabled: Boolean) {
+        NotificationPreferenceHelper.setNotificationEnabled(context, enabled)
+        _uiState.value = _uiState.value.copy(notificationEnabled = enabled)
+
+        if (enabled) {
+            notificationScheduler.scheduleDailyNotifications()
+        } else {
+            notificationScheduler.cancelAllNotifications()
+        }
     }
 
     fun setLanguage(language: String) {

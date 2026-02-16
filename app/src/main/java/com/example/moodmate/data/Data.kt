@@ -164,7 +164,7 @@ data class AdviceUiState(
 
 data class ProfileUiState(
     val shouldNavigateToLogin: Boolean = false,
-    val notificationEnabled: String = "Açık",
+    val notificationEnabled: Boolean = true,
     val selectedLanguage: String = "Türkçe"
 )
 
