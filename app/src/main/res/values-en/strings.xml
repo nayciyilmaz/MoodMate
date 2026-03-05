@@ -85,6 +85,12 @@
     <string name="error_password_same_as_current">New password cannot be the same as current password.</string>
     <string name="error_passwords_do_not_match">New passwords do not match.</string>
     <string name="error_change_password_failed">Password change failed. Please try again.</string>
+    <string name="date_time_label">Date and Time:</string>
+    <string name="date_placeholder">Select date</string>
+    <string name="time_placeholder">Select time</string>
+    <string name="select_time_title">Select Time</string>
+    <string name="hour_label">Hour</string>
+    <string name="minute_label">Minute</string>
     <string name="error_delete_failed">Delete operation failed</string>
     <string name="notification_morning_message">How is your day going. Hope it\'s going well.</string>
     <string name="notification_evening_message">Don\'t forget to log your day!</string>

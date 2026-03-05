@@ -16,7 +16,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import java.time.LocalDateTime
+import java.time.LocalDate
+import java.time.LocalTime
+import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
@@ -42,9 +44,30 @@ class AddMoodViewModel @Inject constructor(
     val isEditMode = !moodIdString.isNullOrEmpty()
     private val moodId: Long = moodIdString?.toLongOrNull() ?: 0L
 
-    fun setInitialData(emoji: String, score: Int, note: String) {
-        if (isEditMode) {
-            val moodIndex = moods.indexOfFirst { it.emoji == emoji }
+    fun setInitialData(emoji: String, score: Int, note: String, entryDate: String? = null) {
+        val moodIndex = moods.indexOfFirst { it.emoji == emoji }
+
+        if (isEditMode && entryDate != null) {
+            try {
+                val dateTime = java.time.LocalDateTime.parse(entryDate, DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+                val dateStr = dateTime.toLocalDate().toString()
+                val timeStr = dateTime.toLocalTime().format(DateTimeFormatter.ofPattern("HH:mm"))
+                _uiState.value = _uiState.value.copy(
+                    selectedMoodIndex = moodIndex,
+                    selectedRating = score,
+                    noteText = note,
+                    selectedDate = dateStr,
+                    selectedTime = timeStr,
+                    currentMonth = YearMonth.from(dateTime.toLocalDate()).toString()
+                )
+            } catch (e: Exception) {
+                _uiState.value = _uiState.value.copy(
+                    selectedMoodIndex = moodIndex,
+                    selectedRating = score,
+                    noteText = note
+                )
+            }
+        } else if (isEditMode) {
             _uiState.value = _uiState.value.copy(
                 selectedMoodIndex = moodIndex,
                 selectedRating = score,
@@ -74,6 +97,72 @@ class AddMoodViewModel @Inject constructor(
         )
     }
 
+    fun onDateSelected(date: LocalDate) {
+        _uiState.value = _uiState.value.copy(
+            selectedDate = date.toString(),
+            validationError = null
+        )
+    }
+
+    fun onTimeSelected(time: LocalTime) {
+        _uiState.value = _uiState.value.copy(
+            selectedTime = time.format(DateTimeFormatter.ofPattern("HH:mm")),
+            validationError = null
+        )
+    }
+
+    fun onShowDatePicker() {
+        val today = LocalDate.now()
+        _uiState.value = _uiState.value.copy(
+            showDatePicker = true,
+            tempSelectedDate = _uiState.value.selectedDate ?: today.toString(),
+            currentMonth = _uiState.value.currentMonth ?: YearMonth.now().toString()
+        )
+    }
+
+    fun onDismissDatePicker() {
+        _uiState.value = _uiState.value.copy(
+            showDatePicker = false,
+            tempSelectedDate = null
+        )
+    }
+
+    fun onMonthChange(month: YearMonth) {
+        _uiState.value = _uiState.value.copy(currentMonth = month.toString())
+    }
+
+    fun onTempDateSelect(date: LocalDate) {
+        _uiState.value = _uiState.value.copy(tempSelectedDate = date.toString())
+    }
+
+    fun onConfirmDate() {
+        val tempDate = _uiState.value.tempSelectedDate
+        if (tempDate != null) {
+            _uiState.value = _uiState.value.copy(
+                selectedDate = tempDate,
+                showDatePicker = false,
+                tempSelectedDate = null,
+                validationError = null
+            )
+        }
+    }
+
+    fun onShowTimePicker() {
+        _uiState.value = _uiState.value.copy(showTimePicker = true)
+    }
+
+    fun onDismissTimePicker() {
+        _uiState.value = _uiState.value.copy(showTimePicker = false)
+    }
+
+    fun onConfirmTime(time: LocalTime) {
+        _uiState.value = _uiState.value.copy(
+            selectedTime = time.format(DateTimeFormatter.ofPattern("HH:mm")),
+            showTimePicker = false,
+            validationError = null
+        )
+    }
+
     fun saveMood() {
         if (!_uiState.value.isValid()) {
             _uiState.value = _uiState.value.copy(
@@ -86,9 +175,7 @@ class AddMoodViewModel @Inject constructor(
             _actionState.value = AddMoodActionState(isLoading = true)
 
             val selectedEmoji = moods[_uiState.value.selectedMoodIndex].emoji
-            val currentDateTime = LocalDateTime.now()
-            val formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME
-            val entryDate = currentDateTime.format(formatter)
+            val entryDate = buildEntryDate()
 
             val result = if (isEditMode) {
                 moodRepository.updateMood(
@@ -124,6 +211,24 @@ class AddMoodViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    private fun buildEntryDate(): String {
+        val state = _uiState.value
+        val date = if (state.selectedDate != null) {
+            LocalDate.parse(state.selectedDate)
+        } else {
+            LocalDate.now()
+        }
+
+        val time = if (state.selectedTime != null) {
+            LocalTime.parse(state.selectedTime, DateTimeFormatter.ofPattern("HH:mm"))
+        } else {
+            LocalTime.now()
+        }
+
+        val dateTime = date.atTime(time)
+        return dateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
     }
 
     private fun resetForm() {

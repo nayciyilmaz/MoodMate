@@ -82,6 +82,12 @@
     <string name="error_password_same_as_current">Yeni şifre mevcut şifre ile aynı olamaz.</string>
     <string name="error_passwords_do_not_match">Yeni şifreler eşleşmiyor.</string>
     <string name="error_change_password_failed">Şifre değiştirme başarısız. Lütfen tekrar deneyin.</string>
+    <string name="date_time_label">Tarih ve Saat :</string>
+    <string name="date_placeholder">Tarih seçin</string>
+    <string name="time_placeholder">Saat seçin</string>
+    <string name="select_time_title">Saat Seçin</string>
+    <string name="hour_label">Saat</string>
+    <string name="minute_label">Dakika</string>
     <string name="error_empty_response">Yanıt boş</string>
     <string name="error_session_expired">Oturum süreniz doldu. Lütfen tekrar giriş yapın.</string>
     <string name="error_server">Sunucu hatası</string>

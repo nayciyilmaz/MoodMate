@@ -23,7 +23,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.AccessTime
+import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -46,13 +49,20 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.moodmate.R
+import com.example.moodmate.components.EditDatePicker
 import com.example.moodmate.components.EditDetailsButton
 import com.example.moodmate.components.EditScaffold
 import com.example.moodmate.components.EditTextField
+import com.example.moodmate.components.EditTimePicker
 import com.example.moodmate.components.ValidationErrorText
 import com.example.moodmate.navigation.MoodMateScreens
 import com.example.moodmate.util.navigateAndClearBackStack
 import com.example.moodmate.viewmodel.AddMoodViewModel
+import java.time.LocalDate
+import java.time.LocalTime
+import java.time.YearMonth
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 @Composable
 fun AddMoodScreen(
@@ -66,10 +76,11 @@ fun AddMoodScreen(
     val emoji = backStackEntry?.savedStateHandle?.get<String>("emoji")
     val score = backStackEntry?.savedStateHandle?.get<Int>("score")
     val note = backStackEntry?.savedStateHandle?.get<String>("note")
+    val entryDate = backStackEntry?.savedStateHandle?.get<String>("entryDate")
 
-    LaunchedEffect(emoji, score, note) {
+    LaunchedEffect(emoji, score, note, entryDate) {
         if (emoji != null && score != null && note != null) {
-            viewModel.setInitialData(emoji, score, note)
+            viewModel.setInitialData(emoji, score, note, entryDate)
         }
     }
 
@@ -102,6 +113,32 @@ fun AddMoodScreen(
         }
     }
 
+    val currentMonth = uiState.currentMonth?.let { YearMonth.parse(it) } ?: YearMonth.now()
+    val tempSelectedDate = uiState.tempSelectedDate?.let { LocalDate.parse(it) }
+
+    if (uiState.showDatePicker) {
+        EditDatePicker(
+            currentMonth = currentMonth,
+            tempSelectedDate = tempSelectedDate,
+            onMonthChange = viewModel::onMonthChange,
+            onDateSelect = viewModel::onTempDateSelect,
+            onDismiss = viewModel::onDismissDatePicker,
+            onConfirm = viewModel::onConfirmDate
+        )
+    }
+
+    if (uiState.showTimePicker) {
+        val currentTime = uiState.selectedTime?.let {
+            LocalTime.parse(it, DateTimeFormatter.ofPattern("HH:mm"))
+        } ?: LocalTime.now()
+
+        EditTimePicker(
+            initialTime = currentTime,
+            onDismiss = viewModel::onDismissTimePicker,
+            onConfirm = viewModel::onConfirmTime
+        )
+    }
+
     EditScaffold(navController = navController) {
         Column(
             modifier = modifier
@@ -128,6 +165,17 @@ fun AddMoodScreen(
                 NoteSection(
                     noteText = uiState.noteText,
                     onNoteChanged = viewModel::onNoteTextChange
+                )
+
+                DateTimeSection(
+                    date = uiState.selectedDate?.let {
+                        LocalDate.parse(it).format(
+                            DateTimeFormatter.ofPattern("dd MMMM yyyy", Locale("tr"))
+                        )
+                    } ?: "",
+                    time = uiState.selectedTime ?: "",
+                    onDateClick = viewModel::onShowDatePicker,
+                    onTimeClick = viewModel::onShowTimePicker
                 )
 
                 uiState.validationError?.let { error ->
@@ -309,12 +357,68 @@ fun NoteSection(
                 .padding(top = 16.dp),
             placeholder = stringResource(id = R.string.note_placeholder),
             singleLine = false,
-            minLines = 5,
-            maxLines = 5,
+            minLines = 4,
+            maxLines = 4,
             imeAction = ImeAction.Done,
             focusedIndicatorColor = colorResource(id = R.color.blue_screen),
             unfocusedIndicatorColor = colorResource(id = R.color.blue_screen)
         )
+    }
+}
+
+@Composable
+fun DateTimeSection(
+    date: String,
+    time: String,
+    onDateClick: () -> Unit,
+    onTimeClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column {
+        Text(
+            text = stringResource(id = R.string.date_time_label),
+            style = MaterialTheme.typography.bodyLarge,
+            fontWeight = FontWeight.Bold
+        )
+
+        Row(
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(top = 12.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            EditTextField(
+                value = date,
+                onValueChange = {},
+                modifier = modifier
+                    .weight(1f)
+                    .clickable { onDateClick() },
+                placeholder = stringResource(id = R.string.date_placeholder),
+                enabled = false,
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Default.CalendarToday,
+                        contentDescription = null
+                    )
+                }
+            )
+
+            EditTextField(
+                value = time,
+                onValueChange = {},
+                modifier = modifier
+                    .weight(1f)
+                    .clickable { onTimeClick() },
+                placeholder = stringResource(id = R.string.time_placeholder),
+                enabled = false,
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Default.AccessTime,
+                        contentDescription = null
+                    )
+                }
+            )
+        }
     }
 }
 

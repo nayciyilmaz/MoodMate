@@ -85,6 +85,12 @@
     <string name="error_password_same_as_current">La nuova password non può essere uguale a quella attuale.</string>
     <string name="error_passwords_do_not_match">Le nuove password non corrispondono.</string>
     <string name="error_change_password_failed">Cambio password non riuscito. Riprova.</string>
+    <string name="date_time_label">Data e ora:</string>
+    <string name="date_placeholder">Seleziona data</string>
+    <string name="time_placeholder">Seleziona ora</string>
+    <string name="select_time_title">Seleziona ora</string>
+    <string name="hour_label">Ora</string>
+    <string name="minute_label">Minuto</string>
     <string name="error_delete_failed">Operazione di eliminazione non riuscita</string>
     <string name="notification_morning_message">Come sta andando la tua giornata. Spero che stia andando bene.</string>
     <string name="notification_evening_message">Non dimenticare di registrare la tua giornata!</string>

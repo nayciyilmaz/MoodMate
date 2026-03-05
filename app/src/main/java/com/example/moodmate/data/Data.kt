@@ -122,6 +122,12 @@ data class AddMoodUiState(
     val selectedMoodIndex: Int = -1,
     val selectedRating: Int = -1,
     val noteText: String = "",
+    val selectedDate: String? = null,
+    val selectedTime: String? = null,
+    val showDatePicker: Boolean = false,
+    val currentMonth: String? = null,
+    val tempSelectedDate: String? = null,
+    val showTimePicker: Boolean = false,
     val validationError: String? = null
 ) {
     fun isValid(): Boolean {

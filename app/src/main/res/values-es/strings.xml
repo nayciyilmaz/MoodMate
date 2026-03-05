@@ -85,6 +85,12 @@
     <string name="error_password_same_as_current">La nueva contraseña no puede ser igual a la actual.</string>
     <string name="error_passwords_do_not_match">Las nuevas contraseñas no coinciden.</string>
     <string name="error_change_password_failed">Cambio de contraseña fallido. Inténtalo de nuevo.</string>
+    <string name="date_time_label">Fecha y hora:</string>
+    <string name="date_placeholder">Seleccionar fecha</string>
+    <string name="time_placeholder">Seleccionar hora</string>
+    <string name="select_time_title">Seleccionar hora</string>
+    <string name="hour_label">Hora</string>
+    <string name="minute_label">Minuto</string>
     <string name="error_delete_failed">La operación de eliminación falló</string>
     <string name="notification_morning_message">¿Cómo va tu día? Espero que esté yendo bien.</string>
     <string name="notification_evening_message">¡No olvides registrar tu día!</string>
