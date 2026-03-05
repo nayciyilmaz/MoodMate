@@ -1,13 +1,16 @@
 package com.example.moodmate.viewmodel
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.moodmate.R
 import com.example.moodmate.data.AdviceUiState
 import com.example.moodmate.data.HomeUiState
 import com.example.moodmate.repository.AdviceRepository
 import com.example.moodmate.repository.MoodRepository
 import com.example.moodmate.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -17,7 +20,8 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val moodRepository: MoodRepository,
-    private val adviceRepository: AdviceRepository
+    private val adviceRepository: AdviceRepository,
+    @ApplicationContext private val context: Context
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(HomeUiState())
@@ -104,7 +108,7 @@ class HomeViewModel @Inject constructor(
                     }
                     _adviceState.value = _adviceState.value.copy(
                         isLoading = false,
-                        error = result.message ?: "Yapay zeka hizmeti şu an kullanılamıyor."
+                        error = result.message ?: context.getString(R.string.error_ai_unavailable)
                     )
                 }
                 is Resource.Loading -> {

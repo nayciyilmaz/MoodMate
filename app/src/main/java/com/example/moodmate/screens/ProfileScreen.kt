@@ -110,6 +110,18 @@ fun ProfileScreen(
             )
 
             EditButton(
+                text = stringResource(id = R.string.update_info_button),
+                onClick = {
+                    navigateAndClearBackStack(
+                        navController = navController,
+                        destination = MoodMateScreens.SettingsScreen.route,
+                        popUpToRoute = MoodMateScreens.ProfileScreen.route
+                    )
+                },
+                containerColor = colorResource(id = R.color.acik_mavi)
+            )
+
+            EditButton(
                 text = stringResource(id = R.string.logout),
                 onClick = { viewModel.logout() },
                 containerColor = Color.Red

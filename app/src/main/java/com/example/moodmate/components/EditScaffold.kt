@@ -29,6 +29,7 @@ fun EditScaffold(
             currentRoute != MoodMateScreens.SplashScreen.route &&
             currentRoute != MoodMateScreens.SignInScreen.route &&
             currentRoute != MoodMateScreens.SignUpScreen.route &&
+            currentRoute != MoodMateScreens.SettingsScreen.route &&
             !isEditMode
 
     val showTopBar = currentRoute != MoodMateScreens.SplashScreen.route &&

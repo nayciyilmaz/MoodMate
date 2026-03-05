@@ -30,13 +30,16 @@ fun EditTopBar(
         currentRoute == MoodMateScreens.MoodHistoryScreen.route -> stringResource(R.string.title_mood_history)
         currentRoute == MoodMateScreens.MoodDetailsScreen.route -> stringResource(R.string.title_mood_details)
         currentRoute == MoodMateScreens.ProfileScreen.route -> stringResource(R.string.title_profile)
+        currentRoute == MoodMateScreens.SettingsScreen.route -> stringResource(R.string.title_settings)
         else -> ""
     }
+
+    val showBackButton = currentRoute == MoodMateScreens.MoodDetailsScreen.route
 
     TopAppBar(
         title = { Text(title) },
         navigationIcon = {
-            if (currentRoute == MoodMateScreens.MoodDetailsScreen.route) {
+            if (showBackButton) {
                 EditIconButton(
                     icon = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = null,

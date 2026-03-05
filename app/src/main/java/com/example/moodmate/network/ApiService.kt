@@ -2,6 +2,7 @@ package com.example.moodmate.network
 
 import com.example.moodmate.data.AdviceResponse
 import com.example.moodmate.data.AuthResponse
+import com.example.moodmate.data.ChangePasswordRequest
 import com.example.moodmate.data.LoginRequest
 import com.example.moodmate.data.MoodRequest
 import com.example.moodmate.data.MoodResponse
@@ -21,6 +22,9 @@ interface ApiService {
 
     @POST("api/auth/login")
     suspend fun login(@Body request: LoginRequest): Response<AuthResponse>
+
+    @PUT("api/user/change-password")
+    suspend fun changePassword(@Body request: ChangePasswordRequest): Response<Void>
 
     @POST("api/moods")
     suspend fun addMood(@Body request: MoodRequest): Response<MoodResponse>

@@ -14,6 +14,7 @@ import com.example.moodmate.screens.HomeScreen
 import com.example.moodmate.screens.MoodDetailsScreen
 import com.example.moodmate.screens.MoodHistoryScreen
 import com.example.moodmate.screens.ProfileScreen
+import com.example.moodmate.screens.SettingsScreen
 import com.example.moodmate.screens.SignInScreen
 import com.example.moodmate.screens.SignUpScreen
 import com.example.moodmate.screens.SplashScreen
@@ -72,6 +73,9 @@ fun MoodMateNavigation(){
                 fullName = uiState.userData?.fullName ?: "",
                 email = uiState.userData?.email ?: ""
             )
+        }
+        composable(route = MoodMateScreens.SettingsScreen.route){
+            SettingsScreen(navController = navController)
         }
     }
 }

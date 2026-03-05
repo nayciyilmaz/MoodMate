@@ -71,9 +71,24 @@
     <string name="error_empty_response">Respuesta vacía</string>
     <string name="error_session_expired">Tu sesión ha expirado. Por favor inicia sesión nuevamente.</string>
     <string name="error_server">Error del servidor</string>
+    <string name="title_settings">Configuración</string>
+    <string name="update_info_button">Actualizar información</string>
+    <string name="update_password_title">Actualizar contraseña</string>
+    <string name="current_password_label">Contraseña actual</string>
+    <string name="new_password_label">Nueva contraseña</string>
+    <string name="confirm_password_label">Confirmar nueva contraseña</string>
+    <string name="password_change_success">¡Tu contraseña se ha actualizado exitosamente!</string>
+    <string name="error_current_password_empty">La contraseña actual no puede estar vacía.</string>
+    <string name="error_new_password_empty">La nueva contraseña no puede estar vacía.</string>
+    <string name="error_confirm_password_empty">La confirmación de contraseña no puede estar vacía.</string>
+    <string name="error_password_min_length">La contraseña debe tener al menos 6 caracteres.</string>
+    <string name="error_password_same_as_current">La nueva contraseña no puede ser igual a la actual.</string>
+    <string name="error_passwords_do_not_match">Las nuevas contraseñas no coinciden.</string>
+    <string name="error_change_password_failed">Cambio de contraseña fallido. Inténtalo de nuevo.</string>
     <string name="error_delete_failed">La operación de eliminación falló</string>
     <string name="notification_morning_message">¿Cómo va tu día? Espero que esté yendo bien.</string>
     <string name="notification_evening_message">¡No olvides registrar tu día!</string>
+    <string name="error_ai_unavailable">El servicio de IA no está disponible actualmente.</string>
 
     <string-array name="week_days_short">
         <item>Lun</item>

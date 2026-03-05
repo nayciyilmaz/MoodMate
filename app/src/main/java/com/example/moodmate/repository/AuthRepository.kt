@@ -3,6 +3,7 @@ package com.example.moodmate.repository
 import android.content.Context
 import com.example.moodmate.R
 import com.example.moodmate.data.AuthResponse
+import com.example.moodmate.data.ChangePasswordRequest
 import com.example.moodmate.data.ErrorResponse
 import com.example.moodmate.data.LoginRequest
 import com.example.moodmate.data.RegisterRequest
@@ -50,6 +51,33 @@ class AuthRepository @Inject constructor(
                 val request = LoginRequest(email, password)
                 val response = apiService.login(request)
                 handleResponse(response)
+            } catch (e: Exception) {
+                Resource.Error(e.localizedMessage ?: context.getString(R.string.error_unknown))
+            }
+        }
+    }
+
+    suspend fun changePassword(
+        currentPassword: String,
+        newPassword: String,
+        confirmPassword: String
+    ): Resource<Unit> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val request = ChangePasswordRequest(currentPassword, newPassword, confirmPassword)
+                val response = apiService.changePassword(request)
+                if (response.isSuccessful) {
+                    Resource.Success(Unit)
+                } else {
+                    val errorBody = response.errorBody()?.string()
+                    val errorMessage = try {
+                        val errorResponse = gson.fromJson(errorBody, ErrorResponse::class.java)
+                        errorResponse.message
+                    } catch (e: Exception) {
+                        null
+                    }
+                    Resource.Error(errorMessage ?: context.getString(R.string.error_unknown))
+                }
             } catch (e: Exception) {
                 Resource.Error(e.localizedMessage ?: context.getString(R.string.error_unknown))
             }

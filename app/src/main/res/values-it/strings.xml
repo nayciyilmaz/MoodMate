@@ -71,9 +71,24 @@
     <string name="error_empty_response">Risposta vuota</string>
     <string name="error_session_expired">La tua sessione è scaduta. Effettua nuovamente il login.</string>
     <string name="error_server">Errore del server</string>
+    <string name="title_settings">Impostazioni</string>
+    <string name="update_info_button">Aggiorna informazioni</string>
+    <string name="update_password_title">Aggiorna password</string>
+    <string name="current_password_label">Password attuale</string>
+    <string name="new_password_label">Nuova password</string>
+    <string name="confirm_password_label">Conferma nuova password</string>
+    <string name="password_change_success">La tua password è stata aggiornata con successo!</string>
+    <string name="error_current_password_empty">La password attuale non può essere vuota.</string>
+    <string name="error_new_password_empty">La nuova password non può essere vuota.</string>
+    <string name="error_confirm_password_empty">La conferma della password non può essere vuota.</string>
+    <string name="error_password_min_length">La password deve contenere almeno 6 caratteri.</string>
+    <string name="error_password_same_as_current">La nuova password non può essere uguale a quella attuale.</string>
+    <string name="error_passwords_do_not_match">Le nuove password non corrispondono.</string>
+    <string name="error_change_password_failed">Cambio password non riuscito. Riprova.</string>
     <string name="error_delete_failed">Operazione di eliminazione non riuscita</string>
     <string name="notification_morning_message">Come sta andando la tua giornata. Spero che stia andando bene.</string>
     <string name="notification_evening_message">Non dimenticare di registrare la tua giornata!</string>
+    <string name="error_ai_unavailable">Il servizio AI non è attualmente disponibile.</string>
 
     <string-array name="week_days_short">
         <item>Lun</item>

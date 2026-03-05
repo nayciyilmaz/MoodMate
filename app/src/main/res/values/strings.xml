@@ -68,12 +68,27 @@
     <string name="button_retry">Tekrar</string>
     <string name="button_create">Oluştur</string>
     <string name="error_unknown">Bilinmeyen bir hata oluştu</string>
+    <string name="title_settings">Ayarlar</string>
+    <string name="update_info_button">Bilgileri Güncelle</string>
+    <string name="update_password_title">Şifreyi Güncelle</string>
+    <string name="current_password_label">Mevcut Şifre</string>
+    <string name="new_password_label">Yeni Şifre</string>
+    <string name="confirm_password_label">Yeni Şifre Tekrar</string>
+    <string name="password_change_success">Şifreniz başarıyla güncellendi!</string>
+    <string name="error_current_password_empty">Mevcut şifre boş olamaz.</string>
+    <string name="error_new_password_empty">Yeni şifre boş olamaz.</string>
+    <string name="error_confirm_password_empty">Şifre tekrar alanı boş olamaz.</string>
+    <string name="error_password_min_length">Şifre en az 6 karakter olmalıdır.</string>
+    <string name="error_password_same_as_current">Yeni şifre mevcut şifre ile aynı olamaz.</string>
+    <string name="error_passwords_do_not_match">Yeni şifreler eşleşmiyor.</string>
+    <string name="error_change_password_failed">Şifre değiştirme başarısız. Lütfen tekrar deneyin.</string>
     <string name="error_empty_response">Yanıt boş</string>
     <string name="error_session_expired">Oturum süreniz doldu. Lütfen tekrar giriş yapın.</string>
     <string name="error_server">Sunucu hatası</string>
     <string name="error_delete_failed">Silme işlemi başarısız</string>
     <string name="notification_morning_message">Günün nasıl geçiyor. Umarım güzel geçiyordur.</string>
     <string name="notification_evening_message">Günün notunu almayı unutma!</string>
+    <string name="error_ai_unavailable">Yapay zeka hizmeti şu an kullanılamıyor.</string>
 
     <string-array name="week_days_short">
         <item>Pzt</item>
