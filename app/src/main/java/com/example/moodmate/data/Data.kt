@@ -171,7 +171,8 @@ data class AdviceUiState(
 data class ProfileUiState(
     val shouldNavigateToLogin: Boolean = false,
     val notificationEnabled: Boolean = true,
-    val selectedLanguage: String = "Türkçe"
+    val selectedLanguage: String = "Türkçe",
+    val showLogoutDialog: Boolean = false
 )
 
 data class MoodDetailsUiState(

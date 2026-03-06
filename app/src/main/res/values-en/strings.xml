@@ -91,6 +91,8 @@
     <string name="select_time_title">Select Time</string>
     <string name="hour_label">Hour</string>
     <string name="minute_label">Minute</string>
+    <string name="logout_confirmation_title">Logout</string>
+    <string name="logout_confirmation_message">Are you sure you want to logout? Unsynchronized data will be deleted!</string>
     <string name="error_delete_failed">Delete operation failed</string>
     <string name="notification_morning_message">How is your day going. Hope it\'s going well.</string>
     <string name="notification_evening_message">Don\'t forget to log your day!</string>

@@ -177,7 +177,7 @@ fun ScrollWheel(
     ) {
         LazyColumn(
             state = listState,
-            modifier = Modifier.matchParentSize(),
+            modifier = modifier.matchParentSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             items(items.size) { index ->
@@ -185,7 +185,7 @@ fun ScrollWheel(
                 val isSelected = item == selectedItem
 
                 Box(
-                    modifier = Modifier
+                    modifier = modifier
                         .fillMaxWidth()
                         .padding(horizontal = 8.dp, vertical = 2.dp)
                         .clip(RoundedCornerShape(8.dp))

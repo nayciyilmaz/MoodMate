@@ -91,6 +91,8 @@
     <string name="select_time_title">Seleziona ora</string>
     <string name="hour_label">Ora</string>
     <string name="minute_label">Minuto</string>
+    <string name="logout_confirmation_title">Disconnetti</string>
+    <string name="logout_confirmation_message">Sei sicuro di voler effettuare il logout? I dati non sincronizzati verranno eliminati!</string>
     <string name="error_delete_failed">Operazione di eliminazione non riuscita</string>
     <string name="notification_morning_message">Come sta andando la tua giornata. Spero che stia andando bene.</string>
     <string name="notification_evening_message">Non dimenticare di registrare la tua giornata!</string>

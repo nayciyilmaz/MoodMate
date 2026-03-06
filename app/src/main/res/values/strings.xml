@@ -88,6 +88,8 @@
     <string name="select_time_title">Saat Seçin</string>
     <string name="hour_label">Saat</string>
     <string name="minute_label">Dakika</string>
+    <string name="logout_confirmation_title">Çıkış Yapma</string>
+    <string name="logout_confirmation_message">Çıkış yapmak istediğinizden emin misiniz? Senkron olmayan veriler silinecektir!</string>
     <string name="error_empty_response">Yanıt boş</string>
     <string name="error_session_expired">Oturum süreniz doldu. Lütfen tekrar giriş yapın.</string>
     <string name="error_server">Sunucu hatası</string>

@@ -83,10 +83,21 @@ class ProfileViewModel @Inject constructor(
         _shouldRecreateActivity.value = false
     }
 
+    fun showLogoutDialog() {
+        _uiState.value = _uiState.value.copy(showLogoutDialog = true)
+    }
+
+    fun dismissLogoutDialog() {
+        _uiState.value = _uiState.value.copy(showLogoutDialog = false)
+    }
+
     fun logout() {
         viewModelScope.launch {
             tokenManager.clearUser()
-            _uiState.value = _uiState.value.copy(shouldNavigateToLogin = true)
+            _uiState.value = _uiState.value.copy(
+                showLogoutDialog = false,
+                shouldNavigateToLogin = true
+            )
         }
     }
 

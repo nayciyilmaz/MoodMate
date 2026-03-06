@@ -84,6 +84,9 @@ class MoodHistoryViewModel @Inject constructor(
 
     fun onShowDatePicker() {
         showDatePicker = true
+        if (tempSelectedDate == null) {
+            tempSelectedDate = selectedDate ?: LocalDate.now()
+        }
     }
 
     fun onDismissDatePicker() {

@@ -12,7 +12,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -34,9 +33,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.moodmate.R
+import com.example.moodmate.components.EditAlertDialog
 import com.example.moodmate.components.EditDetailsButton
 import com.example.moodmate.components.EditScaffold
-import com.example.moodmate.components.EditTextButton
 import com.example.moodmate.navigation.MoodMateScreens
 import com.example.moodmate.util.formatDate
 import com.example.moodmate.viewmodel.MoodDetailsViewModel
@@ -83,9 +82,13 @@ fun MoodDetailsScreen(
     }
 
     if (uiState.showDeleteDialog) {
-        DeleteConfirmDialog(
-            onDismiss = { viewModel.dismissDeleteDialog() },
-            onConfirm = { viewModel.deleteMood() }
+        EditAlertDialog(
+            title = stringResource(id = R.string.delete_confirmation_title),
+            message = stringResource(id = R.string.delete_confirmation_message),
+            confirmText = stringResource(id = R.string.confirm),
+            dismissText = stringResource(id = R.string.cancel),
+            onConfirm = { viewModel.deleteMood() },
+            onDismiss = { viewModel.dismissDeleteDialog() }
         )
     }
 
@@ -146,44 +149,6 @@ fun MoodDetailsScreen(
             }
         }
     }
-}
-
-@Composable
-fun DeleteConfirmDialog(
-    onDismiss: () -> Unit,
-    onConfirm: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = {
-            Text(
-                text = stringResource(id = R.string.delete_confirmation_title),
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold
-            )
-        },
-        text = {
-            Text(
-                text = stringResource(id = R.string.delete_confirmation_message),
-                style = MaterialTheme.typography.bodyLarge
-            )
-        },
-        confirmButton = {
-            EditTextButton(
-                text = stringResource(id = R.string.confirm),
-                onClick = onConfirm
-            )
-        },
-        dismissButton = {
-            EditTextButton(
-                text = stringResource(id = R.string.cancel),
-                onClick = onDismiss
-            )
-        },
-        containerColor = Color.White,
-        shape = RoundedCornerShape(16.dp)
-    )
 }
 
 @Composable

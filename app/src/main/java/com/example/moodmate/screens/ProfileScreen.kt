@@ -36,6 +36,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.moodmate.R
+import com.example.moodmate.components.EditAlertDialog
 import com.example.moodmate.components.EditButton
 import com.example.moodmate.components.EditScaffold
 import com.example.moodmate.navigation.MoodMateScreens
@@ -68,6 +69,17 @@ fun ProfileScreen(
             )
             viewModel.resetNavigationFlag()
         }
+    }
+
+    if (uiState.showLogoutDialog) {
+        EditAlertDialog(
+            title = stringResource(id = R.string.logout_confirmation_title),
+            message = stringResource(id = R.string.logout_confirmation_message),
+            confirmText = stringResource(id = R.string.confirm),
+            dismissText = stringResource(id = R.string.cancel),
+            onConfirm = { viewModel.logout() },
+            onDismiss = { viewModel.dismissLogoutDialog() }
+        )
     }
 
     EditScaffold(navController = navController) {
@@ -123,7 +135,7 @@ fun ProfileScreen(
 
             EditButton(
                 text = stringResource(id = R.string.logout),
-                onClick = { viewModel.logout() },
+                onClick = { viewModel.showLogoutDialog() },
                 containerColor = Color.Red
             )
         }
