@@ -93,6 +93,9 @@
     <string name="minute_label">Minuto</string>
     <string name="logout_confirmation_title">Cerrar Sesión</string>
     <string name="logout_confirmation_message">¿Estás seguro de que quieres cerrar sesión? ¡Los datos no sincronizados serán eliminados!</string>
+    <string name="session_expired_title">Sesión Expirada</string>
+    <string name="session_expired_message">Su sesión ha expirado. Debe iniciar sesión de nuevo.</string>
+    <string name="session_expired_action">Iniciar Sesión</string>
     <string name="error_delete_failed">La operación de eliminación falló</string>
     <string name="notification_morning_message">¿Cómo va tu día? Espero que esté yendo bien.</string>
     <string name="notification_evening_message">¡No olvides registrar tu día!</string>

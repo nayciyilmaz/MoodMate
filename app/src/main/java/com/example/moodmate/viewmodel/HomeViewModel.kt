@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.moodmate.R
 import com.example.moodmate.data.AdviceUiState
 import com.example.moodmate.data.HomeUiState
+import com.example.moodmate.local.TokenManager
 import com.example.moodmate.repository.AdviceRepository
 import com.example.moodmate.repository.MoodRepository
 import com.example.moodmate.util.Resource
@@ -21,6 +22,7 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val moodRepository: MoodRepository,
     private val adviceRepository: AdviceRepository,
+    private val tokenManager: TokenManager,
     @ApplicationContext private val context: Context
 ) : ViewModel() {
 
@@ -34,33 +36,45 @@ class HomeViewModel @Inject constructor(
     val shouldNavigateToLogin: StateFlow<Boolean> = _shouldNavigateToLogin.asStateFlow()
 
     init {
-        loadRecentMoods()
-        loadLatestAdvice()
+        checkTokenAndLoad()
+    }
+
+    fun checkTokenAndLoad() {
+        viewModelScope.launch {
+            val isValid = tokenManager.isTokenValid()
+            if (!isValid) {
+                tokenManager.clearUser()
+                _uiState.value = _uiState.value.copy(showSessionExpiredDialog = true)
+            } else {
+                loadRecentMoods()
+                loadLatestAdvice()
+            }
+        }
     }
 
     fun loadRecentMoods() {
         viewModelScope.launch {
-            _uiState.value = HomeUiState(isLoading = true)
-
+            _uiState.value = _uiState.value.copy(isLoading = true, error = null)
             when (val result = moodRepository.getUserMoods()) {
                 is Resource.Success -> {
                     val recentMoods = result.data?.take(3) ?: emptyList()
-                    _uiState.value = HomeUiState(
-                        isLoading = false,
-                        moods = recentMoods
-                    )
+                    _uiState.value = _uiState.value.copy(isLoading = false, moods = recentMoods)
                 }
                 is Resource.Error -> {
                     if (result.isUnauthorized) {
-                        _shouldNavigateToLogin.value = true
+                        _uiState.value = _uiState.value.copy(
+                            isLoading = false,
+                            showSessionExpiredDialog = true
+                        )
+                    } else {
+                        _uiState.value = _uiState.value.copy(
+                            isLoading = false,
+                            error = result.message
+                        )
                     }
-                    _uiState.value = HomeUiState(
-                        isLoading = false,
-                        error = result.message
-                    )
                 }
                 is Resource.Loading -> {
-                    _uiState.value = HomeUiState(isLoading = true)
+                    _uiState.value = _uiState.value.copy(isLoading = true)
                 }
             }
         }
@@ -71,15 +85,12 @@ class HomeViewModel @Inject constructor(
             when (val result = adviceRepository.getLatestAdvice()) {
                 is Resource.Success -> {
                     result.data?.let {
-                        _adviceState.value = AdviceUiState(
-                            advice = it.advice,
-                            createdAt = it.createdAt
-                        )
+                        _adviceState.value = AdviceUiState(advice = it.advice, createdAt = it.createdAt)
                     }
                 }
                 is Resource.Error -> {
                     if (result.isUnauthorized) {
-                        _shouldNavigateToLogin.value = true
+                        _uiState.value = _uiState.value.copy(showSessionExpiredDialog = true)
                     }
                     _adviceState.value = AdviceUiState()
                 }
@@ -91,7 +102,6 @@ class HomeViewModel @Inject constructor(
     fun generateAdvice() {
         viewModelScope.launch {
             _adviceState.value = _adviceState.value.copy(isLoading = true, error = null)
-
             when (val result = adviceRepository.generateAdvice()) {
                 is Resource.Success -> {
                     result.data?.let {
@@ -104,7 +114,7 @@ class HomeViewModel @Inject constructor(
                 }
                 is Resource.Error -> {
                     if (result.isUnauthorized) {
-                        _shouldNavigateToLogin.value = true
+                        _uiState.value = _uiState.value.copy(showSessionExpiredDialog = true)
                     }
                     _adviceState.value = _adviceState.value.copy(
                         isLoading = false,
@@ -116,6 +126,10 @@ class HomeViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun navigateToLoginAfterSessionExpiry() {
+        _shouldNavigateToLogin.value = true
     }
 
     fun resetNavigationFlag() {

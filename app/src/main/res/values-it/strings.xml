@@ -93,6 +93,9 @@
     <string name="minute_label">Minuto</string>
     <string name="logout_confirmation_title">Disconnetti</string>
     <string name="logout_confirmation_message">Sei sicuro di voler effettuare il logout? I dati non sincronizzati verranno eliminati!</string>
+    <string name="session_expired_title">Sessione Scaduta</string>
+    <string name="session_expired_message">La tua sessione è scaduta. Devi accedere di nuovo.</string>
+    <string name="session_expired_action">Accedi di Nuovo</string>
     <string name="error_delete_failed">Operazione di eliminazione non riuscita</string>
     <string name="notification_morning_message">Come sta andando la tua giornata. Spero che stia andando bene.</string>
     <string name="notification_evening_message">Non dimenticare di registrare la tua giornata!</string>

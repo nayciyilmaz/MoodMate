@@ -146,7 +146,8 @@ data class AddMoodActionState(
 data class HomeUiState(
     val isLoading: Boolean = false,
     val moods: List<MoodResponse> = emptyList(),
-    val error: String? = null
+    val error: String? = null,
+    val showSessionExpiredDialog: Boolean = false
 )
 
 data class MoodHistoryUiState(

@@ -1,5 +1,6 @@
 package com.example.moodmate.screens
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
@@ -13,11 +14,20 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.CloudOff
+import androidx.compose.material.icons.filled.ErrorOutline
+import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.Sync
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -29,6 +39,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -37,10 +48,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.moodmate.R
+import com.example.moodmate.components.EditButton
 import com.example.moodmate.components.EditScaffold
 import com.example.moodmate.components.EditTextButton
 import com.example.moodmate.components.LoadingIndicator
@@ -65,7 +79,7 @@ fun HomeScreen(
     val adviceState by viewModel.adviceState.collectAsState()
     val shouldNavigateToLogin by viewModel.shouldNavigateToLogin.collectAsState()
 
-    LaunchedEffect(Unit, shouldNavigateToLogin) {
+    LaunchedEffect(shouldNavigateToLogin) {
         if (shouldNavigateToLogin) {
             navigateAndClearBackStack(
                 navController = navController,
@@ -74,19 +88,24 @@ fun HomeScreen(
             )
             viewModel.resetNavigationFlag()
         }
+    }
 
-        viewModel.loadRecentMoods()
-
-        navController.currentBackStackEntry?.savedStateHandle?.getLiveData<Boolean>("shouldRefresh")
+    LaunchedEffect(Unit) {
+        navController.currentBackStackEntry?.savedStateHandle
+            ?.getLiveData<Boolean>("shouldRefresh")
             ?.observeForever { shouldRefresh ->
                 if (shouldRefresh == true) {
                     viewModel.loadRecentMoods()
-                    navController.currentBackStackEntry?.savedStateHandle?.set(
-                        "shouldRefresh",
-                        false
-                    )
+                    navController.currentBackStackEntry?.savedStateHandle
+                        ?.set("shouldRefresh", false)
                 }
             }
+    }
+
+    if (uiState.showSessionExpiredDialog) {
+        SessionExpiredDialog(
+            onConfirm = { viewModel.navigateToLoginAfterSessionExpiry() }
+        )
     }
 
     EditScaffold(navController = navController) {
@@ -107,6 +126,8 @@ fun HomeScreen(
                 fontWeight = FontWeight.Normal,
                 modifier = modifier.padding(top = 8.dp)
             )
+
+            SyncStatusCard(modifier = modifier)
 
             HomeInfoCard(modifier = modifier)
 
@@ -141,14 +162,125 @@ fun HomeScreen(
 }
 
 @Composable
+fun SyncStatusCard(modifier: Modifier = Modifier) {
+    Card(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(top = 20.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        shape = RoundedCornerShape(16.dp)
+    ) {
+        Column(
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp, vertical = 8.dp)
+        ) {
+            SyncStatusRow(
+                icon = Icons.Default.CloudOff,
+                iconTint = Color(0xFFFF9800),
+                title = "Offline Mod",
+                subtitle = "3 kayıt senkronizasyon bekliyor",
+                trailingContent = null,
+                modifier = modifier
+            )
+
+            HorizontalDivider(color = Color(0xFFF0F0F0))
+
+            SyncStatusRow(
+                icon = Icons.Default.Sync,
+                iconTint = colorResource(id = R.color.acik_mavi),
+                title = "Senkronize ediliyor",
+                subtitle = "3 kayıt gönderiliyor",
+                trailingContent = null,
+                modifier = modifier
+            )
+
+            HorizontalDivider(color = Color(0xFFF0F0F0))
+
+            SyncStatusRow(
+                icon = Icons.Default.CheckCircle,
+                iconTint = Color(0xFF4CAF50),
+                title = "Tüm veriler güncel",
+                subtitle = "Son senkronizasyon: 2 dk önce",
+                trailingContent = null,
+                modifier = modifier
+            )
+
+            HorizontalDivider(color = Color(0xFFF0F0F0))
+
+            SyncStatusRow(
+                icon = Icons.Default.ErrorOutline,
+                iconTint = Color.Red,
+                title = "Senkronizasyon başarısız",
+                subtitle = "3 kayıt gönderilemedi",
+                trailingContent = {
+                    Icon(
+                        imageVector = Icons.Default.Refresh,
+                        contentDescription = null,
+                        tint = Color.Red,
+                        modifier = modifier.size(22.dp)
+                    )
+                },
+                modifier = modifier
+            )
+        }
+    }
+}
+
+@Composable
+fun SyncStatusRow(
+    icon: ImageVector,
+    iconTint: Color,
+    title: String,
+    subtitle: String,
+    trailingContent: (@Composable () -> Unit)?,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(vertical = 14.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(14.dp),
+            modifier = modifier.weight(1f)
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+                tint = iconTint,
+                modifier = modifier.size(26.dp)
+            )
+            Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.SemiBold,
+                    color = Color.Black
+                )
+                Text(
+                    text = subtitle,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = Color.Gray
+                )
+            }
+        }
+
+        trailingContent?.invoke()
+    }
+}
+
+@Composable
 fun HomeInfoCard(modifier: Modifier = Modifier) {
     Card(
         modifier = modifier
             .fillMaxWidth()
             .padding(vertical = 20.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = Color.White
-        ),
+        colors = CardDefaults.cardColors(containerColor = Color.White),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(
@@ -282,14 +414,11 @@ fun AIAdviceCard(
                                 Text(text = "")
                             }
 
-                            Row(
-                                horizontalArrangement = Arrangement.spacedBy(8.dp)
-                            ) {
+                            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                                 EditTextButton(
                                     text = stringResource(id = R.string.button_close),
                                     onClick = { isExpanded = false }
                                 )
-
                                 EditTextButton(
                                     text = if (hasAdvice) stringResource(id = R.string.button_retry) else stringResource(id = R.string.button_create),
                                     onClick = onGenerate
@@ -305,6 +434,47 @@ fun AIAdviceCard(
                         }
                     }
                 }
+            }
+        }
+    }
+}
+
+@Composable
+fun SessionExpiredDialog(
+    onConfirm: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    BackHandler(enabled = true) {}
+
+    Dialog(
+        onDismissRequest = {},
+        properties = DialogProperties(
+            dismissOnBackPress = false,
+            dismissOnClickOutside = false
+        )
+    ) {
+        Surface(
+            shape = RoundedCornerShape(16.dp),
+            color = Color.White,
+            modifier = modifier.fillMaxWidth()
+        ) {
+            Column(
+                modifier = modifier.padding(24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = stringResource(id = R.string.session_expired_message),
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = Color.Black,
+                    textAlign = TextAlign.Center
+                )
+
+                EditButton(
+                    text = stringResource(id = R.string.session_expired_action),
+                    onClick = onConfirm,
+                    containerColor = colorResource(id = R.color.acik_mavi),
+                    modifier = modifier.padding(top = 20.dp)
+                )
             }
         }
     }
