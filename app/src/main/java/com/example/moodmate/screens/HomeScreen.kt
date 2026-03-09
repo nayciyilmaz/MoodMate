@@ -39,7 +39,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -60,6 +59,9 @@ import com.example.moodmate.components.EditTextButton
 import com.example.moodmate.components.LoadingIndicator
 import com.example.moodmate.components.MoodList
 import com.example.moodmate.components.ValidationErrorText
+import com.example.moodmate.data.AdviceUiState
+import com.example.moodmate.data.SyncState
+import com.example.moodmate.data.SyncUiModel
 import com.example.moodmate.navigation.MoodMateScreens
 import com.example.moodmate.util.formatDate
 import com.example.moodmate.util.navigateAndClearBackStack
@@ -77,6 +79,7 @@ fun HomeScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val adviceState by viewModel.adviceState.collectAsState()
+    val syncState by viewModel.syncState.collectAsState()
     val shouldNavigateToLogin by viewModel.shouldNavigateToLogin.collectAsState()
 
     LaunchedEffect(shouldNavigateToLogin) {
@@ -127,7 +130,10 @@ fun HomeScreen(
                 modifier = modifier.padding(top = 8.dp)
             )
 
-            SyncStatusCard(modifier = modifier)
+            SyncStatusCard(
+                syncState = syncState,
+                modifier = modifier
+            )
 
             HomeInfoCard(modifier = modifier)
 
@@ -162,7 +168,12 @@ fun HomeScreen(
 }
 
 @Composable
-fun SyncStatusCard(modifier: Modifier = Modifier) {
+fun SyncStatusCard(
+    syncState: SyncState,
+    modifier: Modifier = Modifier
+) {
+    val model = resolveSyncUiModel(syncState) ?: return
+
     Card(
         modifier = modifier
             .fillMaxWidth()
@@ -171,66 +182,28 @@ fun SyncStatusCard(modifier: Modifier = Modifier) {
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         shape = RoundedCornerShape(16.dp)
     ) {
-        Column(
-            modifier = modifier
-                .fillMaxWidth()
-                .padding(horizontal = 20.dp, vertical = 8.dp)
-        ) {
-            SyncStatusRow(
-                icon = Icons.Default.CloudOff,
-                iconTint = Color(0xFFFF9800),
-                title = "Offline Mod",
-                subtitle = "3 kayıt senkronizasyon bekliyor",
-                trailingContent = null,
-                modifier = modifier
-            )
-
-            HorizontalDivider(color = Color(0xFFF0F0F0))
-
-            SyncStatusRow(
-                icon = Icons.Default.Sync,
-                iconTint = colorResource(id = R.color.acik_mavi),
-                title = "Senkronize ediliyor",
-                subtitle = "3 kayıt gönderiliyor",
-                trailingContent = null,
-                modifier = modifier
-            )
-
-            HorizontalDivider(color = Color(0xFFF0F0F0))
-
-            SyncStatusRow(
-                icon = Icons.Default.CheckCircle,
-                iconTint = Color(0xFF4CAF50),
-                title = "Tüm veriler güncel",
-                subtitle = "Son senkronizasyon: 2 dk önce",
-                trailingContent = null,
-                modifier = modifier
-            )
-
-            HorizontalDivider(color = Color(0xFFF0F0F0))
-
-            SyncStatusRow(
-                icon = Icons.Default.ErrorOutline,
-                iconTint = Color.Red,
-                title = "Senkronizasyon başarısız",
-                subtitle = "3 kayıt gönderilemedi",
-                trailingContent = {
+        SyncStatusRow(
+            icon = model.icon,
+            iconTint = model.iconTint,
+            title = model.title,
+            subtitle = model.subtitle,
+            trailingContent = if (model.showRetry) {
+                {
                     Icon(
                         imageVector = Icons.Default.Refresh,
                         contentDescription = null,
-                        tint = Color.Red,
-                        modifier = modifier.size(22.dp)
+                        tint = colorResource(id = R.color.sync_error)
                     )
-                },
-                modifier = modifier
-            )
-        }
+                }
+            } else null,
+            modifier = modifier.padding(horizontal = 20.dp)
+        )
     }
 }
 
 @Composable
 fun SyncStatusRow(
-    icon: ImageVector,
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
     iconTint: Color,
     title: String,
     subtitle: String,
@@ -247,13 +220,12 @@ fun SyncStatusRow(
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(14.dp),
-            modifier = modifier.weight(1f)
+            modifier = Modifier.weight(1f)
         ) {
             Icon(
                 imageVector = icon,
                 contentDescription = null,
-                tint = iconTint,
-                modifier = modifier.size(26.dp)
+                tint = iconTint
             )
             Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
                 Text(
@@ -269,7 +241,6 @@ fun SyncStatusRow(
                 )
             }
         }
-
         trailingContent?.invoke()
     }
 }
@@ -294,14 +265,13 @@ fun HomeInfoCard(modifier: Modifier = Modifier) {
                 text = stringResource(R.string.home_hope_message),
                 style = MaterialTheme.typography.bodyLarge,
                 fontWeight = FontWeight.Bold,
-                color = Color.DarkGray
+                color = Color.DarkGray,
+                textAlign = TextAlign.Center
             )
-
             Text(
                 text = "😊",
                 fontSize = 48.sp
             )
-
             Text(
                 text = stringResource(R.string.home_reminder_message),
                 style = MaterialTheme.typography.titleLarge,
@@ -314,7 +284,7 @@ fun HomeInfoCard(modifier: Modifier = Modifier) {
 
 @Composable
 fun AIAdviceCard(
-    adviceState: com.example.moodmate.data.AdviceUiState,
+    adviceState: AdviceUiState,
     onGenerate: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -347,9 +317,7 @@ fun AIAdviceCard(
                         contentDescription = null,
                         modifier = modifier.size(32.dp)
                     )
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(4.dp)
-                    ) {
+                    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                         Text(
                             text = stringResource(R.string.ai_assistant_title),
                             style = MaterialTheme.typography.titleMedium,
@@ -387,7 +355,8 @@ fun AIAdviceCard(
                         )
                     } else {
                         Text(
-                            text = if (hasAdvice) adviceState.advice!! else stringResource(R.string.ai_no_advice_yet),
+                            text = if (hasAdvice) adviceState.advice!!
+                            else stringResource(R.string.ai_no_advice_yet),
                             style = MaterialTheme.typography.bodyMedium,
                             modifier = modifier.padding(vertical = 12.dp)
                         )
@@ -420,7 +389,8 @@ fun AIAdviceCard(
                                     onClick = { isExpanded = false }
                                 )
                                 EditTextButton(
-                                    text = if (hasAdvice) stringResource(id = R.string.button_retry) else stringResource(id = R.string.button_create),
+                                    text = if (hasAdvice) stringResource(id = R.string.button_retry)
+                                    else stringResource(id = R.string.button_create),
                                     onClick = onGenerate
                                 )
                             }
@@ -477,6 +447,41 @@ fun SessionExpiredDialog(
                 )
             }
         }
+    }
+}
+
+@Composable
+private fun resolveSyncUiModel(syncState: SyncState): SyncUiModel? {
+    return when (syncState) {
+        is SyncState.PendingOffline -> SyncUiModel(
+            icon = Icons.Default.CloudOff,
+            iconTint = colorResource(id = R.color.sync_offline),
+            title = stringResource(R.string.sync_offline_title),
+            subtitle = stringResource(R.string.sync_offline_subtitle, syncState.count),
+            showRetry = false
+        )
+        is SyncState.Syncing -> SyncUiModel(
+            icon = Icons.Default.Sync,
+            iconTint = colorResource(id = R.color.acik_mavi),
+            title = stringResource(R.string.sync_syncing_title),
+            subtitle = stringResource(R.string.sync_syncing_subtitle),
+            showRetry = false
+        )
+        is SyncState.Synced -> SyncUiModel(
+            icon = Icons.Default.CheckCircle,
+            iconTint = colorResource(id = R.color.sync_success),
+            title = stringResource(R.string.sync_synced_title),
+            subtitle = stringResource(R.string.sync_synced_subtitle, syncState.lastSyncTime),
+            showRetry = false
+        )
+        is SyncState.SyncFailed -> SyncUiModel(
+            icon = Icons.Default.ErrorOutline,
+            iconTint = colorResource(id = R.color.sync_error),
+            title = stringResource(R.string.sync_failed_title),
+            subtitle = stringResource(R.string.sync_failed_subtitle, syncState.pendingCount),
+            showRetry = true
+        )
+        SyncState.Idle -> null
     }
 }
 

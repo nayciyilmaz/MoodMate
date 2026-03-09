@@ -8,13 +8,16 @@ import com.example.moodmate.data.SignInActionState
 import com.example.moodmate.data.SignInUiState
 import com.example.moodmate.data.SignInValidationErrors
 import com.example.moodmate.local.TokenManager
+import com.example.moodmate.repository.AdviceRepository
 import com.example.moodmate.repository.AuthRepository
+import com.example.moodmate.repository.MoodRepository
 import com.example.moodmate.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -22,6 +25,8 @@ import javax.inject.Inject
 class SignInViewModel @Inject constructor(
     private val authRepository: AuthRepository,
     private val tokenManager: TokenManager,
+    private val moodRepository: MoodRepository,
+    private val adviceRepository: AdviceRepository,
     @ApplicationContext private val context: Context
 ) : ViewModel() {
 
@@ -56,11 +61,20 @@ class SignInViewModel @Inject constructor(
             _actionState.value = SignInActionState(isLoading = true)
             _uiState.value = _uiState.value.copy(validationErrors = SignInValidationErrors())
 
-            val result = authRepository.login(_uiState.value.email.trim(), _uiState.value.password)
+            val existingUserId = tokenManager.userId.first()
+
+            val result = authRepository.login(
+                _uiState.value.email.trim(),
+                _uiState.value.password
+            )
 
             when (result) {
                 is Resource.Success -> {
                     result.data?.let { response ->
+                        if (existingUserId != null && existingUserId != 0L && existingUserId != response.id) {
+                            moodRepository.clearAllMoodsForUser()
+                            adviceRepository.clearAdviceForUser()
+                        }
                         tokenManager.saveUser(
                             token = response.token,
                             userId = response.id,
@@ -76,9 +90,7 @@ class SignInViewModel @Inject constructor(
                     _uiState.value = _uiState.value.copy(validationErrors = validationErrors)
                     _actionState.value = SignInActionState(isLoading = false)
                 }
-                is Resource.Loading -> {
-                    _actionState.value = SignInActionState(isLoading = true)
-                }
+                else -> {}
             }
         }
     }

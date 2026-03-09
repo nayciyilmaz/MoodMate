@@ -4,17 +4,23 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.moodmate.R
+import com.example.moodmate.dao.MoodDao
 import com.example.moodmate.data.AdviceUiState
 import com.example.moodmate.data.HomeUiState
+import com.example.moodmate.data.SyncState
 import com.example.moodmate.local.TokenManager
 import com.example.moodmate.repository.AdviceRepository
 import com.example.moodmate.repository.MoodRepository
+import com.example.moodmate.sync.SyncManager
+import com.example.moodmate.sync.SyncScheduler
+import com.example.moodmate.util.NetworkMonitor
 import com.example.moodmate.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -23,6 +29,10 @@ class HomeViewModel @Inject constructor(
     private val moodRepository: MoodRepository,
     private val adviceRepository: AdviceRepository,
     private val tokenManager: TokenManager,
+    private val syncManager: SyncManager,
+    private val syncScheduler: SyncScheduler,
+    private val networkMonitor: NetworkMonitor,
+    private val moodDao: MoodDao,
     @ApplicationContext private val context: Context
 ) : ViewModel() {
 
@@ -35,66 +45,76 @@ class HomeViewModel @Inject constructor(
     private val _shouldNavigateToLogin = MutableStateFlow(false)
     val shouldNavigateToLogin: StateFlow<Boolean> = _shouldNavigateToLogin.asStateFlow()
 
+    val syncState: StateFlow<SyncState> = syncManager.syncState
+
     init {
-        checkTokenAndLoad()
+        observeMoods()
+        observeAdvice()
+        observeNetwork()
+        triggerInitialSync()
     }
 
-    fun checkTokenAndLoad() {
+    private fun observeMoods() {
+        viewModelScope.launch {
+            moodRepository.observeMoods().collect { moods ->
+                _uiState.value = _uiState.value.copy(
+                    isLoading = false,
+                    moods = moods.take(3)
+                )
+            }
+        }
+    }
+
+    private fun observeAdvice() {
+        viewModelScope.launch {
+            adviceRepository.observeAdvice().collect { advice ->
+                if (advice != null) {
+                    _adviceState.value = AdviceUiState(
+                        advice = advice.advice,
+                        createdAt = advice.createdAt
+                    )
+                }
+            }
+        }
+    }
+
+    private fun observeNetwork() {
+        viewModelScope.launch {
+            networkMonitor.isOnline.collect { isOnline ->
+                if (isOnline) {
+                    syncScheduler.scheduleSync()
+                }
+            }
+        }
+    }
+
+    private fun triggerInitialSync() {
         viewModelScope.launch {
             val isValid = tokenManager.isTokenValid()
             if (!isValid) {
                 tokenManager.clearUser()
                 _uiState.value = _uiState.value.copy(showSessionExpiredDialog = true)
-            } else {
-                loadRecentMoods()
-                loadLatestAdvice()
+                return@launch
             }
+            val isOnline = networkMonitor.isOnline.first()
+            if (!isOnline) {
+                val pendingCount = moodDao.getPendingMoods().size
+                syncManager.updatePendingState(pendingCount)
+                return@launch
+            }
+            val pendingCount = moodDao.getPendingMoods().size
+            if (pendingCount > 0) {
+                syncManager.updatePendingState(pendingCount)
+            }
+            syncScheduler.scheduleSync()
         }
     }
 
     fun loadRecentMoods() {
         viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(isLoading = true, error = null)
-            when (val result = moodRepository.getUserMoods()) {
-                is Resource.Success -> {
-                    val recentMoods = result.data?.take(3) ?: emptyList()
-                    _uiState.value = _uiState.value.copy(isLoading = false, moods = recentMoods)
-                }
-                is Resource.Error -> {
-                    if (result.isUnauthorized) {
-                        _uiState.value = _uiState.value.copy(
-                            isLoading = false,
-                            showSessionExpiredDialog = true
-                        )
-                    } else {
-                        _uiState.value = _uiState.value.copy(
-                            isLoading = false,
-                            error = result.message
-                        )
-                    }
-                }
-                is Resource.Loading -> {
-                    _uiState.value = _uiState.value.copy(isLoading = true)
-                }
-            }
-        }
-    }
-
-    private fun loadLatestAdvice() {
-        viewModelScope.launch {
-            when (val result = adviceRepository.getLatestAdvice()) {
-                is Resource.Success -> {
-                    result.data?.let {
-                        _adviceState.value = AdviceUiState(advice = it.advice, createdAt = it.createdAt)
-                    }
-                }
-                is Resource.Error -> {
-                    if (result.isUnauthorized) {
-                        _uiState.value = _uiState.value.copy(showSessionExpiredDialog = true)
-                    }
-                    _adviceState.value = AdviceUiState()
-                }
-                is Resource.Loading -> {}
+            val result = moodRepository.getUserMoods()
+            if (result is Resource.Error && result.isUnauthorized) {
+                _uiState.value = _uiState.value.copy(showSessionExpiredDialog = true)
             }
         }
     }
@@ -121,9 +141,7 @@ class HomeViewModel @Inject constructor(
                         error = result.message ?: context.getString(R.string.error_ai_unavailable)
                     )
                 }
-                is Resource.Loading -> {
-                    _adviceState.value = _adviceState.value.copy(isLoading = true)
-                }
+                else -> {}
             }
         }
     }

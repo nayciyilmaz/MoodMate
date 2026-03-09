@@ -50,6 +50,14 @@
     <string name="error_sign_up_failed">Kayıt başarısız. Lütfen tekrar deneyin.</string>
     <string name="no_mood_yet">( Henüz ruh hali kaydı yok. )</string>
     <string name="loading_moods">Ruh Hali Kayıtları Yükleniyor...</string>
+    <string name="sync_offline_title">Offline Mod</string>
+    <string name="sync_offline_subtitle">%1$d kayıt senkronizasyon bekliyor</string>
+    <string name="sync_syncing_title">Senkronize ediliyor</string>
+    <string name="sync_syncing_subtitle">Veriler sunucuya gönderiliyor</string>
+    <string name="sync_synced_title">Tüm veriler güncel</string>
+    <string name="sync_synced_subtitle">Son senkronizasyon: %1$s</string>
+    <string name="sync_failed_title">Senkronizasyon başarısız</string>
+    <string name="sync_failed_subtitle">%1$d kayıt gönderilemedi</string>
     <string name="delete_confirmation_title">Silme Onayı</string>
     <string name="delete_confirmation_message">Bu Mood\'u silmek istediğinize emin misiniz?</string>
     <string name="ai_generating_advice">Yapay zeka tavsiyenizi oluşturuyor…</string>

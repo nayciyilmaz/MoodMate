@@ -23,6 +23,14 @@
     <string name="edit">Editar</string>
     <string name="delete">Eliminar</string>
     <string name="home_greeting_question">¿Cómo te sientes hoy?</string>
+    <string name="sync_offline_title">Modo sin conexión</string>
+    <string name="sync_offline_subtitle">%1$d registros esperando sincronización</string>
+    <string name="sync_syncing_title">Sincronizando</string>
+    <string name="sync_syncing_subtitle">Enviando datos al servidor</string>
+    <string name="sync_synced_title">Todos los datos actualizados</string>
+    <string name="sync_synced_subtitle">Última sincronización: %1$s</string>
+    <string name="sync_failed_title">Sincronización fallida</string>
+    <string name="sync_failed_subtitle">%1$d registros no se pudieron enviar</string>
     <string name="ai_assistant_title">Asistente de IA</string>
     <string name="ai_assistant_subtitle">Análisis de tu estado de ánimo diario</string>
     <string name="ai_no_advice_yet">Aún no se ha creado ningún consejo. Presiona el botón crear a continuación.</string>

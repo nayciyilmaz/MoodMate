@@ -32,6 +32,14 @@
     <string name="rating_label">Valuta:</string>
     <string name="note_label">Aggiungi nota:</string>
     <string name="note_placeholder">Scrivi la tua nota qui...</string>
+    <string name="sync_offline_title">Modalità offline</string>
+    <string name="sync_offline_subtitle">%1$d record in attesa di sincronizzazione</string>
+    <string name="sync_syncing_title">Sincronizzazione in corso</string>
+    <string name="sync_syncing_subtitle">Invio dati al server</string>
+    <string name="sync_synced_title">Tutti i dati aggiornati</string>
+    <string name="sync_synced_subtitle">Ultima sincronizzazione: %1$s</string>
+    <string name="sync_failed_title">Sincronizzazione non riuscita</string>
+    <string name="sync_failed_subtitle">%1$d record non inviati</string>
     <string name="save_button">Salva</string>
     <string name="back_button">Torna indietro</string>
     <string name="user_information">Informazioni utente</string>

@@ -1,7 +1,11 @@
 package com.example.moodmate.di
 
 import android.content.Context
+import androidx.room.Room
 import androidx.work.WorkManager
+import com.example.moodmate.dao.AdviceDao
+import com.example.moodmate.dao.MoodDao
+import com.example.moodmate.local.MoodMateDatabase
 import com.example.moodmate.local.TokenManager
 import com.example.moodmate.network.ApiService
 import dagger.Module
@@ -24,6 +28,24 @@ object AppModule {
 
     @Provides
     @Singleton
+    fun provideDatabase(@ApplicationContext context: Context): MoodMateDatabase {
+        return Room.databaseBuilder(
+            context,
+            MoodMateDatabase::class.java,
+            "moodmate_db"
+        ).build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideMoodDao(database: MoodMateDatabase): MoodDao = database.moodDao()
+
+    @Provides
+    @Singleton
+    fun provideAdviceDao(database: MoodMateDatabase): AdviceDao = database.adviceDao()
+
+    @Provides
+    @Singleton
     fun provideAuthInterceptor(
         tokenManager: TokenManager,
         @ApplicationContext context: Context
@@ -37,7 +59,6 @@ object AppModule {
         val loggingInterceptor = HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY
         }
-
         return OkHttpClient.Builder()
             .addInterceptor(authInterceptor)
             .addInterceptor(loggingInterceptor)
@@ -65,9 +86,7 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideWorkManager(
-        @ApplicationContext context: Context
-    ): WorkManager {
+    fun provideWorkManager(@ApplicationContext context: Context): WorkManager {
         return WorkManager.getInstance(context)
     }
 }

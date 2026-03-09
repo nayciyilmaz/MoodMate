@@ -2,6 +2,7 @@ package com.example.moodmate.data
 
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.google.gson.annotations.SerializedName
+import androidx.compose.ui.graphics.Color
 
 data class NavigationItem(
     val route: String,
@@ -208,4 +209,12 @@ data class SettingsValidationErrors(
     val currentPasswordError: String? = null,
     val newPasswordError: String? = null,
     val confirmPasswordError: String? = null
+)
+
+data class SyncUiModel(
+    val icon: ImageVector,
+    val iconTint: Color,
+    val title: String,
+    val subtitle: String,
+    val showRetry: Boolean
 )

@@ -2,28 +2,39 @@ package com.example.moodmate.repository
 
 import android.content.Context
 import com.example.moodmate.R
-import com.example.moodmate.data.ErrorResponse
-import com.example.moodmate.data.MoodRequest
+import com.example.moodmate.dao.MoodDao
 import com.example.moodmate.data.MoodResponse
+import com.example.moodmate.data.SyncStatus
+import com.example.moodmate.entity.MoodEntity
 import com.example.moodmate.local.TokenManager
-import com.example.moodmate.network.ApiService
+import com.example.moodmate.mapper.toResponse
+import com.example.moodmate.sync.SyncManager
+import com.example.moodmate.sync.SyncScheduler
 import com.example.moodmate.util.Resource
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-import retrofit2.Response
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class MoodRepository @Inject constructor(
-    private val apiService: ApiService,
+    private val moodDao: MoodDao,
+    private val syncManager: SyncManager,
+    private val syncScheduler: SyncScheduler,
     private val tokenManager: TokenManager,
     @ApplicationContext private val context: Context
 ) {
-    private val gson = Gson()
+    suspend fun observeMoods(): Flow<List<MoodResponse>> {
+        val userId = tokenManager.userId.first() ?: 0L
+        return moodDao.observeMoods(userId).map { entities ->
+            entities.map { it.toResponse() }
+        }
+    }
 
     suspend fun addMood(
         emoji: String,
@@ -31,15 +42,33 @@ class MoodRepository @Inject constructor(
         note: String,
         entryDate: String
     ): Resource<MoodResponse> {
-        return withContext(Dispatchers.IO) {
-            try {
-                val request = MoodRequest(emoji, score, note, entryDate)
-                val response = apiService.addMood(request)
-                handleResponse(response)
-            } catch (e: Exception) {
-                Resource.Error(e.localizedMessage ?: context.getString(R.string.error_unknown))
-            }
-        }
+        val userId = tokenManager.userId.first() ?: return Resource.Error(
+            context.getString(R.string.error_unknown)
+        )
+
+        val now = LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+        val localId = UUID.randomUUID().toString()
+
+        val entity = MoodEntity(
+            localId = localId,
+            serverId = null,
+            userId = userId,
+            emoji = emoji,
+            score = score,
+            note = note,
+            entryDate = entryDate,
+            createdAt = now,
+            updatedAt = now,
+            syncStatus = SyncStatus.PENDING_CREATE
+        )
+
+        moodDao.insertMood(entity)
+
+        val pendingCount = moodDao.getPendingMoods().size
+        syncManager.updatePendingState(pendingCount)
+        syncScheduler.scheduleSync()
+
+        return Resource.Success(entity.toResponse())
     }
 
     suspend fun updateMood(
@@ -49,78 +78,59 @@ class MoodRepository @Inject constructor(
         note: String,
         entryDate: String
     ): Resource<MoodResponse> {
-        return withContext(Dispatchers.IO) {
-            try {
-                val request = MoodRequest(emoji, score, note, entryDate)
-                val response = apiService.updateMood(moodId, request)
-                handleResponse(response)
-            } catch (e: Exception) {
-                Resource.Error(e.localizedMessage ?: context.getString(R.string.error_unknown))
-            }
-        }
+        val existing = moodDao.getMoodByServerId(moodId)
+            ?: return Resource.Error(context.getString(R.string.error_unknown))
+
+        val now = LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+
+        val updated = existing.copy(
+            emoji = emoji,
+            score = score,
+            note = note,
+            entryDate = entryDate,
+            updatedAt = now,
+            syncStatus = if (existing.syncStatus == SyncStatus.PENDING_CREATE)
+                SyncStatus.PENDING_CREATE
+            else
+                SyncStatus.PENDING_UPDATE
+        )
+
+        moodDao.updateMood(updated)
+
+        val pendingCount = moodDao.getPendingMoods().size
+        syncManager.updatePendingState(pendingCount)
+        syncScheduler.scheduleSync()
+
+        return Resource.Success(updated.toResponse())
     }
 
     suspend fun deleteMood(moodId: Long): Resource<Unit> {
-        return withContext(Dispatchers.IO) {
-            try {
-                val response = apiService.deleteMood(moodId)
-                if (response.isSuccessful) {
-                    Resource.Success(Unit)
-                } else if (response.code() == 401) {
-                    tokenManager.clearUser()
-                    Resource.Error(
-                        context.getString(R.string.error_session_expired),
-                        isUnauthorized = true
-                    )
-                } else {
-                    Resource.Error(context.getString(R.string.error_delete_failed))
-                }
-            } catch (e: Exception) {
-                Resource.Error(e.localizedMessage ?: context.getString(R.string.error_unknown))
-            }
+        val existing = moodDao.getMoodByServerId(moodId)
+            ?: return Resource.Error(context.getString(R.string.error_unknown))
+
+        if (existing.syncStatus == SyncStatus.PENDING_CREATE) {
+            moodDao.deleteMoodByLocalId(existing.localId)
+        } else {
+            moodDao.updateSyncStatus(existing.localId, SyncStatus.PENDING_DELETE)
         }
+
+        val pendingCount = moodDao.getPendingMoods().size
+        syncManager.updatePendingState(pendingCount)
+        syncScheduler.scheduleSync()
+
+        return Resource.Success(Unit)
     }
 
     suspend fun getUserMoods(): Resource<List<MoodResponse>> {
-        return withContext(Dispatchers.IO) {
-            try {
-                val response = apiService.getUserMoods()
-                handleResponse(response)
-            } catch (e: Exception) {
-                Resource.Error(e.localizedMessage ?: context.getString(R.string.error_unknown))
-            }
-        }
+        val userId = tokenManager.userId.first() ?: return Resource.Error(
+            context.getString(R.string.error_unknown)
+        )
+        val moods = moodDao.getMoods(userId).map { it.toResponse() }
+        return Resource.Success(moods)
     }
 
-    private suspend fun <T> handleResponse(response: Response<T>): Resource<T> {
-        return if (response.isSuccessful) {
-            val body = response.body()
-            if (body != null) {
-                Resource.Success(body)
-            } else {
-                Resource.Error(context.getString(R.string.error_empty_response))
-            }
-        } else if (response.code() == 401) {
-            tokenManager.clearUser()
-            Resource.Error(
-                context.getString(R.string.error_session_expired),
-                isUnauthorized = true
-            )
-        } else {
-            val errorBody = response.errorBody()?.string()
-            val (errorMessage, fieldErrors) = try {
-                if (response.code() == 400) {
-                    val type = object : TypeToken<Map<String, String>>() {}.type
-                    val validationErrors: Map<String, String> = gson.fromJson(errorBody, type)
-                    Pair(null, validationErrors)
-                } else {
-                    val errorResponse = gson.fromJson(errorBody, ErrorResponse::class.java)
-                    Pair(errorResponse.message, null)
-                }
-            } catch (e: Exception) {
-                Pair(context.getString(R.string.error_server), null)
-            }
-            Resource.Error(errorMessage ?: context.getString(R.string.error_unknown), fieldErrors = fieldErrors)
-        }
+    suspend fun clearAllMoodsForUser() {
+        val userId = tokenManager.userId.first() ?: return
+        moodDao.deleteAllMoodsForUser(userId)
     }
 }

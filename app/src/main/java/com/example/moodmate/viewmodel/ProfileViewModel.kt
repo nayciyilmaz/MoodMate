@@ -6,6 +6,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.moodmate.data.ProfileUiState
 import com.example.moodmate.local.TokenManager
 import com.example.moodmate.notification.NotificationScheduler
+import com.example.moodmate.repository.AdviceRepository
+import com.example.moodmate.repository.MoodRepository
 import com.example.moodmate.util.LocaleHelper
 import com.example.moodmate.util.NotificationPreferenceHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,6 +22,8 @@ import javax.inject.Inject
 class ProfileViewModel @Inject constructor(
     private val tokenManager: TokenManager,
     private val notificationScheduler: NotificationScheduler,
+    private val moodRepository: MoodRepository,
+    private val adviceRepository: AdviceRepository,
     @ApplicationContext private val context: Context
 ) : ViewModel() {
 
@@ -42,9 +46,7 @@ class ProfileViewModel @Inject constructor(
             "it" -> "Italiano"
             else -> "Türkçe"
         }
-
         val isEnabled = NotificationPreferenceHelper.isNotificationEnabled(context)
-
         _uiState.value = _uiState.value.copy(
             selectedLanguage = languageName,
             notificationEnabled = isEnabled
@@ -54,7 +56,6 @@ class ProfileViewModel @Inject constructor(
     fun setNotification(enabled: Boolean) {
         NotificationPreferenceHelper.setNotificationEnabled(context, enabled)
         _uiState.value = _uiState.value.copy(notificationEnabled = enabled)
-
         if (enabled) {
             notificationScheduler.scheduleDailyNotifications()
         } else {
@@ -70,7 +71,6 @@ class ProfileViewModel @Inject constructor(
             "Italiano" -> "it"
             else -> "tr"
         }
-
         val currentLanguageCode = LocaleHelper.getLanguage(context)
         if (languageCode != currentLanguageCode) {
             LocaleHelper.saveLanguage(context, languageCode)
@@ -93,6 +93,8 @@ class ProfileViewModel @Inject constructor(
 
     fun logout() {
         viewModelScope.launch {
+            moodRepository.clearAllMoodsForUser()
+            adviceRepository.clearAdviceForUser()
             tokenManager.clearUser()
             _uiState.value = _uiState.value.copy(
                 showLogoutDialog = false,

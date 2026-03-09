@@ -8,7 +8,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.moodmate.data.MoodHistoryUiState
 import com.example.moodmate.data.MoodResponse
 import com.example.moodmate.repository.MoodRepository
-import com.example.moodmate.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -44,30 +43,23 @@ class MoodHistoryViewModel @Inject constructor(
     private var allMoods = listOf<MoodResponse>()
 
     init {
-        loadMoods()
+        observeMoods()
+    }
+
+    private fun observeMoods() {
+        viewModelScope.launch {
+            moodRepository.observeMoods().collect { moods ->
+                allMoods = moods
+                filterMoods()
+            }
+        }
     }
 
     fun loadMoods() {
         viewModelScope.launch {
-            _uiState.value = MoodHistoryUiState(isLoading = true)
-
-            when (val result = moodRepository.getUserMoods()) {
-                is Resource.Success -> {
-                    allMoods = result.data ?: emptyList()
-                    _uiState.value = MoodHistoryUiState(
-                        isLoading = false,
-                        moods = allMoods
-                    )
-                }
-                is Resource.Error -> {
-                    _uiState.value = MoodHistoryUiState(
-                        isLoading = false,
-                        error = result.message
-                    )
-                }
-                is Resource.Loading -> {
-                    _uiState.value = MoodHistoryUiState(isLoading = true)
-                }
+            moodRepository.observeMoods().collect { moods ->
+                allMoods = moods
+                filterMoods()
             }
         }
     }
@@ -120,16 +112,10 @@ class MoodHistoryViewModel @Inject constructor(
         val filtered = allMoods.filter { mood ->
             val matchesSearch = searchText.isEmpty() ||
                     mood.note.contains(searchText, ignoreCase = true)
-
             val matchesDate = selectedDate == null ||
                     mood.entryDate.startsWith(selectedDate.toString())
-
             matchesSearch && matchesDate
         }
-
-        _uiState.value = MoodHistoryUiState(
-            isLoading = false,
-            moods = filtered
-        )
+        _uiState.value = MoodHistoryUiState(isLoading = false, moods = filtered)
     }
 }

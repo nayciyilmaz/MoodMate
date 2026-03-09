@@ -20,6 +20,14 @@
     <string name="title_mood_details">Mood Details</string>
     <string name="title_profile">Profile</string>
     <string name="detailed_note">Detailed Note</string>
+    <string name="sync_offline_title">Offline Mode</string>
+    <string name="sync_offline_subtitle">%1$d records waiting to sync</string>
+    <string name="sync_syncing_title">Syncing</string>
+    <string name="sync_syncing_subtitle">Sending data to server</string>
+    <string name="sync_synced_title">All data up to date</string>
+    <string name="sync_synced_subtitle">Last sync: %1$s</string>
+    <string name="sync_failed_title">Sync failed</string>
+    <string name="sync_failed_subtitle">%1$d records could not be sent</string>
     <string name="edit">Edit</string>
     <string name="delete">Delete</string>
     <string name="home_greeting_question">How are you feeling today?</string>
