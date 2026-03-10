@@ -1,4 +1,4 @@
-package com.example.moodmate.data
+package com.example.moodmate.sync
 
 enum class SyncStatus {
     SYNCED,

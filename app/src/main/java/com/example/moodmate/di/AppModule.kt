@@ -8,6 +8,7 @@ import com.example.moodmate.dao.MoodDao
 import com.example.moodmate.local.MoodMateDatabase
 import com.example.moodmate.local.TokenManager
 import com.example.moodmate.network.ApiService
+import com.example.moodmate.network.AuthInterceptor
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

@@ -1,7 +1,7 @@
 package com.example.moodmate.local
 
 import androidx.room.TypeConverter
-import com.example.moodmate.data.SyncStatus
+import com.example.moodmate.sync.SyncStatus
 
 class Converters {
     @TypeConverter

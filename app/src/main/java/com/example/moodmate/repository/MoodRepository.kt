@@ -4,7 +4,7 @@ import android.content.Context
 import com.example.moodmate.R
 import com.example.moodmate.dao.MoodDao
 import com.example.moodmate.data.MoodResponse
-import com.example.moodmate.data.SyncStatus
+import com.example.moodmate.sync.SyncStatus
 import com.example.moodmate.entity.MoodEntity
 import com.example.moodmate.local.TokenManager
 import com.example.moodmate.mapper.toResponse

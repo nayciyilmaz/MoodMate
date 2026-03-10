@@ -2,8 +2,8 @@ package com.example.moodmate.sync
 
 import com.example.moodmate.dao.MoodDao
 import com.example.moodmate.data.MoodRequest
-import com.example.moodmate.data.SyncState
-import com.example.moodmate.data.SyncStatus
+import com.example.moodmate.sync.SyncState
+import com.example.moodmate.sync.SyncStatus
 import com.example.moodmate.entity.MoodEntity
 import com.example.moodmate.local.TokenManager
 import com.example.moodmate.mapper.toEntity

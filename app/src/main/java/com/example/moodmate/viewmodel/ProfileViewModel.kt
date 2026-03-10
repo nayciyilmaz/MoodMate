@@ -9,7 +9,7 @@ import com.example.moodmate.notification.NotificationScheduler
 import com.example.moodmate.repository.AdviceRepository
 import com.example.moodmate.repository.MoodRepository
 import com.example.moodmate.util.LocaleHelper
-import com.example.moodmate.util.NotificationPreferenceHelper
+import com.example.moodmate.notification.NotificationPreferenceHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow

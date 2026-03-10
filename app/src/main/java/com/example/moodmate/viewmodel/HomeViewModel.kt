@@ -7,7 +7,7 @@ import com.example.moodmate.R
 import com.example.moodmate.dao.MoodDao
 import com.example.moodmate.data.AdviceUiState
 import com.example.moodmate.data.HomeUiState
-import com.example.moodmate.data.SyncState
+import com.example.moodmate.sync.SyncState
 import com.example.moodmate.local.TokenManager
 import com.example.moodmate.repository.AdviceRepository
 import com.example.moodmate.repository.MoodRepository

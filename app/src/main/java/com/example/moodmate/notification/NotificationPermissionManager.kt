@@ -8,7 +8,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
-import com.example.moodmate.util.NotificationPreferenceHelper
+import com.example.moodmate.notification.NotificationPreferenceHelper
 import javax.inject.Inject
 
 class NotificationPermissionManager @Inject constructor(

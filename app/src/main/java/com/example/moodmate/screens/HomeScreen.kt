@@ -60,7 +60,7 @@ import com.example.moodmate.components.LoadingIndicator
 import com.example.moodmate.components.MoodList
 import com.example.moodmate.components.ValidationErrorText
 import com.example.moodmate.data.AdviceUiState
-import com.example.moodmate.data.SyncState
+import com.example.moodmate.sync.SyncState
 import com.example.moodmate.data.SyncUiModel
 import com.example.moodmate.navigation.MoodMateScreens
 import com.example.moodmate.util.formatDate

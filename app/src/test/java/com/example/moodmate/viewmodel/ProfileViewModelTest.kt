@@ -4,7 +4,7 @@ import android.content.Context
 import com.example.moodmate.local.TokenManager
 import com.example.moodmate.notification.NotificationScheduler
 import com.example.moodmate.util.LocaleHelper
-import com.example.moodmate.util.NotificationPreferenceHelper
+import com.example.moodmate.notification.NotificationPreferenceHelper
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi

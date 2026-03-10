@@ -2,7 +2,7 @@ package com.example.moodmate.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.example.moodmate.data.SyncStatus
+import com.example.moodmate.sync.SyncStatus
 
 @Entity(tableName = "moods")
 data class MoodEntity(

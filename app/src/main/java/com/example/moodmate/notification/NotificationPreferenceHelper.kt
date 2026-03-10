@@ -1,4 +1,4 @@
-package com.example.moodmate.util
+package com.example.moodmate.notification
 
 import android.content.Context
 
