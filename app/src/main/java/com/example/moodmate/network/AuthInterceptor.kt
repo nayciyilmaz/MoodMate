@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
 import okhttp3.Response
+import timber.log.Timber
 import javax.inject.Inject
 
 class AuthInterceptor @Inject constructor(
@@ -29,12 +30,21 @@ class AuthInterceptor @Inject constructor(
                 if (!request.url.encodedPath.contains("/api/auth/")) {
                     token?.let {
                         addHeader("Authorization", "Bearer $it")
-                    }
+                        Timber.d("Token eklendi: ${request.url.encodedPath}")
+                    } ?: Timber.w("Token bulunamadı: ${request.url.encodedPath}")
                 }
                 addHeader("Accept-Language", languageCode)
+                Timber.d("İstek gönderiliyor: ${request.method} ${request.url.encodedPath} - Dil: $languageCode")
             }
             .build()
 
-        return chain.proceed(newRequest)
+        val response = chain.proceed(newRequest)
+        Timber.d("Yanıt alındı: ${response.code} - ${request.url.encodedPath}")
+
+        if (!response.isSuccessful) {
+            Timber.e("Hata yanıtı: ${response.code} - ${request.url.encodedPath}")
+        }
+
+        return response
     }
 }

@@ -19,6 +19,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -62,6 +63,7 @@ class SignInViewModel @Inject constructor(
             _uiState.value = _uiState.value.copy(validationErrors = SignInValidationErrors())
 
             val existingUserId = tokenManager.userId.first()
+            Timber.d("Giriş başlatıldı: email=${_uiState.value.email}")
 
             val result = authRepository.login(
                 _uiState.value.email.trim(),
@@ -72,6 +74,7 @@ class SignInViewModel @Inject constructor(
                 is Resource.Success -> {
                     result.data?.let { response ->
                         if (existingUserId != null && existingUserId != 0L && existingUserId != response.id) {
+                            Timber.d("Farklı kullanıcı girişi, önceki veriler temizleniyor: existingUserId=$existingUserId, newUserId=${response.id}")
                             moodRepository.clearAllMoodsForUser()
                             adviceRepository.clearAdviceForUser()
                         }
@@ -82,10 +85,12 @@ class SignInViewModel @Inject constructor(
                             firstName = response.firstName,
                             lastName = response.lastName
                         )
+                        Timber.d("Giriş başarılı: userId=${response.id}, email=${response.email}")
                         _actionState.value = SignInActionState(isSuccess = true)
                     }
                 }
                 is Resource.Error -> {
+                    Timber.e("Giriş başarısız: email=${_uiState.value.email}, hata=${result.message}")
                     val validationErrors = mapErrorToValidation(result.message, result.fieldErrors)
                     _uiState.value = _uiState.value.copy(validationErrors = validationErrors)
                     _actionState.value = SignInActionState(isLoading = false)

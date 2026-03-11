@@ -5,17 +5,18 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.moodmate.data.ProfileUiState
 import com.example.moodmate.local.TokenManager
+import com.example.moodmate.notification.NotificationPreferenceHelper
 import com.example.moodmate.notification.NotificationScheduler
 import com.example.moodmate.repository.AdviceRepository
 import com.example.moodmate.repository.MoodRepository
 import com.example.moodmate.util.LocaleHelper
-import com.example.moodmate.notification.NotificationPreferenceHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -47,6 +48,7 @@ class ProfileViewModel @Inject constructor(
             else -> "Türkçe"
         }
         val isEnabled = NotificationPreferenceHelper.isNotificationEnabled(context)
+        Timber.d("Ayarlar yüklendi: dil=$languageName, bildirim=$isEnabled")
         _uiState.value = _uiState.value.copy(
             selectedLanguage = languageName,
             notificationEnabled = isEnabled
@@ -54,12 +56,15 @@ class ProfileViewModel @Inject constructor(
     }
 
     fun setNotification(enabled: Boolean) {
+        Timber.d("Bildirim ayarı değiştiriliyor: $enabled")
         NotificationPreferenceHelper.setNotificationEnabled(context, enabled)
         _uiState.value = _uiState.value.copy(notificationEnabled = enabled)
         if (enabled) {
             notificationScheduler.scheduleDailyNotifications()
+            Timber.d("Bildirimler planlandı")
         } else {
             notificationScheduler.cancelAllNotifications()
+            Timber.d("Bildirimler iptal edildi")
         }
     }
 
@@ -73,6 +78,7 @@ class ProfileViewModel @Inject constructor(
         }
         val currentLanguageCode = LocaleHelper.getLanguage(context)
         if (languageCode != currentLanguageCode) {
+            Timber.d("Dil değiştiriliyor: $currentLanguageCode -> $languageCode")
             LocaleHelper.saveLanguage(context, languageCode)
             _uiState.value = _uiState.value.copy(selectedLanguage = language)
             _shouldRecreateActivity.value = true
@@ -93,9 +99,11 @@ class ProfileViewModel @Inject constructor(
 
     fun logout() {
         viewModelScope.launch {
+            Timber.d("Çıkış yapılıyor")
             moodRepository.clearAllMoodsForUser()
             adviceRepository.clearAdviceForUser()
             tokenManager.clearUser()
+            Timber.d("Çıkış tamamlandı, login ekranına yönlendiriliyor")
             _uiState.value = _uiState.value.copy(
                 showLogoutDialog = false,
                 shouldNavigateToLogin = true

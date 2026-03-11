@@ -7,12 +7,12 @@ import com.example.moodmate.R
 import com.example.moodmate.dao.MoodDao
 import com.example.moodmate.data.AdviceUiState
 import com.example.moodmate.data.HomeUiState
-import com.example.moodmate.sync.SyncState
 import com.example.moodmate.local.TokenManager
 import com.example.moodmate.repository.AdviceRepository
 import com.example.moodmate.repository.MoodRepository
 import com.example.moodmate.sync.SyncManager
 import com.example.moodmate.sync.SyncScheduler
+import com.example.moodmate.sync.SyncState
 import com.example.moodmate.util.NetworkMonitor
 import com.example.moodmate.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,6 +22,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -57,6 +58,7 @@ class HomeViewModel @Inject constructor(
     private fun observeMoods() {
         viewModelScope.launch {
             moodRepository.observeMoods().collect { moods ->
+                Timber.d("Moodlar güncellendi: ${moods.size} kayıt")
                 _uiState.value = _uiState.value.copy(
                     isLoading = false,
                     moods = moods.take(3)
@@ -69,6 +71,7 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             adviceRepository.observeAdvice().collect { advice ->
                 if (advice != null) {
+                    Timber.d("Tavsiye güncellendi")
                     _adviceState.value = AdviceUiState(
                         advice = advice.advice,
                         createdAt = advice.createdAt
@@ -81,6 +84,7 @@ class HomeViewModel @Inject constructor(
     private fun observeNetwork() {
         viewModelScope.launch {
             networkMonitor.isOnline.collect { isOnline ->
+                Timber.d("Ağ durumu değişti: isOnline=$isOnline")
                 if (isOnline) {
                     syncScheduler.scheduleSync()
                 }
@@ -92,6 +96,7 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             val isValid = tokenManager.isTokenValid()
             if (!isValid) {
+                Timber.w("Token geçersiz, oturum süresi doldu")
                 tokenManager.clearUser()
                 _uiState.value = _uiState.value.copy(showSessionExpiredDialog = true)
                 return@launch
@@ -99,11 +104,13 @@ class HomeViewModel @Inject constructor(
             val isOnline = networkMonitor.isOnline.first()
             if (!isOnline) {
                 val pendingCount = moodDao.getPendingMoods().size
+                Timber.d("Çevrimdışı mod: bekleyen kayıt=$pendingCount")
                 syncManager.updatePendingState(pendingCount)
                 return@launch
             }
             val pendingCount = moodDao.getPendingMoods().size
             if (pendingCount > 0) {
+                Timber.d("Bekleyen kayıtlar var: $pendingCount")
                 syncManager.updatePendingState(pendingCount)
             }
             syncScheduler.scheduleSync()
@@ -112,8 +119,10 @@ class HomeViewModel @Inject constructor(
 
     fun loadRecentMoods() {
         viewModelScope.launch {
+            Timber.d("Son moodlar yükleniyor")
             val result = moodRepository.getUserMoods()
             if (result is Resource.Error && result.isUnauthorized) {
+                Timber.e("Oturum süresi doldu, login ekranına yönlendiriliyor")
                 _uiState.value = _uiState.value.copy(showSessionExpiredDialog = true)
             }
         }
@@ -121,9 +130,11 @@ class HomeViewModel @Inject constructor(
 
     fun generateAdvice() {
         viewModelScope.launch {
+            Timber.d("Tavsiye oluşturuluyor")
             _adviceState.value = _adviceState.value.copy(isLoading = true, error = null)
             when (val result = adviceRepository.generateAdvice()) {
                 is Resource.Success -> {
+                    Timber.d("Tavsiye başarıyla oluşturuldu")
                     result.data?.let {
                         _adviceState.value = AdviceUiState(
                             advice = it.advice,
@@ -133,7 +144,9 @@ class HomeViewModel @Inject constructor(
                     }
                 }
                 is Resource.Error -> {
+                    Timber.e("Tavsiye oluşturma başarısız: ${result.message}")
                     if (result.isUnauthorized) {
+                        Timber.e("Oturum süresi doldu, login ekranına yönlendiriliyor")
                         _uiState.value = _uiState.value.copy(showSessionExpiredDialog = true)
                     }
                     _adviceState.value = _adviceState.value.copy(
@@ -147,6 +160,7 @@ class HomeViewModel @Inject constructor(
     }
 
     fun navigateToLoginAfterSessionExpiry() {
+        Timber.d("Oturum süresi doldu, login ekranına yönlendiriliyor")
         _shouldNavigateToLogin.value = true
     }
 

@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
 import javax.inject.Inject
@@ -34,6 +35,7 @@ class MoodDetailsViewModel @Inject constructor(
             val decodedJson = URLDecoder.decode(it, StandardCharsets.UTF_8.toString())
             val gson = Gson()
             val mood = gson.fromJson(decodedJson, MoodResponse::class.java)
+            Timber.d("Mood detayları yüklendi: moodId=${mood.id}")
             _uiState.value = _uiState.value.copy(moodDetails = mood)
             currentMoodId = mood.id
         }
@@ -41,12 +43,14 @@ class MoodDetailsViewModel @Inject constructor(
 
     fun refreshMoodDetails() {
         viewModelScope.launch {
+            Timber.d("Mood detayları yenileniyor: moodId=$currentMoodId")
             when (val result = moodRepository.getUserMoods()) {
                 is Resource.Success -> {
                     val updatedMood = result.data?.find { it.id == currentMoodId }
+                    Timber.d("Mood detayları yenilendi: moodId=$currentMoodId")
                     _uiState.value = _uiState.value.copy(moodDetails = updatedMood)
                 }
-                else -> { }
+                else -> {}
             }
         }
     }
@@ -61,17 +65,20 @@ class MoodDetailsViewModel @Inject constructor(
 
     fun deleteMood() {
         viewModelScope.launch {
+            Timber.d("Mood siliniyor: moodId=$currentMoodId")
             when (moodRepository.deleteMood(currentMoodId)) {
                 is Resource.Success -> {
+                    Timber.d("Mood başarıyla silindi: moodId=$currentMoodId")
                     _uiState.value = _uiState.value.copy(
                         deleteSuccess = true,
                         showDeleteDialog = false
                     )
                 }
                 is Resource.Error -> {
+                    Timber.e("Mood silinemedi: moodId=$currentMoodId")
                     _uiState.value = _uiState.value.copy(showDeleteDialog = false)
                 }
-                else -> { }
+                else -> {}
             }
         }
     }

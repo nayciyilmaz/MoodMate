@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -73,6 +74,7 @@ class SettingsViewModel @Inject constructor(
         val errors = validateFields(state)
 
         if (errors != null) {
+            Timber.w("Şifre değiştirme başarısız: validasyon hatası")
             _uiState.value = _uiState.value.copy(validationErrors = errors)
             return
         }
@@ -80,6 +82,8 @@ class SettingsViewModel @Inject constructor(
         viewModelScope.launch {
             _actionState.value = SettingsActionState(isLoading = true)
             _uiState.value = _uiState.value.copy(validationErrors = SettingsValidationErrors())
+
+            Timber.d("Şifre değiştirme isteği gönderiliyor")
 
             val result = authRepository.changePassword(
                 currentPassword = state.currentPassword,
@@ -89,9 +93,11 @@ class SettingsViewModel @Inject constructor(
 
             when (result) {
                 is Resource.Success -> {
+                    Timber.d("Şifre başarıyla değiştirildi")
                     _actionState.value = SettingsActionState(isSuccess = true)
                 }
                 is Resource.Error -> {
+                    Timber.e("Şifre değiştirme başarısız: ${result.message}")
                     val validationErrors = mapErrorToValidation(result.message, result.fieldErrors)
                     _uiState.value = _uiState.value.copy(validationErrors = validationErrors)
                     _actionState.value = SettingsActionState(isLoading = false)

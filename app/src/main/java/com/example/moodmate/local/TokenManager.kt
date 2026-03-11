@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import org.json.JSONObject
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -41,6 +42,7 @@ class TokenManager @Inject constructor(
         firstName: String,
         lastName: String
     ) {
+        Timber.d("Kullanıcı kaydediliyor: userId=$userId, email=$email")
         dataStore.edit { preferences ->
             preferences[TOKEN_KEY] = token
             preferences[USER_ID_KEY] = userId
@@ -49,6 +51,7 @@ class TokenManager @Inject constructor(
             preferences[LAST_NAME_KEY] = lastName
             preferences[IS_LOGGED_IN_KEY] = true
         }
+        Timber.d("Kullanıcı kaydedildi: userId=$userId")
     }
 
     val token: Flow<String?> = dataStore.data.map { preferences ->
@@ -76,16 +79,24 @@ class TokenManager @Inject constructor(
     }
 
     suspend fun clearUser() {
+        Timber.d("Kullanıcı verisi temizleniyor")
         dataStore.edit { preferences ->
             preferences.clear()
         }
+        Timber.d("Kullanıcı verisi temizlendi")
     }
 
     suspend fun isTokenValid(): Boolean {
-        val tokenValue = token.first() ?: return false
+        val tokenValue = token.first() ?: run {
+            Timber.w("Token bulunamadı")
+            return false
+        }
         return try {
             val parts = tokenValue.split(".")
-            if (parts.size != 3) return false
+            if (parts.size != 3) {
+                Timber.e("Geçersiz token formatı")
+                return false
+            }
             val payload = parts[1]
             val paddedPayload = when (payload.length % 4) {
                 2 -> payload + "=="
@@ -95,10 +106,20 @@ class TokenManager @Inject constructor(
             val decodedBytes = Base64.decode(paddedPayload, Base64.URL_SAFE or Base64.NO_WRAP)
             val json = JSONObject(String(decodedBytes))
             val exp = json.optLong("exp", 0L)
-            if (exp == 0L) return true
+            if (exp == 0L) {
+                Timber.d("Token exp alanı yok, geçerli kabul edildi")
+                return true
+            }
             val currentTimeSeconds = System.currentTimeMillis() / 1000
-            currentTimeSeconds < exp
+            val isValid = currentTimeSeconds < exp
+            if (!isValid) {
+                Timber.w("Token süresi dolmuş: exp=$exp, şimdiki=$currentTimeSeconds")
+            } else {
+                Timber.d("Token geçerli")
+            }
+            isValid
         } catch (e: Exception) {
+            Timber.e(e, "Token doğrulama sırasında hata")
             false
         }
     }

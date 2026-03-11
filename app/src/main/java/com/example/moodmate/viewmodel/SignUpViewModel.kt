@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -68,6 +69,8 @@ class SignUpViewModel @Inject constructor(
             _actionState.value = SignUpActionState(isLoading = true)
             _uiState.value = _uiState.value.copy(validationErrors = SignUpValidationErrors())
 
+            Timber.d("Kayıt başlatıldı: email=${_uiState.value.email}")
+
             val result = authRepository.register(
                 _uiState.value.firstName.trim(),
                 _uiState.value.lastName.trim(),
@@ -77,9 +80,11 @@ class SignUpViewModel @Inject constructor(
 
             when (result) {
                 is Resource.Success -> {
+                    Timber.d("Kayıt başarılı: email=${_uiState.value.email}")
                     _actionState.value = SignUpActionState(isSuccess = true)
                 }
                 is Resource.Error -> {
+                    Timber.e("Kayıt başarısız: email=${_uiState.value.email}, hata=${result.message}")
                     val validationErrors = mapErrorToValidation(result.message, result.fieldErrors)
                     _uiState.value = _uiState.value.copy(validationErrors = validationErrors)
                     _actionState.value = SignUpActionState(isLoading = false)

@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.YearMonth
@@ -46,6 +47,7 @@ class AddMoodViewModel @Inject constructor(
 
     fun setInitialData(emoji: String, score: Int, note: String, entryDate: String? = null) {
         val moodIndex = moods.indexOfFirst { it.emoji == emoji }
+        Timber.d("İlk veriler ayarlanıyor: emoji=$emoji, score=$score, isEditMode=$isEditMode")
 
         if (isEditMode && entryDate != null) {
             try {
@@ -61,6 +63,7 @@ class AddMoodViewModel @Inject constructor(
                     currentMonth = YearMonth.from(dateTime.toLocalDate()).toString()
                 )
             } catch (e: Exception) {
+                Timber.e(e, "Tarih parse hatası: entryDate=$entryDate")
                 _uiState.value = _uiState.value.copy(
                     selectedMoodIndex = moodIndex,
                     selectedRating = score,
@@ -165,6 +168,7 @@ class AddMoodViewModel @Inject constructor(
 
     fun saveMood() {
         if (!_uiState.value.isValid()) {
+            Timber.w("Mood kaydedilemedi: zorunlu alanlar eksik")
             _uiState.value = _uiState.value.copy(
                 validationError = context.getString(R.string.error_fields_required)
             )
@@ -176,6 +180,8 @@ class AddMoodViewModel @Inject constructor(
 
             val selectedEmoji = moods[_uiState.value.selectedMoodIndex].emoji
             val entryDate = buildEntryDate()
+
+            Timber.d("Mood kaydediliyor: emoji=$selectedEmoji, score=${_uiState.value.selectedRating}, isEditMode=$isEditMode")
 
             val result = if (isEditMode) {
                 moodRepository.updateMood(
@@ -196,12 +202,14 @@ class AddMoodViewModel @Inject constructor(
 
             when (result) {
                 is Resource.Success -> {
+                    Timber.d("Mood başarıyla kaydedildi: isEditMode=$isEditMode")
                     _actionState.value = AddMoodActionState(isSuccess = true)
                     if (!isEditMode) {
                         resetForm()
                     }
                 }
                 is Resource.Error -> {
+                    Timber.e("Mood kaydedilemedi: ${result.message}")
                     _actionState.value = AddMoodActionState(
                         error = result.message ?: context.getString(R.string.error_save_mood_failed)
                     )
