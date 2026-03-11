@@ -2,17 +2,20 @@ package com.example.moodmate.viewmodel
 
 import com.example.moodmate.data.MoodResponse
 import com.example.moodmate.repository.MoodRepository
-import com.example.moodmate.util.Resource
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import java.time.LocalDate
@@ -34,8 +37,8 @@ class MoodHistoryViewModelTest {
     @Before
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
-
-        moodRepository = mockk()
+        moodRepository = mockk(relaxed = true)
+        coEvery { moodRepository.observeMoods() } returns flowOf(testMoods)
     }
 
     @After
@@ -44,29 +47,15 @@ class MoodHistoryViewModelTest {
     }
 
     @Test
-    fun loadMoods_whenSuccessful_shouldReturnAllMoods() = runTest {
-        coEvery { moodRepository.getUserMoods() } returns Resource.Success(testMoods)
-
+    fun init_shouldLoadAllMoods() = runTest {
         viewModel = MoodHistoryViewModel(moodRepository)
 
         assertFalse(viewModel.uiState.value.isLoading)
         assertEquals(3, viewModel.uiState.value.moods.size)
-        assertNull(viewModel.uiState.value.error)
-    }
-
-    @Test
-    fun loadMoods_whenError_shouldShowError() = runTest {
-        coEvery { moodRepository.getUserMoods() } returns Resource.Error("Network error")
-
-        viewModel = MoodHistoryViewModel(moodRepository)
-
-        assertFalse(viewModel.uiState.value.isLoading)
-        assertEquals("Network error", viewModel.uiState.value.error)
     }
 
     @Test
     fun onSearchTextChange_shouldFilterMoodsByNote() = runTest {
-        coEvery { moodRepository.getUserMoods() } returns Resource.Success(testMoods)
         viewModel = MoodHistoryViewModel(moodRepository)
 
         viewModel.onSearchTextChange("Great")
@@ -78,7 +67,6 @@ class MoodHistoryViewModelTest {
 
     @Test
     fun onClearSearch_shouldShowAllMoods() = runTest {
-        coEvery { moodRepository.getUserMoods() } returns Resource.Success(testMoods)
         viewModel = MoodHistoryViewModel(moodRepository)
 
         viewModel.onSearchTextChange("Great")
@@ -90,7 +78,6 @@ class MoodHistoryViewModelTest {
 
     @Test
     fun onDateSelect_shouldUpdateTempSelectedDate() = runTest {
-        coEvery { moodRepository.getUserMoods() } returns Resource.Success(testMoods)
         viewModel = MoodHistoryViewModel(moodRepository)
 
         val testDate = LocalDate.of(2024, 1, 1)
@@ -101,7 +88,6 @@ class MoodHistoryViewModelTest {
 
     @Test
     fun onConfirmDate_shouldFilterMoodsByDate() = runTest {
-        coEvery { moodRepository.getUserMoods() } returns Resource.Success(testMoods)
         viewModel = MoodHistoryViewModel(moodRepository)
 
         val testDate = LocalDate.of(2024, 1, 1)
@@ -115,7 +101,6 @@ class MoodHistoryViewModelTest {
 
     @Test
     fun onClearDate_shouldShowAllMoods() = runTest {
-        coEvery { moodRepository.getUserMoods() } returns Resource.Success(testMoods)
         viewModel = MoodHistoryViewModel(moodRepository)
 
         val testDate = LocalDate.of(2024, 1, 1)
@@ -130,7 +115,6 @@ class MoodHistoryViewModelTest {
 
     @Test
     fun onShowDatePicker_shouldSetShowDatePickerTrue() = runTest {
-        coEvery { moodRepository.getUserMoods() } returns Resource.Success(testMoods)
         viewModel = MoodHistoryViewModel(moodRepository)
 
         viewModel.onShowDatePicker()
@@ -140,7 +124,6 @@ class MoodHistoryViewModelTest {
 
     @Test
     fun onDismissDatePicker_shouldResetDatePickerState() = runTest {
-        coEvery { moodRepository.getUserMoods() } returns Resource.Success(testMoods)
         viewModel = MoodHistoryViewModel(moodRepository)
 
         val testDate = LocalDate.of(2024, 1, 1)

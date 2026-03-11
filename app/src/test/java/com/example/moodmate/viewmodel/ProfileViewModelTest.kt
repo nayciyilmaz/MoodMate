@@ -2,10 +2,17 @@ package com.example.moodmate.viewmodel
 
 import android.content.Context
 import com.example.moodmate.local.TokenManager
-import com.example.moodmate.notification.NotificationScheduler
-import com.example.moodmate.util.LocaleHelper
 import com.example.moodmate.notification.NotificationPreferenceHelper
-import io.mockk.*
+import com.example.moodmate.notification.NotificationScheduler
+import com.example.moodmate.repository.AdviceRepository
+import com.example.moodmate.repository.MoodRepository
+import com.example.moodmate.util.LocaleHelper
+import io.mockk.coVerify
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.mockkObject
+import io.mockk.unmockkAll
+import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
@@ -13,7 +20,9 @@ import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 
@@ -23,6 +32,8 @@ class ProfileViewModelTest {
     private lateinit var viewModel: ProfileViewModel
     private lateinit var tokenManager: TokenManager
     private lateinit var notificationScheduler: NotificationScheduler
+    private lateinit var moodRepository: MoodRepository
+    private lateinit var adviceRepository: AdviceRepository
     private lateinit var context: Context
 
     private val testDispatcher = UnconfinedTestDispatcher()
@@ -33,6 +44,8 @@ class ProfileViewModelTest {
 
         tokenManager = mockk(relaxed = true)
         notificationScheduler = mockk(relaxed = true)
+        moodRepository = mockk(relaxed = true)
+        adviceRepository = mockk(relaxed = true)
         context = mockk(relaxed = true)
 
         mockkObject(LocaleHelper)
@@ -41,7 +54,7 @@ class ProfileViewModelTest {
         every { LocaleHelper.getLanguage(any()) } returns "tr"
         every { NotificationPreferenceHelper.isNotificationEnabled(any()) } returns true
 
-        viewModel = ProfileViewModel(tokenManager, notificationScheduler, context)
+        viewModel = ProfileViewModel(tokenManager, notificationScheduler, moodRepository, adviceRepository, context)
     }
 
     @After
@@ -104,17 +117,18 @@ class ProfileViewModelTest {
     }
 
     @Test
-    fun logout_shouldClearTokenAndNavigateToLogin() = runTest {
+    fun logout_shouldClearAllDataAndNavigateToLogin() = runTest {
         viewModel.logout()
 
         assertTrue(viewModel.uiState.value.shouldNavigateToLogin)
+        coVerify { moodRepository.clearAllMoodsForUser() }
+        coVerify { adviceRepository.clearAdviceForUser() }
         coVerify { tokenManager.clearUser() }
     }
 
     @Test
     fun resetRecreateFlag_shouldResetFlag() {
         viewModel.setLanguage("English")
-
         viewModel.resetRecreateFlag()
 
         assertFalse(viewModel.shouldRecreateActivity.value)
@@ -123,7 +137,6 @@ class ProfileViewModelTest {
     @Test
     fun resetNavigationFlag_shouldResetFlag() = runTest {
         viewModel.logout()
-
         viewModel.resetNavigationFlag()
 
         assertFalse(viewModel.uiState.value.shouldNavigateToLogin)
