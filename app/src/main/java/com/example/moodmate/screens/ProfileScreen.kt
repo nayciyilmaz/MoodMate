@@ -40,7 +40,7 @@ import com.example.moodmate.components.EditAlertDialog
 import com.example.moodmate.components.EditButton
 import com.example.moodmate.components.EditScaffold
 import com.example.moodmate.navigation.MoodMateScreens
-import com.example.moodmate.util.navigateAndClearBackStack
+import com.example.moodmate.navigation.navigateAndClearBackStack
 import com.example.moodmate.viewmodel.ProfileViewModel
 
 @Composable
@@ -82,7 +82,10 @@ fun ProfileScreen(
         )
     }
 
-    EditScaffold(navController = navController) {
+    EditScaffold(
+        title = stringResource(id = R.string.title_profile),
+        navController = navController
+    ) {
         Column(
             modifier = modifier
                 .fillMaxSize()
@@ -102,7 +105,9 @@ fun ProfileScreen(
                     stringResource(id = R.string.on),
                     stringResource(id = R.string.off)
                 ),
-                selectedOption = if (uiState.notificationEnabled) stringResource(id = R.string.on) else stringResource(id = R.string.off),
+                selectedOption = if (uiState.notificationEnabled) stringResource(id = R.string.on) else stringResource(
+                    id = R.string.off
+                ),
                 onOptionSelected = { selected ->
                     val enabled = selected == context.getString(R.string.on)
                     viewModel.setNotification(enabled)

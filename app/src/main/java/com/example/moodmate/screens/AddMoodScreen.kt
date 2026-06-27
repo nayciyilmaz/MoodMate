@@ -32,7 +32,7 @@ import com.example.moodmate.components.ValidationErrorText
 import com.example.moodmate.components.EditDatePicker
 import com.example.moodmate.components.EditTimePicker
 import com.example.moodmate.navigation.MoodMateScreens
-import com.example.moodmate.util.navigateAndClearBackStack
+import com.example.moodmate.navigation.navigateAndClearBackStack
 import com.example.moodmate.viewmodel.AddMoodViewModel
 import java.time.LocalDate
 import java.time.LocalTime
@@ -85,7 +85,10 @@ fun AddMoodScreen(
         )
     }
 
-    EditScaffold(navController = navController) {
+    EditScaffold(
+        title = stringResource(id = R.string.title_add_mood),
+        navController = navController
+    ) {
         Column(
             modifier = modifier
                 .fillMaxSize()

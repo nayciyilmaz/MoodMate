@@ -44,7 +44,7 @@ import com.example.moodmate.components.EditOutlinedTextField
 import com.example.moodmate.components.EditScaffold
 import com.example.moodmate.components.ValidationErrorText
 import com.example.moodmate.navigation.MoodMateScreens
-import com.example.moodmate.util.navigateAndClearBackStack
+import com.example.moodmate.navigation.navigateAndClearBackStack
 import com.example.moodmate.viewmodel.SettingsViewModel
 
 @Composable
@@ -72,7 +72,10 @@ fun SettingsScreen(
         }
     }
 
-    EditScaffold(navController = navController) {
+    EditScaffold(
+        title = stringResource(id = R.string.title_settings),
+        navController = navController
+    ) {
         Column(
             modifier = modifier
                 .fillMaxSize()
@@ -171,30 +174,12 @@ fun SettingsScreen(
                 }
             }
 
-            Column(
-                modifier = modifier
-                    .fillMaxWidth()
-                    .padding(top = 20.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                EditButton(
-                    text = stringResource(id = R.string.back_button),
-                    onClick = {
-                        navigateAndClearBackStack(
-                            navController = navController,
-                            destination = MoodMateScreens.ProfileScreen.route,
-                            popUpToRoute = MoodMateScreens.SettingsScreen.route
-                        )
-                    },
-                    containerColor = Color.LightGray
-                )
-
-                EditButton(
-                    text = stringResource(id = R.string.save_button),
-                    onClick = viewModel::changePassword,
-                    containerColor = colorResource(id = R.color.acik_mavi)
-                )
-            }
+            EditButton(
+                text = stringResource(id = R.string.save_button),
+                onClick = viewModel::changePassword,
+                containerColor = colorResource(id = R.color.acik_mavi),
+                modifier = modifier.padding(top = 20.dp)
+            )
         }
     }
 }

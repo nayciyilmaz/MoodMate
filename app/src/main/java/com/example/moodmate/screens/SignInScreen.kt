@@ -30,7 +30,7 @@ import com.example.moodmate.components.ValidationErrorText
 import com.example.moodmate.navigation.MoodMateScreens
 import androidx.compose.foundation.text.KeyboardOptions
 import com.example.moodmate.components.EditIconButton
-import com.example.moodmate.util.navigateAndClearBackStack
+import com.example.moodmate.navigation.navigateAndClearBackStack
 import com.example.moodmate.viewmodel.SignInViewModel
 
 @Composable

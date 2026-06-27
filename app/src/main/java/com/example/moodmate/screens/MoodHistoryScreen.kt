@@ -50,15 +50,22 @@ fun MoodHistoryScreen(
     val uiState by viewModel.uiState.collectAsState()
 
     LaunchedEffect(Unit) {
-        navController.currentBackStackEntry?.savedStateHandle?.getLiveData<Boolean>("shouldRefresh")?.observeForever { shouldRefresh ->
-            if (shouldRefresh == true) {
-                viewModel.loadMoods()
-                navController.currentBackStackEntry?.savedStateHandle?.set("shouldRefresh", false)
+        navController.currentBackStackEntry?.savedStateHandle?.getLiveData<Boolean>("shouldRefresh")
+            ?.observeForever { shouldRefresh ->
+                if (shouldRefresh == true) {
+                    viewModel.loadMoods()
+                    navController.currentBackStackEntry?.savedStateHandle?.set(
+                        "shouldRefresh",
+                        false
+                    )
+                }
             }
-        }
     }
 
-    EditScaffold(navController = navController) {
+    EditScaffold(
+        title = stringResource(id = R.string.title_mood_history),
+        navController = navController
+    ) {
         Column(
             modifier = modifier
                 .fillMaxSize()
@@ -144,8 +151,9 @@ fun MoodHistoryScreen(
                 onMoodClick = { mood ->
                     val gson = Gson()
                     val moodJson = gson.toJson(mood)
-                    val encodedMoodJson = URLEncoder.encode(moodJson, StandardCharsets.UTF_8.toString())
-                        .replace("+", "%20")
+                    val encodedMoodJson =
+                        URLEncoder.encode(moodJson, StandardCharsets.UTF_8.toString())
+                            .replace("+", "%20")
                     navController.navigate(MoodMateScreens.createMoodDetailsRoute(encodedMoodJson))
                 },
                 modifier = modifier

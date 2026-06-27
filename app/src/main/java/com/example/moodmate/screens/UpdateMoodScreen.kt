@@ -64,17 +64,20 @@ fun UpdateMoodScreen(
             try {
                 navController.getBackStackEntry(MoodMateScreens.MoodDetailsScreen.route)
                     .savedStateHandle.set("shouldRefresh", true)
-            } catch (e: Exception) { }
+            } catch (e: Exception) {
+            }
 
             try {
                 navController.getBackStackEntry(MoodMateScreens.HomeScreen.route)
                     .savedStateHandle.set("shouldRefresh", true)
-            } catch (e: Exception) { }
+            } catch (e: Exception) {
+            }
 
             try {
                 navController.getBackStackEntry(MoodMateScreens.MoodHistoryScreen.route)
                     .savedStateHandle.set("shouldRefresh", true)
-            } catch (e: Exception) { }
+            } catch (e: Exception) {
+            }
 
             navController.popBackStack()
         }
@@ -106,7 +109,10 @@ fun UpdateMoodScreen(
         )
     }
 
-    EditScaffold(navController = navController) {
+    EditScaffold(
+        title = stringResource(id = R.string.title_edit_mood),
+        navController = navController
+    ) {
         Column(
             modifier = modifier
                 .fillMaxSize()

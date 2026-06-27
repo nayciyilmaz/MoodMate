@@ -24,7 +24,7 @@ import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.moodmate.R
 import com.example.moodmate.navigation.MoodMateScreens
-import com.example.moodmate.util.navigateAndClearBackStack
+import com.example.moodmate.navigation.navigateAndClearBackStack
 import com.example.moodmate.viewmodel.SplashViewModel
 import kotlinx.coroutines.delay
 

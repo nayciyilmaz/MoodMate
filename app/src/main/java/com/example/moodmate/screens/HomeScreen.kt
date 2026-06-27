@@ -64,7 +64,7 @@ import com.example.moodmate.sync.SyncState
 import com.example.moodmate.data.SyncUiModel
 import com.example.moodmate.navigation.MoodMateScreens
 import com.example.moodmate.util.formatDate
-import com.example.moodmate.util.navigateAndClearBackStack
+import com.example.moodmate.navigation.navigateAndClearBackStack
 import com.example.moodmate.viewmodel.HomeViewModel
 import com.google.gson.Gson
 import java.net.URLEncoder
@@ -111,7 +111,10 @@ fun HomeScreen(
         )
     }
 
-    EditScaffold(navController = navController) {
+    EditScaffold(
+        title = stringResource(id = R.string.title_home),
+        navController = navController
+    ) {
         Column(
             modifier = modifier
                 .fillMaxSize()
@@ -460,6 +463,7 @@ private fun resolveSyncUiModel(syncState: SyncState): SyncUiModel? {
             subtitle = stringResource(R.string.sync_offline_subtitle, syncState.count),
             showRetry = false
         )
+
         is SyncState.Syncing -> SyncUiModel(
             icon = Icons.Default.Sync,
             iconTint = colorResource(id = R.color.acik_mavi),
@@ -467,6 +471,7 @@ private fun resolveSyncUiModel(syncState: SyncState): SyncUiModel? {
             subtitle = stringResource(R.string.sync_syncing_subtitle),
             showRetry = false
         )
+
         is SyncState.Synced -> SyncUiModel(
             icon = Icons.Default.CheckCircle,
             iconTint = colorResource(id = R.color.sync_success),
@@ -474,6 +479,7 @@ private fun resolveSyncUiModel(syncState: SyncState): SyncUiModel? {
             subtitle = stringResource(R.string.sync_synced_subtitle, syncState.lastSyncTime),
             showRetry = false
         )
+
         is SyncState.SyncFailed -> SyncUiModel(
             icon = Icons.Default.ErrorOutline,
             iconTint = colorResource(id = R.color.sync_error),
@@ -481,6 +487,7 @@ private fun resolveSyncUiModel(syncState: SyncState): SyncUiModel? {
             subtitle = stringResource(R.string.sync_failed_subtitle, syncState.pendingCount),
             showRetry = true
         )
+
         SyncState.Idle -> null
     }
 }

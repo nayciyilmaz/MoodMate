@@ -49,33 +49,41 @@ fun MoodDetailsScreen(
     val uiState by viewModel.uiState.collectAsState()
 
     LaunchedEffect(Unit, uiState.deleteSuccess) {
-        navController.currentBackStackEntry?.savedStateHandle?.getLiveData<Boolean>("shouldRefresh")?.observeForever { shouldRefresh ->
-            if (shouldRefresh == true) {
-                viewModel.refreshMoodDetails()
-                navController.currentBackStackEntry?.savedStateHandle?.set("shouldRefresh", false)
+        navController.currentBackStackEntry?.savedStateHandle?.getLiveData<Boolean>("shouldRefresh")
+            ?.observeForever { shouldRefresh ->
+                if (shouldRefresh == true) {
+                    viewModel.refreshMoodDetails()
+                    navController.currentBackStackEntry?.savedStateHandle?.set(
+                        "shouldRefresh",
+                        false
+                    )
 
-                try {
-                    navController.getBackStackEntry(MoodMateScreens.HomeScreen.route)
-                        .savedStateHandle.set("shouldRefresh", true)
-                } catch (e: Exception) { }
+                    try {
+                        navController.getBackStackEntry(MoodMateScreens.HomeScreen.route)
+                            .savedStateHandle.set("shouldRefresh", true)
+                    } catch (e: Exception) {
+                    }
 
-                try {
-                    navController.getBackStackEntry(MoodMateScreens.MoodHistoryScreen.route)
-                        .savedStateHandle.set("shouldRefresh", true)
-                } catch (e: Exception) { }
+                    try {
+                        navController.getBackStackEntry(MoodMateScreens.MoodHistoryScreen.route)
+                            .savedStateHandle.set("shouldRefresh", true)
+                    } catch (e: Exception) {
+                    }
+                }
             }
-        }
 
         if (uiState.deleteSuccess) {
             try {
                 navController.getBackStackEntry(MoodMateScreens.HomeScreen.route)
                     .savedStateHandle.set("shouldRefresh", true)
-            } catch (e: Exception) { }
+            } catch (e: Exception) {
+            }
 
             try {
                 navController.getBackStackEntry(MoodMateScreens.MoodHistoryScreen.route)
                     .savedStateHandle.set("shouldRefresh", true)
-            } catch (e: Exception) { }
+            } catch (e: Exception) {
+            }
 
             navController.popBackStack()
         }
@@ -92,11 +100,13 @@ fun MoodDetailsScreen(
         )
     }
 
-    EditScaffold(navController = navController) { innerPadding ->
+    EditScaffold(
+        title = stringResource(id = R.string.title_mood_details),
+        navController = navController
+    ) {
         uiState.moodDetails?.let { mood ->
             Column(
                 modifier = modifier
-                    .padding(innerPadding)
                     .fillMaxSize()
                     .verticalScroll(rememberScrollState())
                     .padding(20.dp),
@@ -130,10 +140,22 @@ fun MoodDetailsScreen(
                         text = stringResource(id = R.string.edit),
                         icon = Icons.Default.Edit,
                         onClick = {
-                            navController.currentBackStackEntry?.savedStateHandle?.set("emoji", mood.emoji)
-                            navController.currentBackStackEntry?.savedStateHandle?.set("score", mood.score)
-                            navController.currentBackStackEntry?.savedStateHandle?.set("note", mood.note)
-                            navController.currentBackStackEntry?.savedStateHandle?.set("entryDate", mood.entryDate)
+                            navController.currentBackStackEntry?.savedStateHandle?.set(
+                                "emoji",
+                                mood.emoji
+                            )
+                            navController.currentBackStackEntry?.savedStateHandle?.set(
+                                "score",
+                                mood.score
+                            )
+                            navController.currentBackStackEntry?.savedStateHandle?.set(
+                                "note",
+                                mood.note
+                            )
+                            navController.currentBackStackEntry?.savedStateHandle?.set(
+                                "entryDate",
+                                mood.entryDate
+                            )
                             navController.navigate(MoodMateScreens.createUpdateMoodRoute(mood.id))
                         },
                         containerColor = colorResource(id = R.color.acik_mavi)

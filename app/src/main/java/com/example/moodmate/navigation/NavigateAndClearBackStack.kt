@@ -1,4 +1,4 @@
-package com.example.moodmate.util
+package com.example.moodmate.navigation
 
 import androidx.navigation.NavController
 
