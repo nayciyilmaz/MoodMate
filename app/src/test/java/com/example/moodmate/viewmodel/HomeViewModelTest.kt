@@ -19,6 +19,7 @@ import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
@@ -209,5 +210,14 @@ class HomeViewModelTest {
         viewModel.resetNavigationFlag()
 
         assertFalse(viewModel.shouldNavigateToLogin.value)
+    }
+
+    @Test
+    fun firstName_shouldReturnFirstNameFromTokenManager() = runTest {
+        coEvery { tokenManager.firstName } returns flowOf("Yılmaz")
+
+        createViewModel()
+
+        assertEquals("Yılmaz", viewModel.firstName.first())
     }
 }

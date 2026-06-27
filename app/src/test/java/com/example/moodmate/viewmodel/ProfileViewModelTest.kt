@@ -15,6 +15,8 @@ import io.mockk.unmockkAll
 import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
@@ -140,5 +142,24 @@ class ProfileViewModelTest {
         viewModel.resetNavigationFlag()
 
         assertFalse(viewModel.uiState.value.shouldNavigateToLogin)
+    }
+
+    @Test
+    fun fullName_shouldCombineFirstAndLastName() = runTest {
+        every { tokenManager.firstName } returns flowOf("Yılmaz")
+        every { tokenManager.lastName } returns flowOf("Naycı")
+
+        viewModel = ProfileViewModel(tokenManager, notificationScheduler, moodRepository, adviceRepository, context)
+
+        assertEquals("Yılmaz Naycı", viewModel.fullName.first())
+    }
+
+    @Test
+    fun email_shouldReturnEmailFromTokenManager() = runTest {
+        every { tokenManager.userEmail } returns flowOf("test@example.com")
+
+        viewModel = ProfileViewModel(tokenManager, notificationScheduler, moodRepository, adviceRepository, context)
+
+        assertEquals("test@example.com", viewModel.email.first())
     }
 }
