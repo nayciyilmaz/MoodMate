@@ -18,6 +18,7 @@ import com.example.moodmate.screens.SettingsScreen
 import com.example.moodmate.screens.SignInScreen
 import com.example.moodmate.screens.SignUpScreen
 import com.example.moodmate.screens.SplashScreen
+import com.example.moodmate.screens.UpdateMoodScreen
 import com.example.moodmate.viewmodel.UserViewModel
 
 @Composable
@@ -42,17 +43,18 @@ fun MoodMateNavigation(){
                 firstName = uiState.userData?.firstName ?: ""
             )
         }
+        composable(route = MoodMateScreens.AddMoodScreen.route){
+            AddMoodScreen(navController = navController)
+        }
         composable(
-            route = MoodMateScreens.AddMoodScreen.route,
+            route = MoodMateScreens.UpdateMoodScreen.route,
             arguments = listOf(
                 navArgument("moodId") {
                     type = NavType.StringType
-                    nullable = true
-                    defaultValue = null
                 }
             )
         ){
-            AddMoodScreen(navController = navController)
+            UpdateMoodScreen(navController = navController)
         }
         composable(route = MoodMateScreens.MoodHistoryScreen.route){
             MoodHistoryScreen(navController = navController)

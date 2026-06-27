@@ -134,7 +134,7 @@ fun MoodDetailsScreen(
                             navController.currentBackStackEntry?.savedStateHandle?.set("score", mood.score)
                             navController.currentBackStackEntry?.savedStateHandle?.set("note", mood.note)
                             navController.currentBackStackEntry?.savedStateHandle?.set("entryDate", mood.entryDate)
-                            navController.navigate(MoodMateScreens.createAddMoodRoute(mood.id))
+                            navController.navigate(MoodMateScreens.createUpdateMoodRoute(mood.id))
                         },
                         containerColor = colorResource(id = R.color.acik_mavi)
                     )

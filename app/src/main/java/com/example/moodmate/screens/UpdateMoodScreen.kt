@@ -32,8 +32,7 @@ import com.example.moodmate.components.ValidationErrorText
 import com.example.moodmate.components.EditDatePicker
 import com.example.moodmate.components.EditTimePicker
 import com.example.moodmate.navigation.MoodMateScreens
-import com.example.moodmate.util.navigateAndClearBackStack
-import com.example.moodmate.viewmodel.AddMoodViewModel
+import com.example.moodmate.viewmodel.UpdateMoodViewModel
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.YearMonth
@@ -41,21 +40,43 @@ import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 @Composable
-fun AddMoodScreen(
+fun UpdateMoodScreen(
     navController: NavController,
     modifier: Modifier = Modifier,
-    viewModel: AddMoodViewModel = hiltViewModel()
+    viewModel: UpdateMoodViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val actionState by viewModel.actionState.collectAsState()
+    val backStackEntry = navController.previousBackStackEntry
+    val emoji = backStackEntry?.savedStateHandle?.get<String>("emoji")
+    val score = backStackEntry?.savedStateHandle?.get<Int>("score")
+    val note = backStackEntry?.savedStateHandle?.get<String>("note")
+    val entryDate = backStackEntry?.savedStateHandle?.get<String>("entryDate")
+
+    LaunchedEffect(emoji, score, note, entryDate) {
+        if (emoji != null && score != null && note != null) {
+            viewModel.setInitialData(emoji, score, note, entryDate)
+        }
+    }
 
     LaunchedEffect(key1 = actionState.isSuccess) {
         if (actionState.isSuccess) {
-            navigateAndClearBackStack(
-                navController = navController,
-                destination = MoodMateScreens.HomeScreen.route,
-                popUpToRoute = MoodMateScreens.AddMoodScreen.route
-            )
+            try {
+                navController.getBackStackEntry(MoodMateScreens.MoodDetailsScreen.route)
+                    .savedStateHandle.set("shouldRefresh", true)
+            } catch (e: Exception) { }
+
+            try {
+                navController.getBackStackEntry(MoodMateScreens.HomeScreen.route)
+                    .savedStateHandle.set("shouldRefresh", true)
+            } catch (e: Exception) { }
+
+            try {
+                navController.getBackStackEntry(MoodMateScreens.MoodHistoryScreen.route)
+                    .savedStateHandle.set("shouldRefresh", true)
+            } catch (e: Exception) { }
+
+            navController.popBackStack()
         }
     }
 
@@ -142,6 +163,6 @@ fun AddMoodScreen(
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun AddMoodScreenPreview() {
-    AddMoodScreen(navController = rememberNavController())
+fun UpdateMoodScreenPreview() {
+    UpdateMoodScreen(navController = rememberNavController())
 }

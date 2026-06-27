@@ -1,6 +1,7 @@
 package com.example.moodmate.viewmodel
 
 import android.content.Context
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.moodmate.R
@@ -16,15 +17,17 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 @HiltViewModel
-class AddMoodViewModel @Inject constructor(
+class UpdateMoodViewModel @Inject constructor(
     private val moodRepository: MoodRepository,
-    @ApplicationContext private val context: Context
+    @ApplicationContext private val context: Context,
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(AddMoodUiState())
@@ -36,6 +39,40 @@ class AddMoodViewModel @Inject constructor(
     val moods: List<MoodItem> = context.resources.getStringArray(R.array.mood_list).map {
         val parts = it.split("-")
         MoodItem(emoji = parts[0], label = parts[1])
+    }
+
+    private val moodId: Long = savedStateHandle.get<String>("moodId")?.toLongOrNull() ?: 0L
+
+    fun setInitialData(emoji: String, score: Int, note: String, entryDate: String? = null) {
+        val moodIndex = moods.indexOfFirst { it.emoji == emoji }
+
+        if (entryDate != null) {
+            try {
+                val dateTime = LocalDateTime.parse(entryDate, DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+                val dateStr = dateTime.toLocalDate().toString()
+                val timeStr = dateTime.toLocalTime().format(DateTimeFormatter.ofPattern("HH:mm"))
+                _uiState.value = _uiState.value.copy(
+                    selectedMoodIndex = moodIndex,
+                    selectedRating = score,
+                    noteText = note,
+                    selectedDate = dateStr,
+                    selectedTime = timeStr,
+                    currentMonth = YearMonth.from(dateTime.toLocalDate()).toString()
+                )
+            } catch (e: Exception) {
+                _uiState.value = _uiState.value.copy(
+                    selectedMoodIndex = moodIndex,
+                    selectedRating = score,
+                    noteText = note
+                )
+            }
+        } else {
+            _uiState.value = _uiState.value.copy(
+                selectedMoodIndex = moodIndex,
+                selectedRating = score,
+                noteText = note
+            )
+        }
     }
 
     fun onNoteTextChange(newText: String) {
@@ -125,7 +162,8 @@ class AddMoodViewModel @Inject constructor(
             val selectedEmoji = moods[_uiState.value.selectedMoodIndex].emoji
             val entryDate = buildEntryDate()
 
-            val result = moodRepository.addMood(
+            val result = moodRepository.updateMood(
+                moodId = moodId,
                 emoji = selectedEmoji,
                 score = _uiState.value.selectedRating,
                 note = _uiState.value.noteText.trim(),
@@ -133,10 +171,7 @@ class AddMoodViewModel @Inject constructor(
             )
 
             when (result) {
-                is Resource.Success -> {
-                    _actionState.value = AddMoodActionState(isSuccess = true)
-                    resetForm()
-                }
+                is Resource.Success -> _actionState.value = AddMoodActionState(isSuccess = true)
                 is Resource.Error -> _actionState.value = AddMoodActionState(
                     error = result.message ?: context.getString(R.string.error_save_mood_failed)
                 )
@@ -160,10 +195,6 @@ class AddMoodViewModel @Inject constructor(
         }
 
         return date.atTime(time).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
-    }
-
-    private fun resetForm() {
-        _uiState.value = AddMoodUiState()
     }
 
     fun resetActionState() {
