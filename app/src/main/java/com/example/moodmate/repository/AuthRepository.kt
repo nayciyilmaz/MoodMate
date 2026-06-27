@@ -2,11 +2,11 @@ package com.example.moodmate.repository
 
 import android.content.Context
 import com.example.moodmate.R
-import com.example.moodmate.data.AuthResponse
-import com.example.moodmate.data.ChangePasswordRequest
-import com.example.moodmate.data.ErrorResponse
-import com.example.moodmate.data.LoginRequest
-import com.example.moodmate.data.RegisterRequest
+import com.example.moodmate.model.AuthResponse
+import com.example.moodmate.model.ChangePasswordRequest
+import com.example.moodmate.model.ErrorResponse
+import com.example.moodmate.model.LoginRequest
+import com.example.moodmate.model.RegisterRequest
 import com.example.moodmate.network.ApiService
 import com.example.moodmate.util.Resource
 import com.google.gson.Gson

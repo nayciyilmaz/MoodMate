@@ -3,7 +3,7 @@ package com.example.moodmate.repository
 import android.content.Context
 import com.example.moodmate.R
 import com.example.moodmate.dao.AdviceDao
-import com.example.moodmate.data.AdviceResponse
+import com.example.moodmate.model.AdviceResponse
 import com.example.moodmate.entity.AdviceLocalEntity
 import com.example.moodmate.local.TokenManager
 import com.example.moodmate.network.ApiService

@@ -3,8 +3,8 @@ package com.example.moodmate.viewmodel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.moodmate.data.MoodDetailsUiState
-import com.example.moodmate.data.MoodResponse
+import com.example.moodmate.model.MoodDetailsUiState
+import com.example.moodmate.model.MoodResponse
 import com.example.moodmate.repository.MoodRepository
 import com.example.moodmate.util.Resource
 import com.google.gson.Gson

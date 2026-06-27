@@ -59,9 +59,9 @@ import com.example.moodmate.components.EditTextButton
 import com.example.moodmate.components.LoadingIndicator
 import com.example.moodmate.components.MoodList
 import com.example.moodmate.components.ValidationErrorText
-import com.example.moodmate.data.AdviceUiState
+import com.example.moodmate.model.AdviceUiState
 import com.example.moodmate.sync.SyncState
-import com.example.moodmate.data.SyncUiModel
+import com.example.moodmate.model.SyncUiModel
 import com.example.moodmate.navigation.MoodMateScreens
 import com.example.moodmate.util.formatDate
 import com.example.moodmate.navigation.navigateAndClearBackStack
@@ -73,7 +73,6 @@ import java.nio.charset.StandardCharsets
 @Composable
 fun HomeScreen(
     navController: NavController,
-    firstName: String,
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
@@ -81,6 +80,7 @@ fun HomeScreen(
     val adviceState by viewModel.adviceState.collectAsState()
     val syncState by viewModel.syncState.collectAsState()
     val shouldNavigateToLogin by viewModel.shouldNavigateToLogin.collectAsState()
+    val firstName by viewModel.firstName.collectAsState()
 
     LaunchedEffect(shouldNavigateToLogin) {
         if (shouldNavigateToLogin) {
@@ -496,7 +496,6 @@ private fun resolveSyncUiModel(syncState: SyncState): SyncUiModel? {
 @Composable
 fun HomeScreenPreview() {
     HomeScreen(
-        navController = rememberNavController(),
-        firstName = "Yılmaz"
+        navController = rememberNavController()
     )
 }

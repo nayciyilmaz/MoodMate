@@ -3,8 +3,8 @@ package com.example.moodmate.viewmodel
 import android.content.Context
 import com.example.moodmate.R
 import com.example.moodmate.dao.MoodDao
-import com.example.moodmate.data.AdviceResponse
-import com.example.moodmate.data.MoodResponse
+import com.example.moodmate.model.AdviceResponse
+import com.example.moodmate.model.MoodResponse
 import com.example.moodmate.entity.MoodEntity
 import com.example.moodmate.local.TokenManager
 import com.example.moodmate.repository.AdviceRepository

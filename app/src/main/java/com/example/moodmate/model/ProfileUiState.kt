@@ -1,4 +1,4 @@
-package com.example.moodmate.data
+package com.example.moodmate.model
 
 data class ProfileUiState(
     val shouldNavigateToLogin: Boolean = false,

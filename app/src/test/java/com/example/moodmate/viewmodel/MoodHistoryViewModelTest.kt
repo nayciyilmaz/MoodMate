@@ -1,6 +1,6 @@
 package com.example.moodmate.viewmodel
 
-import com.example.moodmate.data.MoodResponse
+import com.example.moodmate.model.MoodResponse
 import com.example.moodmate.repository.MoodRepository
 import io.mockk.coEvery
 import io.mockk.mockk

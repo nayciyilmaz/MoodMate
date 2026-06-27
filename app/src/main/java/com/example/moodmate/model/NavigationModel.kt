@@ -1,4 +1,4 @@
-package com.example.moodmate.data
+package com.example.moodmate.model
 
 import androidx.compose.ui.graphics.vector.ImageVector
 

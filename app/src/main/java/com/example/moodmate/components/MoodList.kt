@@ -25,7 +25,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.moodmate.R
-import com.example.moodmate.data.MoodResponse
+import com.example.moodmate.model.MoodResponse
 import com.example.moodmate.util.formatDate
 
 @Composable

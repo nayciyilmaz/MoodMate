@@ -3,7 +3,7 @@ package com.example.moodmate.viewmodel
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.moodmate.data.ProfileUiState
+import com.example.moodmate.model.ProfileUiState
 import com.example.moodmate.local.TokenManager
 import com.example.moodmate.notification.NotificationPreferenceHelper
 import com.example.moodmate.notification.NotificationScheduler
@@ -13,8 +13,12 @@ import com.example.moodmate.util.LocaleHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -33,6 +37,16 @@ class ProfileViewModel @Inject constructor(
 
     private val _shouldRecreateActivity = MutableStateFlow(false)
     val shouldRecreateActivity: StateFlow<Boolean> = _shouldRecreateActivity.asStateFlow()
+
+    val fullName: StateFlow<String> = combine(
+        tokenManager.firstName,
+        tokenManager.lastName
+    ) { first, last -> "${first ?: ""} ${last ?: ""}".trim() }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), "")
+
+    val email: StateFlow<String> = tokenManager.userEmail
+        .map { it ?: "" }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), "")
 
     init {
         loadSettings()

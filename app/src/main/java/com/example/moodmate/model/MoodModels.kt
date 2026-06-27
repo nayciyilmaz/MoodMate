@@ -1,4 +1,4 @@
-package com.example.moodmate.data
+package com.example.moodmate.model
 
 data class MoodRequest(
     val emoji: String,

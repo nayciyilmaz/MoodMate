@@ -1,6 +1,6 @@
 package com.example.moodmate.mapper
 
-import com.example.moodmate.data.MoodResponse
+import com.example.moodmate.model.MoodResponse
 import com.example.moodmate.sync.SyncStatus
 import com.example.moodmate.entity.MoodEntity
 import java.util.UUID

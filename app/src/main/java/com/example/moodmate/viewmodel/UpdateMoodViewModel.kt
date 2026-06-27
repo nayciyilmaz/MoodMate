@@ -5,9 +5,9 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.moodmate.R
-import com.example.moodmate.data.AddMoodActionState
-import com.example.moodmate.data.AddMoodUiState
-import com.example.moodmate.data.MoodItem
+import com.example.moodmate.model.AddMoodActionState
+import com.example.moodmate.model.AddMoodUiState
+import com.example.moodmate.model.MoodItem
 import com.example.moodmate.repository.MoodRepository
 import com.example.moodmate.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel

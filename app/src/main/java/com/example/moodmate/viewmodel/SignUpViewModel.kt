@@ -4,9 +4,9 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.moodmate.R
-import com.example.moodmate.data.SignUpActionState
-import com.example.moodmate.data.SignUpUiState
-import com.example.moodmate.data.SignUpValidationErrors
+import com.example.moodmate.model.SignUpActionState
+import com.example.moodmate.model.SignUpUiState
+import com.example.moodmate.model.SignUpValidationErrors
 import com.example.moodmate.repository.AuthRepository
 import com.example.moodmate.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel

@@ -5,8 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.moodmate.R
 import com.example.moodmate.dao.MoodDao
-import com.example.moodmate.data.AdviceUiState
-import com.example.moodmate.data.HomeUiState
+import com.example.moodmate.model.AdviceUiState
+import com.example.moodmate.model.HomeUiState
 import com.example.moodmate.local.TokenManager
 import com.example.moodmate.repository.AdviceRepository
 import com.example.moodmate.repository.MoodRepository
@@ -18,9 +18,12 @@ import com.example.moodmate.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -47,6 +50,10 @@ class HomeViewModel @Inject constructor(
     val shouldNavigateToLogin: StateFlow<Boolean> = _shouldNavigateToLogin.asStateFlow()
 
     val syncState: StateFlow<SyncState> = syncManager.syncState
+
+    val firstName: StateFlow<String> = tokenManager.firstName
+        .map { it ?: "" }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), "")
 
     init {
         observeMoods()

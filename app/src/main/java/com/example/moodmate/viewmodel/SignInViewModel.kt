@@ -4,9 +4,9 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.moodmate.R
-import com.example.moodmate.data.SignInActionState
-import com.example.moodmate.data.SignInUiState
-import com.example.moodmate.data.SignInValidationErrors
+import com.example.moodmate.model.SignInActionState
+import com.example.moodmate.model.SignInUiState
+import com.example.moodmate.model.SignInValidationErrors
 import com.example.moodmate.local.TokenManager
 import com.example.moodmate.repository.AdviceRepository
 import com.example.moodmate.repository.AuthRepository

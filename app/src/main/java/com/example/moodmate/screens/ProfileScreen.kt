@@ -46,13 +46,13 @@ import com.example.moodmate.viewmodel.ProfileViewModel
 @Composable
 fun ProfileScreen(
     navController: NavController,
-    fullName: String,
-    email: String,
     modifier: Modifier = Modifier,
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val shouldRecreateActivity by viewModel.shouldRecreateActivity.collectAsState()
+    val fullName by viewModel.fullName.collectAsState()
+    val email by viewModel.email.collectAsState()
     val context = LocalContext.current
 
     LaunchedEffect(shouldRecreateActivity, uiState.shouldNavigateToLogin) {
@@ -303,8 +303,6 @@ fun ProfileInfoRow(
 @Composable
 fun ProfileScreenPreview() {
     ProfileScreen(
-        navController = rememberNavController(),
-        fullName = "Yılmaz Naycı",
-        email = "yilmaznayci@gmail.com"
+        navController = rememberNavController()
     )
 }
