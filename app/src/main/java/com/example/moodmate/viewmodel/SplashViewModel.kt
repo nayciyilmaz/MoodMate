@@ -1,7 +1,7 @@
 package com.example.moodmate.viewmodel
 
 import androidx.lifecycle.ViewModel
-import com.example.moodmate.local.TokenManager
+import com.example.moodmate.data.local.datastore.TokenManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.first
 import javax.inject.Inject

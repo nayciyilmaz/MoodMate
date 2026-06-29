@@ -2,11 +2,11 @@ package com.example.moodmate.repository
 
 import android.content.Context
 import com.example.moodmate.R
-import com.example.moodmate.dao.AdviceDao
+import com.example.moodmate.data.local.room.AdviceDao
 import com.example.moodmate.model.AdviceResponse
-import com.example.moodmate.entity.AdviceLocalEntity
-import com.example.moodmate.local.TokenManager
-import com.example.moodmate.network.ApiService
+import com.example.moodmate.data.local.room.AdviceLocalEntity
+import com.example.moodmate.data.local.datastore.TokenManager
+import com.example.moodmate.data.remote.api.ApiService
 import com.example.moodmate.util.Resource
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow

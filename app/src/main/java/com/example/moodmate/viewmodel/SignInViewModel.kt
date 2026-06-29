@@ -7,7 +7,7 @@ import com.example.moodmate.R
 import com.example.moodmate.model.SignInActionState
 import com.example.moodmate.model.SignInUiState
 import com.example.moodmate.model.SignInValidationErrors
-import com.example.moodmate.local.TokenManager
+import com.example.moodmate.data.local.datastore.TokenManager
 import com.example.moodmate.repository.AdviceRepository
 import com.example.moodmate.repository.AuthRepository
 import com.example.moodmate.repository.MoodRepository

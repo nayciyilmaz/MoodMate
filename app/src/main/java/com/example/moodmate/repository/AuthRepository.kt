@@ -7,7 +7,7 @@ import com.example.moodmate.model.ChangePasswordRequest
 import com.example.moodmate.model.ErrorResponse
 import com.example.moodmate.model.LoginRequest
 import com.example.moodmate.model.RegisterRequest
-import com.example.moodmate.network.ApiService
+import com.example.moodmate.data.remote.api.ApiService
 import com.example.moodmate.util.Resource
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken

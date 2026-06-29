@@ -3,7 +3,7 @@ package com.example.moodmate.repository
 import android.content.Context
 import com.example.moodmate.R
 import com.example.moodmate.model.AuthResponse
-import com.example.moodmate.network.ApiService
+import com.example.moodmate.data.remote.api.ApiService
 import com.example.moodmate.util.Resource
 import io.mockk.coEvery
 import io.mockk.every

@@ -1,8 +1,8 @@
-package com.example.moodmate.mapper
+package com.example.moodmate.data.mapper
 
 import com.example.moodmate.model.MoodResponse
 import com.example.moodmate.sync.SyncStatus
-import com.example.moodmate.entity.MoodEntity
+import com.example.moodmate.data.local.room.MoodEntity
 import java.util.UUID
 
 fun MoodResponse.toEntity(userId: Long, syncStatus: SyncStatus = SyncStatus.SYNCED): MoodEntity {

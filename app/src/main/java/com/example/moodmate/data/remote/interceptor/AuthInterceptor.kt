@@ -1,7 +1,7 @@
-package com.example.moodmate.network
+package com.example.moodmate.data.remote.interceptor
 
 import android.content.Context
-import com.example.moodmate.local.TokenManager
+import com.example.moodmate.data.local.datastore.TokenManager
 import com.example.moodmate.util.LocaleHelper
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.first

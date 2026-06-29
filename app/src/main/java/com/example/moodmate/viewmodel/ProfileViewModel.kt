@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.moodmate.model.ProfileUiState
-import com.example.moodmate.local.TokenManager
+import com.example.moodmate.data.local.datastore.TokenManager
 import com.example.moodmate.notification.NotificationPreferenceHelper
 import com.example.moodmate.notification.NotificationScheduler
 import com.example.moodmate.repository.AdviceRepository

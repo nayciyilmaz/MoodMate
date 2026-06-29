@@ -1,4 +1,4 @@
-package com.example.moodmate.local
+package com.example.moodmate.data.local.datastore
 
 import android.content.Context
 import android.util.Base64

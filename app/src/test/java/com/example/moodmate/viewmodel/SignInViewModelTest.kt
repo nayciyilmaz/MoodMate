@@ -3,7 +3,7 @@ package com.example.moodmate.viewmodel
 import android.content.Context
 import com.example.moodmate.R
 import com.example.moodmate.model.AuthResponse
-import com.example.moodmate.local.TokenManager
+import com.example.moodmate.data.local.datastore.TokenManager
 import com.example.moodmate.repository.AdviceRepository
 import com.example.moodmate.repository.AuthRepository
 import com.example.moodmate.repository.MoodRepository

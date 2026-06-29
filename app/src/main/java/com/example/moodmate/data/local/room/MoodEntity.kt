@@ -1,4 +1,4 @@
-package com.example.moodmate.entity
+package com.example.moodmate.data.local.room
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

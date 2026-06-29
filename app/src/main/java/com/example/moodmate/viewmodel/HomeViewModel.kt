@@ -4,10 +4,10 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.moodmate.R
-import com.example.moodmate.dao.MoodDao
+import com.example.moodmate.data.local.room.MoodDao
 import com.example.moodmate.model.AdviceUiState
 import com.example.moodmate.model.HomeUiState
-import com.example.moodmate.local.TokenManager
+import com.example.moodmate.data.local.datastore.TokenManager
 import com.example.moodmate.repository.AdviceRepository
 import com.example.moodmate.repository.MoodRepository
 import com.example.moodmate.sync.SyncManager

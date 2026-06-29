@@ -1,4 +1,4 @@
-package com.example.moodmate.local
+package com.example.moodmate.data.local
 
 import androidx.room.TypeConverter
 import com.example.moodmate.sync.SyncStatus

@@ -1,12 +1,9 @@
-package com.example.moodmate.local
+package com.example.moodmate.data.local.room
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.example.moodmate.dao.AdviceDao
-import com.example.moodmate.dao.MoodDao
-import com.example.moodmate.entity.AdviceLocalEntity
-import com.example.moodmate.entity.MoodEntity
+import com.example.moodmate.data.local.Converters
 
 @Database(
     entities = [MoodEntity::class, AdviceLocalEntity::class],

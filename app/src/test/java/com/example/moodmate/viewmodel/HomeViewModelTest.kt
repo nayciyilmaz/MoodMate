@@ -2,11 +2,11 @@ package com.example.moodmate.viewmodel
 
 import android.content.Context
 import com.example.moodmate.R
-import com.example.moodmate.dao.MoodDao
+import com.example.moodmate.data.local.room.MoodDao
 import com.example.moodmate.model.AdviceResponse
 import com.example.moodmate.model.MoodResponse
-import com.example.moodmate.entity.MoodEntity
-import com.example.moodmate.local.TokenManager
+import com.example.moodmate.data.local.room.MoodEntity
+import com.example.moodmate.data.local.datastore.TokenManager
 import com.example.moodmate.repository.AdviceRepository
 import com.example.moodmate.repository.MoodRepository
 import com.example.moodmate.sync.SyncManager

@@ -1,4 +1,4 @@
-package com.example.moodmate.network
+package com.example.moodmate.data.remote.api
 
 import com.example.moodmate.model.AdviceResponse
 import com.example.moodmate.model.AuthResponse
