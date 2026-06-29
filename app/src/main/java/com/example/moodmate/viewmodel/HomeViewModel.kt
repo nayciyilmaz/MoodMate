@@ -5,11 +5,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.moodmate.R
 import com.example.moodmate.data.local.room.MoodDao
-import com.example.moodmate.model.AdviceUiState
-import com.example.moodmate.model.HomeUiState
+import com.example.moodmate.domain.model.AdviceUiState
+import com.example.moodmate.domain.model.HomeUiState
 import com.example.moodmate.data.local.datastore.TokenManager
-import com.example.moodmate.repository.AdviceRepository
-import com.example.moodmate.repository.MoodRepository
+import com.example.moodmate.domain.repository.AdviceRepository
+import com.example.moodmate.domain.repository.MoodRepository
 import com.example.moodmate.sync.SyncManager
 import com.example.moodmate.sync.SyncScheduler
 import com.example.moodmate.sync.SyncState

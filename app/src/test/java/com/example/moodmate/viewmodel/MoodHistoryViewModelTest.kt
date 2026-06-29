@@ -1,7 +1,7 @@
 package com.example.moodmate.viewmodel
 
-import com.example.moodmate.model.MoodResponse
-import com.example.moodmate.repository.MoodRepository
+import com.example.moodmate.domain.model.MoodResponse
+import com.example.moodmate.domain.repository.MoodRepository
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers

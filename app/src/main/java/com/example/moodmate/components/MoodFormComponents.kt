@@ -37,7 +37,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import com.example.moodmate.R
-import com.example.moodmate.model.MoodItem
+import com.example.moodmate.domain.model.MoodItem
 
 @Composable
 fun MoodSelector(

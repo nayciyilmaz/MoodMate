@@ -5,9 +5,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.moodmate.model.MoodHistoryUiState
-import com.example.moodmate.model.MoodResponse
-import com.example.moodmate.repository.MoodRepository
+import com.example.moodmate.domain.model.MoodHistoryUiState
+import com.example.moodmate.domain.model.MoodResponse
+import com.example.moodmate.domain.repository.MoodRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

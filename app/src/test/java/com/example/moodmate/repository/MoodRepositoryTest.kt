@@ -5,6 +5,7 @@ import com.example.moodmate.R
 import com.example.moodmate.data.local.room.MoodDao
 import com.example.moodmate.data.local.room.MoodEntity
 import com.example.moodmate.data.local.datastore.TokenManager
+import com.example.moodmate.domain.repository.MoodRepository
 import com.example.moodmate.sync.SyncManager
 import com.example.moodmate.sync.SyncScheduler
 import com.example.moodmate.sync.SyncStatus

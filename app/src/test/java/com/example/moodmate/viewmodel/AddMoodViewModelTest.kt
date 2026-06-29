@@ -2,8 +2,8 @@ package com.example.moodmate.viewmodel
 
 import android.content.Context
 import com.example.moodmate.R
-import com.example.moodmate.model.MoodResponse
-import com.example.moodmate.repository.MoodRepository
+import com.example.moodmate.domain.model.MoodResponse
+import com.example.moodmate.domain.repository.MoodRepository
 import com.example.moodmate.util.Resource
 import io.mockk.coEvery
 import io.mockk.coVerify

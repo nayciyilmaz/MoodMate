@@ -1,4 +1,4 @@
-package com.example.moodmate.model
+package com.example.moodmate.domain.model
 
 import com.google.gson.annotations.SerializedName
 

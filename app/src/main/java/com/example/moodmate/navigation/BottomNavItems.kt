@@ -6,7 +6,7 @@ import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import com.example.moodmate.R
-import com.example.moodmate.model.NavigationItem
+import com.example.moodmate.domain.model.NavigationItem
 
 val bottomBarRoutes = setOf(
     MoodMateScreens.HomeScreen.route,

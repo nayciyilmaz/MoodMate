@@ -3,12 +3,12 @@ package com.example.moodmate.viewmodel
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.moodmate.model.ProfileUiState
+import com.example.moodmate.domain.model.ProfileUiState
 import com.example.moodmate.data.local.datastore.TokenManager
 import com.example.moodmate.notification.NotificationPreferenceHelper
 import com.example.moodmate.notification.NotificationScheduler
-import com.example.moodmate.repository.AdviceRepository
-import com.example.moodmate.repository.MoodRepository
+import com.example.moodmate.domain.repository.AdviceRepository
+import com.example.moodmate.domain.repository.MoodRepository
 import com.example.moodmate.util.LocaleHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext

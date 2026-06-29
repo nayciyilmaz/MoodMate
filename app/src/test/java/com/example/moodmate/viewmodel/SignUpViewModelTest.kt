@@ -2,8 +2,8 @@ package com.example.moodmate.viewmodel
 
 import android.content.Context
 import com.example.moodmate.R
-import com.example.moodmate.model.AuthResponse
-import com.example.moodmate.repository.AuthRepository
+import com.example.moodmate.domain.model.AuthResponse
+import com.example.moodmate.domain.repository.AuthRepository
 import com.example.moodmate.util.Resource
 import io.mockk.coEvery
 import io.mockk.every

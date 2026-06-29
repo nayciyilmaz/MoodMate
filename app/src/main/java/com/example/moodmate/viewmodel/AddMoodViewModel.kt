@@ -4,10 +4,10 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.moodmate.R
-import com.example.moodmate.model.AddMoodActionState
-import com.example.moodmate.model.AddMoodUiState
-import com.example.moodmate.model.MoodItem
-import com.example.moodmate.repository.MoodRepository
+import com.example.moodmate.domain.model.AddMoodActionState
+import com.example.moodmate.domain.model.AddMoodUiState
+import com.example.moodmate.domain.model.MoodItem
+import com.example.moodmate.domain.repository.MoodRepository
 import com.example.moodmate.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext

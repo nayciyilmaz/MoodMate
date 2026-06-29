@@ -1,7 +1,7 @@
 package com.example.moodmate.sync
 
 import com.example.moodmate.data.local.room.MoodDao
-import com.example.moodmate.model.MoodResponse
+import com.example.moodmate.domain.model.MoodResponse
 import com.example.moodmate.data.local.room.MoodEntity
 import com.example.moodmate.data.local.datastore.TokenManager
 import com.example.moodmate.data.remote.api.ApiService

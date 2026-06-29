@@ -1,9 +1,9 @@
-package com.example.moodmate.repository
+package com.example.moodmate.domain.repository
 
 import android.content.Context
 import com.example.moodmate.R
 import com.example.moodmate.data.local.room.AdviceDao
-import com.example.moodmate.model.AdviceResponse
+import com.example.moodmate.domain.model.AdviceResponse
 import com.example.moodmate.data.local.room.AdviceLocalEntity
 import com.example.moodmate.data.local.datastore.TokenManager
 import com.example.moodmate.data.remote.api.ApiService

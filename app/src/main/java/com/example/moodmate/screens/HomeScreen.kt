@@ -59,9 +59,9 @@ import com.example.moodmate.components.EditTextButton
 import com.example.moodmate.components.LoadingIndicator
 import com.example.moodmate.components.MoodList
 import com.example.moodmate.components.ValidationErrorText
-import com.example.moodmate.model.AdviceUiState
+import com.example.moodmate.domain.model.AdviceUiState
 import com.example.moodmate.sync.SyncState
-import com.example.moodmate.model.SyncUiModel
+import com.example.moodmate.domain.model.SyncUiModel
 import com.example.moodmate.navigation.MoodMateScreens
 import com.example.moodmate.util.formatDate
 import com.example.moodmate.navigation.navigateAndClearBackStack

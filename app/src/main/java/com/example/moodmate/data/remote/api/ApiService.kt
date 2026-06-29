@@ -1,12 +1,12 @@
 package com.example.moodmate.data.remote.api
 
-import com.example.moodmate.model.AdviceResponse
-import com.example.moodmate.model.AuthResponse
-import com.example.moodmate.model.ChangePasswordRequest
-import com.example.moodmate.model.LoginRequest
-import com.example.moodmate.model.MoodRequest
-import com.example.moodmate.model.MoodResponse
-import com.example.moodmate.model.RegisterRequest
+import com.example.moodmate.domain.model.AdviceResponse
+import com.example.moodmate.domain.model.AuthResponse
+import com.example.moodmate.domain.model.ChangePasswordRequest
+import com.example.moodmate.domain.model.LoginRequest
+import com.example.moodmate.domain.model.MoodRequest
+import com.example.moodmate.domain.model.MoodResponse
+import com.example.moodmate.domain.model.RegisterRequest
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE

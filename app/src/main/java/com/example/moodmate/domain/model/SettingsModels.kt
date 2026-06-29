@@ -1,4 +1,4 @@
-package com.example.moodmate.model
+package com.example.moodmate.domain.model
 
 data class SettingsUiState(
     val currentPassword: String = "",

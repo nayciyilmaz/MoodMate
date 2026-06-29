@@ -2,11 +2,11 @@ package com.example.moodmate.viewmodel
 
 import android.content.Context
 import com.example.moodmate.R
-import com.example.moodmate.model.AuthResponse
+import com.example.moodmate.domain.model.AuthResponse
 import com.example.moodmate.data.local.datastore.TokenManager
-import com.example.moodmate.repository.AdviceRepository
-import com.example.moodmate.repository.AuthRepository
-import com.example.moodmate.repository.MoodRepository
+import com.example.moodmate.domain.repository.AdviceRepository
+import com.example.moodmate.domain.repository.AuthRepository
+import com.example.moodmate.domain.repository.MoodRepository
 import com.example.moodmate.util.Resource
 import io.mockk.coEvery
 import io.mockk.coVerify
