@@ -1,0 +1,130 @@
+﻿package com.example.moodmate.presentation.screens.profile
+
+import android.content.Context
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.moodmate.data.local.datastore.TokenManager
+import com.example.moodmate.domain.repository.AdviceRepository
+import com.example.moodmate.domain.repository.MoodRepository
+import com.example.moodmate.notification.NotificationPreferenceHelper
+import com.example.moodmate.notification.NotificationScheduler
+import com.example.moodmate.util.LocaleHelper
+import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
+import timber.log.Timber
+import javax.inject.Inject
+
+@HiltViewModel
+class ProfileViewModel @Inject constructor(
+    private val tokenManager: TokenManager,
+    private val notificationScheduler: NotificationScheduler,
+    private val moodRepository: MoodRepository,
+    private val adviceRepository: AdviceRepository,
+    @ApplicationContext private val context: Context
+) : ViewModel() {
+
+    private val _uiState = MutableStateFlow(ProfileState())
+    val uiState: StateFlow<ProfileState> = _uiState.asStateFlow()
+
+    private val _shouldRecreateActivity = MutableStateFlow(false)
+    val shouldRecreateActivity: StateFlow<Boolean> = _shouldRecreateActivity.asStateFlow()
+
+    val fullName: StateFlow<String> = combine(
+        tokenManager.firstName,
+        tokenManager.lastName
+    ) { first, last -> "${first ?: ""} ${last ?: ""}".trim() }
+        .stateIn(viewModelScope, SharingStarted.Companion.WhileSubscribed(5000), "")
+
+    val email: StateFlow<String> = tokenManager.userEmail
+        .map { it ?: "" }
+        .stateIn(viewModelScope, SharingStarted.Companion.WhileSubscribed(5000), "")
+
+    init {
+        loadSettings()
+    }
+
+    private fun loadSettings() {
+        val currentLanguageCode = LocaleHelper.getLanguage(context)
+        val languageName = when (currentLanguageCode) {
+            "tr" -> "Türkçe"
+            "en" -> "English"
+            "es" -> "Español"
+            "it" -> "Italiano"
+            else -> "Türkçe"
+        }
+        val isEnabled = NotificationPreferenceHelper.isNotificationEnabled(context)
+        Timber.Forest.d("Ayarlar yüklendi: dil=$languageName, bildirim=$isEnabled")
+        _uiState.value = _uiState.value.copy(
+            selectedLanguage = languageName,
+            notificationEnabled = isEnabled
+        )
+    }
+
+    fun setNotification(enabled: Boolean) {
+        Timber.Forest.d("Bildirim ayarı değiştiriliyor: $enabled")
+        NotificationPreferenceHelper.setNotificationEnabled(context, enabled)
+        _uiState.value = _uiState.value.copy(notificationEnabled = enabled)
+        if (enabled) {
+            notificationScheduler.scheduleDailyNotifications()
+            Timber.Forest.d("Bildirimler planlandı")
+        } else {
+            notificationScheduler.cancelAllNotifications()
+            Timber.Forest.d("Bildirimler iptal edildi")
+        }
+    }
+
+    fun setLanguage(language: String) {
+        val languageCode = when (language) {
+            "Türkçe" -> "tr"
+            "English" -> "en"
+            "Español" -> "es"
+            "Italiano" -> "it"
+            else -> "tr"
+        }
+        val currentLanguageCode = LocaleHelper.getLanguage(context)
+        if (languageCode != currentLanguageCode) {
+            Timber.Forest.d("Dil değiştiriliyor: $currentLanguageCode -> $languageCode")
+            LocaleHelper.saveLanguage(context, languageCode)
+            _uiState.value = _uiState.value.copy(selectedLanguage = language)
+            _shouldRecreateActivity.value = true
+        }
+    }
+
+    fun resetRecreateFlag() {
+        _shouldRecreateActivity.value = false
+    }
+
+    fun showLogoutDialog() {
+        _uiState.value = _uiState.value.copy(showLogoutDialog = true)
+    }
+
+    fun dismissLogoutDialog() {
+        _uiState.value = _uiState.value.copy(showLogoutDialog = false)
+    }
+
+    fun logout() {
+        viewModelScope.launch {
+            Timber.Forest.d("Çıkış yapılıyor")
+            moodRepository.clearAllMoodsForUser()
+            adviceRepository.clearAdviceForUser()
+            tokenManager.clearUser()
+            Timber.Forest.d("Çıkış tamamlandı, login ekranına yönlendiriliyor")
+            _uiState.value = _uiState.value.copy(
+                showLogoutDialog = false,
+                shouldNavigateToLogin = true
+            )
+        }
+    }
+
+    fun resetNavigationFlag() {
+        _uiState.value = _uiState.value.copy(shouldNavigateToLogin = false)
+    }
+}

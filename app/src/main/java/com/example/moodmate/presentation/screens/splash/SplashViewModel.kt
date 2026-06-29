@@ -1,0 +1,18 @@
+package com.example.moodmate.presentation.screens.splash
+
+import androidx.lifecycle.ViewModel
+import com.example.moodmate.data.local.datastore.TokenManager
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.first
+import javax.inject.Inject
+
+@HiltViewModel
+class SplashViewModel @Inject constructor(
+    private val tokenManager: TokenManager
+) : ViewModel() {
+
+    suspend fun isUserLoggedIn(): Boolean {
+        val token = tokenManager.token.first()
+        return token != null
+    }
+}

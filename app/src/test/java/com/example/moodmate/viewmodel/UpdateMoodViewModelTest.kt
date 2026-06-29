@@ -5,6 +5,7 @@ import androidx.lifecycle.SavedStateHandle
 import com.example.moodmate.R
 import com.example.moodmate.domain.model.MoodResponse
 import com.example.moodmate.domain.repository.MoodRepository
+import com.example.moodmate.presentation.screens.update_mood.UpdateMoodViewModel
 import com.example.moodmate.util.Resource
 import io.mockk.coEvery
 import io.mockk.coVerify

@@ -2,6 +2,7 @@ package com.example.moodmate.viewmodel
 
 import com.example.moodmate.domain.model.MoodResponse
 import com.example.moodmate.domain.repository.MoodRepository
+import com.example.moodmate.presentation.screens.mood_history.MoodHistoryViewModel
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers

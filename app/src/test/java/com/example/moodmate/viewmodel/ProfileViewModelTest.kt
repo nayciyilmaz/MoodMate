@@ -6,6 +6,7 @@ import com.example.moodmate.notification.NotificationPreferenceHelper
 import com.example.moodmate.notification.NotificationScheduler
 import com.example.moodmate.domain.repository.AdviceRepository
 import com.example.moodmate.domain.repository.MoodRepository
+import com.example.moodmate.presentation.screens.profile.ProfileViewModel
 import com.example.moodmate.util.LocaleHelper
 import io.mockk.coVerify
 import io.mockk.every
@@ -56,7 +57,13 @@ class ProfileViewModelTest {
         every { LocaleHelper.getLanguage(any()) } returns "tr"
         every { NotificationPreferenceHelper.isNotificationEnabled(any()) } returns true
 
-        viewModel = ProfileViewModel(tokenManager, notificationScheduler, moodRepository, adviceRepository, context)
+        viewModel = ProfileViewModel(
+            tokenManager,
+            notificationScheduler,
+            moodRepository,
+            adviceRepository,
+            context
+        )
     }
 
     @After
@@ -149,7 +156,13 @@ class ProfileViewModelTest {
         every { tokenManager.firstName } returns flowOf("Yılmaz")
         every { tokenManager.lastName } returns flowOf("Naycı")
 
-        viewModel = ProfileViewModel(tokenManager, notificationScheduler, moodRepository, adviceRepository, context)
+        viewModel = ProfileViewModel(
+            tokenManager,
+            notificationScheduler,
+            moodRepository,
+            adviceRepository,
+            context
+        )
 
         assertEquals("Yılmaz Naycı", viewModel.fullName.first())
     }
@@ -158,7 +171,13 @@ class ProfileViewModelTest {
     fun email_shouldReturnEmailFromTokenManager() = runTest {
         every { tokenManager.userEmail } returns flowOf("test@example.com")
 
-        viewModel = ProfileViewModel(tokenManager, notificationScheduler, moodRepository, adviceRepository, context)
+        viewModel = ProfileViewModel(
+            tokenManager,
+            notificationScheduler,
+            moodRepository,
+            adviceRepository,
+            context
+        )
 
         assertEquals("test@example.com", viewModel.email.first())
     }

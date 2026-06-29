@@ -15,8 +15,3 @@ data class MoodResponse(
     val entryDate: String,
     val createdAt: String
 )
-
-data class MoodItem(
-    val emoji: String,
-    val label: String
-)

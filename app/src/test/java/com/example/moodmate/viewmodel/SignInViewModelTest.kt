@@ -7,6 +7,7 @@ import com.example.moodmate.data.local.datastore.TokenManager
 import com.example.moodmate.domain.repository.AdviceRepository
 import com.example.moodmate.domain.repository.AuthRepository
 import com.example.moodmate.domain.repository.MoodRepository
+import com.example.moodmate.presentation.screens.sign_in.SignInViewModel
 import com.example.moodmate.util.Resource
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -53,7 +54,8 @@ class SignInViewModelTest {
         every { context.getString(R.string.error_sign_in_failed) } returns "Login failed"
         coEvery { tokenManager.userId } returns flowOf(null)
 
-        viewModel = SignInViewModel(authRepository, tokenManager, moodRepository, adviceRepository, context)
+        viewModel =
+            SignInViewModel(authRepository, tokenManager, moodRepository, adviceRepository, context)
     }
 
     @After
@@ -130,7 +132,8 @@ class SignInViewModelTest {
         )
         coEvery { authRepository.login(any(), any()) } returns Resource.Success(authResponse)
 
-        viewModel = SignInViewModel(authRepository, tokenManager, moodRepository, adviceRepository, context)
+        viewModel =
+            SignInViewModel(authRepository, tokenManager, moodRepository, adviceRepository, context)
         viewModel.login()
 
         coVerify { moodRepository.clearAllMoodsForUser() }
