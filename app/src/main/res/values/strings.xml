@@ -10,10 +10,12 @@
     <string name="isim_etiket">İsim</string>
     <string name="soyisim_etiket">Soyisim</string>
     <string name="nav_home">Ana Sayfa</string>
+    <string name="nav_statistics">İstatistik</string>
     <string name="nav_add">Ekle</string>
     <string name="nav_history">Geçmiş</string>
     <string name="nav_profile">Profil</string>
     <string name="title_home">Ana Sayfa</string>
+    <string name="title_statistics">İstatistik</string>
     <string name="title_add_mood">Ruh Hali Ekleme</string>
     <string name="title_edit_mood">Ruh Hali Düzenle</string>
     <string name="title_mood_history">Ruh Hali Geçmişi</string>

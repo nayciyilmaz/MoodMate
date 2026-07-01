@@ -1,4 +1,4 @@
-﻿package com.example.moodmate.presentation.components
+package com.example.moodmate.presentation.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -6,7 +6,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -103,35 +105,71 @@ private fun EditBottomAppBar(
 ) {
     val acikMavi = colorResource(id = R.color.acik_mavi)
 
-    NavigationBar(containerColor = Color.White) {
-        bottomNavItems.forEach { item ->
-            NavigationBarItem(
-                selected = currentRoute == item.route,
-                onClick = {
-                    navigateAndClearBackStack(
-                        navController = navController,
-                        destination = item.route,
-                        popUpToRoute = MoodMateScreens.HomeScreen.route,
-                        inclusive = item.route == MoodMateScreens.HomeScreen.route
+    NavigationBar(
+        containerColor = Color.White,
+        contentColor = acikMavi
+    ) {
+        bottomNavItems.forEachIndexed { index, item ->
+            if (index == 2) {
+                NavigationBarItem(
+                    selected = false,
+                    onClick = {},
+                    icon = {
+                        FloatingActionButton(
+                            onClick = {
+                                navigateAndClearBackStack(
+                                    navController = navController,
+                                    destination = MoodMateScreens.AddMoodScreen.route,
+                                    popUpToRoute = MoodMateScreens.HomeScreen.route,
+                                    inclusive = false
+                                )
+                            },
+                            containerColor = acikMavi,
+                            contentColor = Color.White
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.Add,
+                                contentDescription = null,
+                                tint = Color.White
+                            )
+                        }
+                    },
+                    label = null,
+                    colors = NavigationBarItemDefaults.colors(
+                        indicatorColor = Color.Transparent
                     )
-                },
-                icon = {
-                    Icon(
-                        imageVector = item.icon,
-                        contentDescription = null
-                    )
-                },
-                label = {
-                    Text(text = stringResource(id = item.labelResId))
-                },
-                colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = acikMavi,
-                    selectedTextColor = acikMavi,
-                    unselectedIconColor = Color.Gray,
-                    unselectedTextColor = Color.Gray,
-                    indicatorColor = acikMavi.copy(alpha = 0.1f)
                 )
-            )
+            } else {
+                NavigationBarItem(
+                    selected = currentRoute == item.route,
+                    onClick = {
+                        if (currentRoute != item.route) {
+                            navigateAndClearBackStack(
+                                navController = navController,
+                                destination = item.route,
+                                popUpToRoute = MoodMateScreens.HomeScreen.route,
+                                inclusive = item.route == MoodMateScreens.HomeScreen.route
+                            )
+                        }
+                    },
+                    icon = {
+                        Icon(
+                            imageVector = item.icon,
+                            contentDescription = null
+                        )
+                    },
+                    label = {
+                        Text(text = stringResource(id = item.labelResId))
+                    },
+                    colors = NavigationBarItemDefaults.colors(
+                        selectedIconColor = acikMavi,
+                        selectedTextColor = acikMavi,
+                        unselectedIconColor = Color.Gray,
+                        unselectedTextColor = Color.Gray,
+                        indicatorColor = acikMavi.copy(alpha = 0.1f)
+                    )
+                )
+            }
         }
     }
 }

@@ -260,7 +260,7 @@ fun DetailedNoteCard(
                     modifier = modifier.padding(end = 8.dp)
                 ) {
                     Text(
-                        text = "ğŸ“",
+                        text = "📝",
                         style = MaterialTheme.typography.titleMedium,
                         modifier = modifier.padding(8.dp)
                     )

@@ -272,7 +272,7 @@ fun HomeInfoCard(modifier: Modifier = Modifier) {
                 textAlign = TextAlign.Center
             )
             Text(
-                text = "ğŸ˜Š",
+                text = "😊",
                 fontSize = 48.sp
             )
             Text(

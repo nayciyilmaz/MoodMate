@@ -9,6 +9,7 @@ enum class MoodMateScreens(val route: String) {
     UpdateMoodScreen("update_mood_screen/{moodId}"),
     MoodHistoryScreen("mood_history_screen"),
     MoodDetailsScreen("mood_details_screen/{moodJson}"),
+    StatisticsScreen("statistics_screen"),
     ProfileScreen("profile_screen"),
     SettingsScreen("settings_screen");
 

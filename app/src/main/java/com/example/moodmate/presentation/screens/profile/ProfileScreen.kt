@@ -117,9 +117,9 @@ fun ProfileScreen(
             SettingCard(
                 title = stringResource(id = R.string.language_selection),
                 options = listOf(
-                    "TÃ¼rkÃ§e",
+                    "Türkçe",
                     "English",
-                    "EspaÃ±ol",
+                    "Español",
                     "Italiano"
                 ),
                 selectedOption = uiState.selectedLanguage,

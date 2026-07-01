@@ -7,6 +7,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.moodmate.presentation.screens.add_mood.AddMoodScreen
+import com.example.moodmate.presentation.screens.statistics.StatisticsScreen
 import com.example.moodmate.presentation.screens.home.HomeScreen
 import com.example.moodmate.presentation.screens.mood_details.MoodDetailsScreen
 import com.example.moodmate.presentation.screens.mood_history.MoodHistoryScreen
@@ -59,6 +60,9 @@ fun MoodMateNavigation(){
             )
         ){
             MoodDetailsScreen(navController = navController)
+        }
+        composable(route = MoodMateScreens.StatisticsScreen.route){
+            StatisticsScreen(navController = navController)
         }
         composable(route = MoodMateScreens.ProfileScreen.route){
             ProfileScreen(navController = navController)
