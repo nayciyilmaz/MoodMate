@@ -4,7 +4,7 @@ import android.content.Context
 import com.example.moodmate.R
 import com.example.moodmate.domain.model.AuthResponse
 import com.example.moodmate.data.remote.api.ApiService
-import com.example.moodmate.domain.repository.AuthRepository
+import com.example.moodmate.data.repository.AuthRepositoryImpl
 import com.example.moodmate.util.Resource
 import io.mockk.coEvery
 import io.mockk.every
@@ -22,7 +22,7 @@ class AuthRepositoryTest {
 
     private lateinit var apiService: ApiService
     private lateinit var context: Context
-    private lateinit var repository: AuthRepository
+    private lateinit var repository: AuthRepositoryImpl
 
     @Before
     fun setUp() {
@@ -33,7 +33,7 @@ class AuthRepositoryTest {
         every { context.getString(R.string.error_empty_response) } returns "Empty response"
         every { context.getString(R.string.error_server) } returns "Server error"
 
-        repository = AuthRepository(apiService, context)
+        repository = AuthRepositoryImpl(apiService, context)
     }
 
     @Test

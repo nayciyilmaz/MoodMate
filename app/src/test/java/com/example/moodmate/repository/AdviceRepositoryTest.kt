@@ -7,7 +7,7 @@ import com.example.moodmate.domain.model.AdviceResponse
 import com.example.moodmate.data.local.room.AdviceLocalEntity
 import com.example.moodmate.data.local.datastore.TokenManager
 import com.example.moodmate.data.remote.api.ApiService
-import com.example.moodmate.domain.repository.AdviceRepository
+import com.example.moodmate.data.repository.AdviceRepositoryImpl
 import com.example.moodmate.util.Resource
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -28,7 +28,7 @@ class AdviceRepositoryTest {
     private lateinit var adviceDao: AdviceDao
     private lateinit var tokenManager: TokenManager
     private lateinit var context: Context
-    private lateinit var repository: AdviceRepository
+    private lateinit var repository: AdviceRepositoryImpl
 
     @Before
     fun setUp() {
@@ -43,7 +43,7 @@ class AdviceRepositoryTest {
 
         coEvery { tokenManager.userId } returns flowOf(1L)
 
-        repository = AdviceRepository(apiService, adviceDao, tokenManager, context)
+        repository = AdviceRepositoryImpl(apiService, adviceDao, tokenManager, context)
     }
 
     @Test

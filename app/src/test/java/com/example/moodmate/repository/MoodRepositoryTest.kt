@@ -5,7 +5,7 @@ import com.example.moodmate.R
 import com.example.moodmate.data.local.room.MoodDao
 import com.example.moodmate.data.local.room.MoodEntity
 import com.example.moodmate.data.local.datastore.TokenManager
-import com.example.moodmate.domain.repository.MoodRepository
+import com.example.moodmate.data.repository.MoodRepositoryImpl
 import com.example.moodmate.sync.SyncManager
 import com.example.moodmate.sync.SyncScheduler
 import com.example.moodmate.sync.SyncStatus
@@ -28,7 +28,7 @@ class MoodRepositoryTest {
     private lateinit var syncScheduler: SyncScheduler
     private lateinit var tokenManager: TokenManager
     private lateinit var context: Context
-    private lateinit var repository: MoodRepository
+    private lateinit var repository: MoodRepositoryImpl
 
     private val testMoodEntity = MoodEntity(
         localId = "local-123",
@@ -55,7 +55,7 @@ class MoodRepositoryTest {
 
         coEvery { tokenManager.userId } returns flowOf(1L)
 
-        repository = MoodRepository(moodDao, syncManager, syncScheduler, tokenManager, context)
+        repository = MoodRepositoryImpl(moodDao, syncManager, syncScheduler, tokenManager, context)
     }
 
     @Test
