@@ -1,11 +1,6 @@
 package com.example.moodmate.di
 
 import android.content.Context
-import androidx.room.Room
-import androidx.work.WorkManager
-import com.example.moodmate.data.local.room.AdviceDao
-import com.example.moodmate.data.local.room.MoodDao
-import com.example.moodmate.data.local.room.MoodMateDatabase
 import com.example.moodmate.data.local.datastore.TokenManager
 import com.example.moodmate.data.remote.api.ApiService
 import com.example.moodmate.data.remote.interceptor.AuthInterceptor
@@ -23,36 +18,16 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object AppModule {
+object NetworkModule {
 
     private const val BASE_URL = "http://10.0.2.2:3000/"
-
-    @Provides
-    @Singleton
-    fun provideDatabase(@ApplicationContext context: Context): MoodMateDatabase {
-        return Room.databaseBuilder(
-            context,
-            MoodMateDatabase::class.java,
-            "moodmate_db"
-        ).build()
-    }
-
-    @Provides
-    @Singleton
-    fun provideMoodDao(database: MoodMateDatabase): MoodDao = database.moodDao()
-
-    @Provides
-    @Singleton
-    fun provideAdviceDao(database: MoodMateDatabase): AdviceDao = database.adviceDao()
 
     @Provides
     @Singleton
     fun provideAuthInterceptor(
         tokenManager: TokenManager,
         @ApplicationContext context: Context
-    ): AuthInterceptor {
-        return AuthInterceptor(tokenManager, context)
-    }
+    ): AuthInterceptor = AuthInterceptor(tokenManager, context)
 
     @Provides
     @Singleton
@@ -81,13 +56,5 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideApiService(retrofit: Retrofit): ApiService {
-        return retrofit.create(ApiService::class.java)
-    }
-
-    @Provides
-    @Singleton
-    fun provideWorkManager(@ApplicationContext context: Context): WorkManager {
-        return WorkManager.getInstance(context)
-    }
+    fun provideApiService(retrofit: Retrofit): ApiService = retrofit.create(ApiService::class.java)
 }
